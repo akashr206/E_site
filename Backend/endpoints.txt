@@ -1,0 +1,31 @@
+User API Endpoints:
+    POST - api/user/register :- Register a new user
+    POST - api/user/login :- Login existing user
+    GET - api/user/profile :- Get User Profile. (Authentiction Req.)
+    GET - api/user/all:- Get All Users.
+
+Product's API Endpoints:
+    POST - api/product/add :- Create a new product.
+    GET - api/product/all :- Retrieve all products.
+    GET api/product/:id:- Get a specific product by ID. 
+    PUT - api/product/:id:- Update a product by ID.
+    DELETE - api/product/:id:- Delete a product by ID. 
+
+Cart API Endpoints:
+    POST - api/cart/add :- Add a product to the cart. (Authentiction Req.)
+    GET - api/cart/user:- Retrieve the user specific cart. (Authentiction Req.)
+    POST - api/cart/--qty:- Decrease the quantity of a product in the cart. (Authentiction Req.)
+    DELETE - api/cart/remove/:productId :- Remove a product from the cart. (Authentiction Req.)
+    DELETE - api/cart/clear:- Delete all product from the cart. (Authentiction Req.)
+
+Shipping Address API Endpoints:
+    POST - api/address/add :- Add User Shipping Address. (Authentiction Req.)
+    GET - api/address/get:- Get User Shipping Address. (Authentiction Req.)
+
+Payment API Endpoints:
+    POST - api/payment/checkout :- Initiates the payment process.
+    POST - api/payment/verify-payment :- Confirms the payment & save to db.
+
+Order Confirmation API Endpoints:
+    GET - api/order/confirm :- User specific order's. (Authentiction Req.)
+    GET - api/order/confirm/all:- All Users Orders.
