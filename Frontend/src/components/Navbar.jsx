@@ -37,7 +37,7 @@ export default function Example() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className="bg-white fixed w-[100vw] border-y">
+    <header className="bg-white fixed w-[100vw] border-y z-50">
       <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-2 px-5 lg:px-8">
         <div className="flex lg:flex-1">
           <Link to="#" className="-m-1.5 p-1.5 flex items-center" >
@@ -81,7 +81,6 @@ export default function Example() {
                     <div className="flex-auto">
                       <a href={item.href} className="block font-semibold text-gray-900">
                         {item.name}
-                        {/* <span className="absolute inset-0" /> */}
                       </a>
                      
                     </div>
@@ -112,14 +111,14 @@ export default function Example() {
         <div className="fixed inset-0 z-10" />
         <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-5 py-2 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
           <div className="flex items-center justify-between">
-            <a href="#" className="-m-1.5 p-1.5">
+            <Link to="/" className="-m-1.5 p-1.5" onClick={() => setMobileMenuOpen(false)}>
               <span className="sr-only">Your Company</span>
               <img
                 alt=""
                 src={logo}
                 className="h-11 w-auto rounded-full"
               />
-            </a>
+            </Link>
             <button
               type="button"
               onClick={() => setMobileMenuOpen(false)}
@@ -170,12 +169,13 @@ export default function Example() {
                 </a>
               </div>
               <div className="py-6">
-                <a
-                  href="#"
+                <Link
+                  to="/login"
+                  onClick={() => setMobileMenuOpen(false)}
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
                 >
                   Log in
-                </a>
+                </Link>
               </div>
             </div>
           </div>

@@ -5,15 +5,16 @@ import Login from './components/Login'
 import Home from './components/Home'
 import './App.css';
 import Navbar from './components/Navbar';
+import Product from './components/Product';
 
 function App() {
   return (
     <Router>
       <Navbar></Navbar>
-      <main className='p-[75px]'>
+      <main className='py-[75px]'>
         <Routes>
           <Route path='/login' element={<Login />}></Route>
-          <Route path='/' element={<Home />}></Route>
+          <Route path='/' element={<Product />}></Route>
         </Routes>
 
       </main>

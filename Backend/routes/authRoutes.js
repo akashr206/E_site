@@ -14,9 +14,15 @@ router.get('/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
     // On success, redirect to the dashboard or home page
-    res.status(200).json({ message: 'Authentication successful' });
+    res.redirect('http://localhost:5173/');
   }
 );
+
+router.get('/check', (req, res) => {
+  if(!req.user){
+    res.status(401).json({message: 'Unauthorized'});
+  }
+});
 
 // Route for logging out
 router.get('/logout', (req, res) => {

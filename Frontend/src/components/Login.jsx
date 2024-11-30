@@ -1,24 +1,10 @@
-import React from 'react'
-import Logo from '../assets/logo.jpg'
-import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
-import { ChevronDownIcon } from '@heroicons/react/16/solid'
-import { Navigate } from 'react-router-dom';
+import React from 'react';
+import Logo from '../assets/logo.jpg';
 
 const IconButton = ({ icon, label, link }) => {
-    const navigate = Navigate()
-    async function LoginGoogle(link) {
-        if (link==='google'){
-            let response = await fetch("localhost:3000/auth/google",{ method : 'POST'})
-            if(response.ok){
-                navigate('/')
-            } else {
-                navigate('/loggedout')
-            }
-        }
-    }
     return (
         <a
-            href={link}
+            href={`http://localhost:5000/auth/${link}`} // Redirect directly to the OAuth endpoint
             className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg bg-white hover:bg-gray-100 transition-shadow shadow-sm"
         >
             <img src={icon} alt={`${label} logo`} className="w-5 h-5" />
@@ -29,14 +15,10 @@ const IconButton = ({ icon, label, link }) => {
 
 const Login = () => {
     return (
-        <div >
-            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+        <div>
+            <div className="flex min-h-full flex-1 flex-col justify-center px-6 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                    <img
-                        alt="MR Fashions"
-                        src={Logo}
-                        className="mx-auto h-16 rounded-full w-auto"
-                    />
+                    <img alt="MR Fashions" src={Logo} className="mx-auto h-16 rounded-full w-auto" />
                     <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
                         Sign in to your account
                     </h2>
@@ -93,28 +75,27 @@ const Login = () => {
                         </div>
                     </form>
 
-                    <p className="mt-10 text-center text-sm/6 text-gray-500">
-                        Not a member?{' '}
-                        <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                            Start a 14 day free trial
-                        </a>
-                    </p>
-                    <div className="flex gap-4">
+                    <div className='flex items-center gap-1 p-5 justify-center'>
+                        <div className='border w-[100px] h-0'></div>
+                        <div><p className='from-neutral-800'>or continue with</p></div>
+                        <div className='border w-[100px] h-0'></div>
+                    </div>
+                    <div className="flex justify-center items-center gap-4">
                         <IconButton
-                            icon="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"
+                            icon="http://pluspng.com/img-png/google-logo-png-open-2000.png"
                             label="Google"
                             link="google"
                         />
                         <IconButton
                             icon="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
                             label="GitHub"
-                            link="#"
+                            link="github"
                         />
                     </div>
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Login
+export default Login;
