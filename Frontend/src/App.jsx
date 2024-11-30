@@ -5,7 +5,8 @@ import Login from './components/Login'
 import Home from './components/Home'
 import './App.css';
 import Navbar from './components/Navbar';
-import Product from './components/Product';
+import ProductsGrid from './components/ProductsGrid';
+import ProductView from './components/ProductView';
 
 function App() {
   return (
@@ -14,7 +15,8 @@ function App() {
       <main className='py-[75px]'>
         <Routes>
           <Route path='/login' element={<Login />}></Route>
-          <Route path='/' element={<Product />}></Route>
+          <Route path='/' element={<ProductsGrid />}></Route>
+          <Route path='/products/:id' element={<ProductView/>}></Route>
         </Routes>
 
       </main>

@@ -17,7 +17,7 @@ const VariantSchema = new Schema({
         min: 0 
     }
 }, { _id: false }); 
-
+ 
 // ProductSchema
 const ProductSchema = new Schema({
     id: { 

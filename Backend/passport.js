@@ -24,6 +24,7 @@ passport.use(new GoogleStrategy({
       isAdmin : false
     });
     await newUser.save();
+    
     return done(null, newUser);
   }
 
@@ -31,11 +32,19 @@ passport.use(new GoogleStrategy({
 
 // Serialize the user into the session (for storing user information)
 passport.serializeUser((user, done) => {
-  done(null, user);
+  done(null, user.id); // Store only the user's ID in the session
 });
 
-// Deserialize the user from the session
-passport.deserializeUser((user, done) => {
-  done(null, user);
+passport.deserializeUser(async (id, done) => {
+  console.log('Deserializing User with ID:', id);
+  try {
+    const user = await User.findById(id);
+    console.log('Found User:', user);
+    done(null, user);
+  } catch (err) {
+    console.error('Error in Deserialization:', err);
+    done(err, null);
+  }
 });
+
 

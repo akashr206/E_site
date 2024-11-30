@@ -25,7 +25,7 @@ const AddProduct = async (req, res) => {
             material,
             description,
             tags,
-            variants,
+            variants, 
             images
         };
         const addedProduct = await createProduct(product)
@@ -61,7 +61,7 @@ const getProductById = async (req,res) => {
         const product = await findProductById(productId)
         
         if(product){
-            return res.status(200).json({product})
+            return res.status(200).json(product)
         } else {
             return res.status(204).json({message : 'No such Product is found'})
         }
