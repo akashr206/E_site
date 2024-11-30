@@ -1,5 +1,6 @@
 'use client'
 
+import {Link} from 'react-router-dom'
 import { useState } from 'react'
 import logo from '../assets/logo.jpeg'
 import {
@@ -39,7 +40,7 @@ export default function Example() {
     <header className="bg-white fixed w-[100vw] border-y">
       <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-2 px-5 lg:px-8">
         <div className="flex lg:flex-1">
-          <a href="#" className="-m-1.5 p-1.5 flex items-center" >
+          <Link to="#" className="-m-1.5 p-1.5 flex items-center" >
             <span className="sr-only"></span>
             <img
               alt=""
@@ -48,7 +49,7 @@ export default function Example() {
             /> 
             
 
-          </a>
+          </Link>
         </div>
         <div className="flex lg:hidden">
           <button
@@ -102,9 +103,9 @@ export default function Example() {
           </a>
         </PopoverGroup>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <a href="#" className="text-sm/6 font-semibold text-gray-900">
+          <Link to="/login" className="text-sm/6 font-semibold text-gray-900">
             Log in <span aria-hidden="true">&rarr;</span>
-          </a>
+          </Link>
         </div>
       </nav>
       <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
