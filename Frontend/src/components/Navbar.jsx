@@ -1,8 +1,10 @@
 'use client'
 
 import {Link} from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect} from 'react'
 import logo from '../assets/logo.jpeg'
+import cartImg from '../assets/cart.svg'
+import Cart from './Cart'
 import {
   Dialog,
   DialogPanel,
@@ -33,11 +35,37 @@ const products = [
   { name: 'Fancy Sarees',href: '#' },
 ]
 
-export default function Example() {
+const CartLogo = ()=>{
+  return (
+    <div>
+      <Link to={'/cart'}>
+        <img src={cartImg}/>
+      
+      </Link>
+    </div>
+  )
+}
+
+
+export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [user, setUser] = useState(false);
+  const [showCart,setShowCart ] = useState(false)
+
+  useEffect(() => {
+    const isAuthenticated = async () => {
+      let response = await fetch("http://localhost:5000/api/auth/check" ,{credentials: 'include'})
+      if(response.status === 200){
+        setUser(true)
+      }
+    }
+    isAuthenticated()
+  }, [])
+  
 
   return (
     <header className="bg-white fixed w-[100vw] border-y z-50">
+      {showCart && <Cart />} 
       <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-2 px-5 lg:px-8">
         <div className="flex lg:flex-1">
           <Link to="#" className="-m-1.5 p-1.5 flex items-center" >
@@ -87,7 +115,6 @@ export default function Example() {
                   </div>
                 ))}
               </div>
-              
             </PopoverPanel>
           </Popover>
 
@@ -102,9 +129,13 @@ export default function Example() {
           </a>
         </PopoverGroup>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+          {user ? <CartLogo onClick= {()=>setShowCart(true)}/> : 
           <Link to="/login" className="text-sm/6 font-semibold text-gray-900">
             Log in <span aria-hidden="true">&rarr;</span>
           </Link>
+            
+            }
+          
         </div>
       </nav>
       <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">

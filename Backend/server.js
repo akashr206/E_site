@@ -4,37 +4,20 @@ const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 const { default: mongoose } = require('mongoose');
-const passport = require('passport');
-const session = require('express-session');
+const googleAuth = require('./routes/googleAuth');
+const auth = require('./routes/auth');
 const ProductRoutes = require('./routes/productsRoutes');
 const searchRoutes = require('./routes/searchRoutes');
 const cartRoutes = require('./routes/cartRoutes');
-const authRoutes = require('./routes/authRoutes');  // Import the auth routes
-require('./passport');
 
 const app = express();
 dotenv.config();
 
 // middleWares
-app.use(cors({credentials: true, origin: 'http://localhost:5173'}));
+app.use(cors({ credentials: true, origin: 'http://localhost:5173' }));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// Set up session middleware
-app.use(session({
-  secret: process.env.SECRET, // Use a secure session secret
-  resave: false,
-  saveUninitialized: false, // Avoid saving empty sessions
-  cookie: {
-    maxAge: 1000 * 60 * 60 * 2, // 2 hours (in milliseconds)
-    httpOnly: true, // Prevent client-side JavaScript from accessing the cookie
-  }
-}));
-
-// Initialize passport
-app.use(passport.initialize());
-app.use(passport.session());
 
 // Connect to DB
 async function connectDB() {
@@ -43,7 +26,7 @@ async function connectDB() {
     console.log('Connected to Database');
   } catch (error) {
     console.error('Database connection failed:', error);
-    process.exit(1);  // Exit the process if the connection fails
+    process.exit(1); // Exit the process if the connection fails
   }
 }
 connectDB();
@@ -52,7 +35,10 @@ connectDB();
 app.use('/api/products', ProductRoutes);
 app.use('/search', searchRoutes);
 app.use('/api/cart', cartRoutes);
-app.use('/auth', authRoutes);  // Use the authentication routes
+
+// Authentication routes (Login, Logout)
+app.use('/auth/google', googleAuth);
+app.use('/api/auth', auth);
 
 // Error handling middleware (catch-all)
 app.use((err, req, res, next) => {
@@ -60,4 +46,5 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Something went wrong!' });
 });
 
+// Start the server
 app.listen(process.env.PORT, () => console.log(`Server is running at ${process.env.PORT}`));

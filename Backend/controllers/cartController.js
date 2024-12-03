@@ -12,7 +12,7 @@ const {
 
 // Add a product to the cart
 const addToCart = async (req, res) => {
-    const { productId, color, size, quantity } = req.body;
+    const { productId, name, images, price, color, size, quantity } = req.body;
     const userId = req.user.id;
 
     try {
@@ -29,9 +29,11 @@ const addToCart = async (req, res) => {
         }
 
         // Add the product to the cart
-        const cartItem = await createCartItem({ productId, color, size, quantity, userId });
+        const cartItem = await createCartItem({ productId, name, images, color, price, size, quantity, userId });
         res.status(201).json({ message: 'Product added to cart', cartItem });
     } catch (error) {
+        console.log(error);
+        
         res.status(500).json({ message: error.message });
     }
 };

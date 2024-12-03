@@ -7,6 +7,7 @@ import './App.css';
 import Navbar from './components/Navbar';
 import ProductsGrid from './components/ProductsGrid';
 import ProductView from './components/ProductView';
+import Cart from './components/Cart'
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path='/login' element={<Login />}></Route>
           <Route path='/' element={<ProductsGrid />}></Route>
           <Route path='/products/:id' element={<ProductView/>}></Route>
+          <Route path='/cart' element={<Cart/>}></Route>
         </Routes>
 
       </main>

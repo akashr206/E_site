@@ -12,11 +12,6 @@ const ProductView = () => {
     const [added, setAdded] = useState(false); // Added state
     const navigate = useNavigate()
 
-    async function checkAuth() {
-        const response = await fetch('http://localhost:5000/auth/check');
-        return response.status === 401 ? false : true
-    }
-
     useEffect(() => {
         async function fetchProduct() {
             try {
@@ -38,33 +33,35 @@ const ProductView = () => {
     }, [id]);
 
     const handleAddToCart = async () => {
-        let isAuthorized = await checkAuth()
-        if (isAuthorized) {
-            if (!selectedVariant) return;
-            setIsAdding(true);
-            setAdded(false);
 
-            await fetch('http://localhost:5000/api/cart/add', {
-                method: 'POST',
-                headers: {
-                    type: 'application/json'
-                },
-                body: JSON.stringify({
-                    productId: id,
-                    quantity: 1,
-                    color: selectedVariant.color,
-                    size: selectedVariant.size
-                })
-            });
+        if (!selectedVariant) return;
+        setIsAdding(true);
+        setAdded(false);
 
-            setIsAdding(false);
-            setAdded(true);
+        const response = await fetch('http://localhost:5000/api/cart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                productId: id,
+                name: product.name,
+                images: product.images,
+                price: product.price,
+                quantity: 1,
+                color: selectedVariant.color,
+                size: selectedVariant.size
+            }),
+            credentials: 'include'
+        });
 
-            // Reset "Added" status after 2 seconds
-            setTimeout(() => setAdded(false), 2000);
-        } else {
-            navigate('/login')
-        }
+        
+        setIsAdding(false);
+        setAdded(true);
+
+        // Reset "Added" status after 2 seconds
+        setTimeout(() => setAdded(false), 2000);
+
 
     };
 
