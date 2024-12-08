@@ -24,8 +24,8 @@ const updateCartItemQuantity = async (id, quantity) => {
 };
 
 // Remove a product from the cart
-const removeProductFromCart = async (productId, userId) => {
-    const removedProduct = await CartItem.findOneAndDelete({ productId, userId });
+const removeProductFromCart = async (itemId) => {
+    const removedProduct = await CartItem.findByIdAndDelete(itemId);
     return removedProduct;
 };
 

@@ -17,15 +17,10 @@ import {
   PopoverPanel,
 } from '@headlessui/react'
 import {
-  ArrowPathIcon,
   Bars3Icon,
-  ChartPieIcon,
-  CursorArrowRaysIcon,
-  FingerPrintIcon,
-  SquaresPlusIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon} from '@heroicons/react/20/solid'
 
 const products = [
   { name: 'Silk Sarees', href: '#'},
@@ -40,7 +35,6 @@ const CartLogo = ()=>{
     <div>
       <Link to={'/cart'}>
         <img src={cartImg}/>
-      
       </Link>
     </div>
   )
@@ -68,7 +62,7 @@ export default function Navbar() {
       {showCart && <Cart />} 
       <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-2 px-5 lg:px-8">
         <div className="flex lg:flex-1">
-          <Link to="#" className="-m-1.5 p-1.5 flex items-center" >
+          <Link to="/" className="-m-1.5 p-1.5 flex items-center" >
             <span className="sr-only"></span>
             <img
               alt=""

@@ -1,3 +1,4 @@
+const { find } = require('../models/CartItem');
 const Products = require('../models/Product');
 
 const createProduct = async (product) => {
@@ -36,11 +37,24 @@ const countProducts = async () => {
     return count;
 };
 
+const findStock = async (id, color, size) => {
+    const product = await Products.findOne({id : id});
+    if (!product) {
+        throw new Error('Product not found');
+    }
+    const variant = product.variants.find(v => v.color === color && v.size === size);
+    if (!variant) {
+        throw new Error('Variant not found');
+    }
+    return variant.stock;
+};
+
 module.exports = { 
     createProduct, 
     findAllProducts, 
     updateProduct, 
     findProductById, 
     deleteProduct,
-    countProducts 
+    countProducts,
+    findStock
 };

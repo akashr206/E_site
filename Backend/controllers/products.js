@@ -1,4 +1,4 @@
-const { createProduct,findAllProducts, updateProduct, findProductById, deleteProduct, countProducts } = require('../services/products')
+const { createProduct, findAllProducts, updateProduct, findProductById, deleteProduct, countProducts, findStock } = require('../services/products')
 const { v4: uuidv4 } = require('uuid')
 
 const AddProduct = async (req, res) => {
@@ -86,5 +86,19 @@ const getCount = async (req,res) => {
     res.status(200).json({count})
 }
 
-module.exports = { AddProduct, getAllProducts, editProduct, getProductById, removeProduct, getCount}
+const getStock = async (req,res) => {
+    try {
+        const id = req.params.id
+        const {color , size} = req.query
+        const stock = await findStock(id, color, size)
+        res.status(200).json({stock})
+        
+    } catch (error) {  
+        console.log(error);
+        res.json({message : 'error fetching the stock', error: error})
+    }
+
+}
+
+module.exports = { AddProduct, getAllProducts, editProduct, getProductById, removeProduct, getCount, getStock}
   
