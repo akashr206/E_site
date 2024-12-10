@@ -10,7 +10,6 @@ const ProductView = () => {
     const [selectedImage, setSelectedImage] = useState(null);
     const [isAdding, setIsAdding] = useState(false); // Buffer state
     const [added, setAdded] = useState(false); // Added state
-    const navigate = useNavigate()
 
     useEffect(() => {
         async function fetchProduct() {

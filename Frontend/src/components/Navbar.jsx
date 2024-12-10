@@ -1,10 +1,11 @@
 'use client'
 
-import {Link} from 'react-router-dom'
-import { useState, useEffect} from 'react'
+import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import logo from '../assets/logo.jpeg'
 import cartImg from '../assets/cart.svg'
-import Cart from './Cart'
+import searchImg from '../assets/search.svg'
+import accountImg from '../assets/account.svg'
 import {
   Dialog,
   DialogPanel,
@@ -20,21 +21,24 @@ import {
   Bars3Icon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
-import { ChevronDownIcon} from '@heroicons/react/20/solid'
+import { ChevronDownIcon } from '@heroicons/react/20/solid'
 
 const products = [
-  { name: 'Silk Sarees', href: '#'},
+  { name: 'Silk Sarees', href: '#' },
   { name: 'Kanchipuram Sarees', href: '#' },
-  { name: 'Soft Silk', href: '#'},
-  { name: 'Cotton Sarees',href: '#' },
-  { name: 'Fancy Sarees',href: '#' },
+  { name: 'Soft Silk', href: '#' },
+  { name: 'Cotton Sarees', href: '#' },
+  { name: 'Fancy Sarees', href: '#' },
 ]
 
-const CartLogo = ()=>{
+const CartLogo = () => {
   return (
-    <div>
-      <Link to={'/cart'}>
-        <img src={cartImg}/>
+    <div className='flex '>
+      <Link to={'/cart'} className='mx-2'>
+        <img src={cartImg} />
+      </Link>
+      <Link to={'/account'}>
+        <img className='mx-2' src={accountImg} />
       </Link>
     </div>
   )
@@ -44,22 +48,20 @@ const CartLogo = ()=>{
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [user, setUser] = useState(false);
-  const [showCart,setShowCart ] = useState(false)
 
   useEffect(() => {
     const isAuthenticated = async () => {
-      let response = await fetch("http://localhost:5000/api/auth/check" ,{credentials: 'include'})
-      if(response.status === 200){
+      let response = await fetch("http://localhost:5000/api/auth/check", { credentials: 'include' })
+      if (response.status === 200) {
         setUser(true)
       }
     }
     isAuthenticated()
   }, [])
-  
+
 
   return (
     <header className="bg-white fixed w-[100vw] border-y z-50">
-      {showCart && <Cart />} 
       <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-2 px-5 lg:px-8">
         <div className="flex lg:flex-1">
           <Link to="/" className="-m-1.5 p-1.5 flex items-center" >
@@ -68,8 +70,8 @@ export default function Navbar() {
               alt=""
               src={logo}
               className="h-11 rounded-full w-auto"
-            /> 
-            
+            />
+
 
           </Link>
         </div>
@@ -104,7 +106,7 @@ export default function Navbar() {
                       <a href={item.href} className="block font-semibold text-gray-900">
                         {item.name}
                       </a>
-                     
+
                     </div>
                   </div>
                 ))}
@@ -123,13 +125,25 @@ export default function Navbar() {
           </a>
         </PopoverGroup>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          {user ? <CartLogo onClick= {()=>setShowCart(true)}/> : 
-          <Link to="/login" className="text-sm/6 font-semibold text-gray-900">
-            Log in <span aria-hidden="true">&rarr;</span>
-          </Link>
-            
-            }
-          
+          {/* <div className="flex items-center border rounded-md">
+            <input
+              type="text"
+              placeholder="search"
+              id="website-url"
+              className="w-full ml-2 bg-transparent outline-none"
+            />
+            <div className="p-2 rounded-l-md bg-gray-50 border-r">
+              <img src={searchImg} className='mx-2 cursor-pointer' />
+            </div>
+          </div> */}
+          <div>
+            <img src={searchImg} className='mx-2 cursor-pointer' />
+          </div>
+          {user ? <CartLogo onClick={() => setShowCart(true)} /> :
+            <Link to="/login" className="text-sm/6 font-semibold text-gray-900">
+              Log in <span aria-hidden="true" >&rarr;</span>
+            </Link>
+          }
         </div>
       </nav>
       <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">

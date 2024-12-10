@@ -97,6 +97,8 @@ export default function Cart() {
     const products = await response.json()
     if (products.length === 0) {
       setIsEmpty(true)
+    } else{
+      setIsEmpty(false)
     }
     setProducts(products)
   }
