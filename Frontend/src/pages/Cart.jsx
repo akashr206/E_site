@@ -4,6 +4,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Link } from 'react-router-dom'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { useEffect, useState } from 'react'
+import Loading from '../components/Loading'
 
 const CartItem = (product) => {
   const [quantity, setquantity] = useState(1)
@@ -91,79 +92,97 @@ export default function Cart() {
   const [products, setProducts] = useState([])
   const [total, setTotal] = useState(0)
   const [isEmpty, setIsEmpty] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   //function to fetch cart
   async function fetchCart() {
     const response = await fetch('http://localhost:5000/api/cart/user', { credentials: 'include' })
     const products = await response.json()
     if (products.length === 0) {
       setIsEmpty(true)
-    } else{
+    } else {
       setIsEmpty(false)
     }
     setProducts(products)
   }
   //function to remove item
   async function removeItem(id) {
+    setIsLoading(true)
     const response = await fetch(`http://localhost:5000/api/cart/remove/${id}`, {
       method: 'DELETE',
       credentials: 'include'
     })
-    fetchCart()
+    await fetchCart()
+    setIsLoading(false)
   }
 
   //function to fetch total
   async function fetchTotal() {
+    setIsLoading(true)
     const response = await fetch('http://localhost:5000/api/cart/total', { credentials: 'include' })
     const data = await response.json()
     setTotal(data.totalPrice)
+    setIsLoading(false)
   }
 
   useEffect(() => {
-    fetchCart()
-    fetchTotal()
+    async function loadData() {
+      try {
+        setIsLoading(true)
+        await Promise.all([fetchCart(), fetchTotal()])
+      } catch (error) {
+        console.error("Error loading cart data:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    loadData()
   }, [])
 
   return (
-    <div className="max-w-7xl px-8 mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Shopping Cart</h1>
-      {isEmpty ? <p className="text-2xl font-bold   mb-6">Your cart is empty</p> :
-        (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 space-y-6">
-              {products.map((product) => {
-                return <CartItem OnTotal={fetchTotal} OnRemove={removeItem} id={product._id} productId={product.productId} key={product._id} name={product.name} image={product.images[0]} color={product.color} size={product.size} price={product.price} />
-              })}
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-lg font-semibold mb-4">Order summary</h2>
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span>Subtotal</span>
-                  <span className="font-medium">${total}.00</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Shipping estimate</span>
-                  <span className="font-medium">$100.00</span>
-                </div>
+    <>
+      {isLoading && <Loading></Loading>} 
+      <div className="max-w-7xl px-8 mx-auto">
+        <h1 className="text-3xl font-bold mb-6">Shopping Cart</h1>
+        {isEmpty ? <p className="text-2xl font-bold   mb-6">Your cart is empty</p> :
+          (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 space-y-6">
+                {products.map((product) => {
+                  return <CartItem OnTotal={fetchTotal} OnRemove={removeItem} id={product._id} productId={product.productId} key={product._id} name={product.name} image={product.images[0]} color={product.color} size={product.size} price={product.price} />
+                })}
               </div>
-              <div className="border-t mt-4 pt-4">
-                <div className="flex justify-between text-lg font-semibold">
-                  <span>Order total</span>
-                  <span>${total + 100}.00</span>
+
+
+
+              <div className="bg-white p-6 h-max rounded-lg shadow">
+                <h2 className="text-lg font-semibold mb-4">Order summary</h2>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span>Subtotal</span>
+                    <span className="font-medium">${total}.00</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Shipping estimate</span>
+                    <span className="font-medium">$100.00</span>
+                  </div>
                 </div>
+                <div className="border-t mt-4 pt-4">
+                  <div className="flex justify-between text-lg font-semibold">
+                    <span>Order total</span>
+                    <span>${total + 100}.00</span>
+                  </div>
+                </div>
+                <button className="w-full mt-6 bg-indigo-600 text-white py-2 rounded-lg shadow hover:bg-indigo-500">
+                  Checkout
+                </button>
               </div>
-              <button className="w-full mt-6 bg-indigo-600 text-white py-2 rounded-lg shadow hover:bg-indigo-500">
-                Checkout
-              </button>
             </div>
-          </div>
-        )
+          )
 
-      }
+        }
 
 
-    </div>
-
+      </div>
+    </>
   )
 }

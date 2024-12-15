@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css';
 // components
 import Home from './components/Home'
 import Navbar from './components/Navbar';
@@ -15,7 +14,7 @@ function App() {
   return (
     <Router>
       <Navbar></Navbar>
-      <main className='py-[75px]'>
+      <main className='  py-[60px]'>
         <Routes>
           <Route path='/' element={<ProductsGrid />}></Route>
           <Route path='/account' element={<Account />}></Route>
@@ -23,7 +22,6 @@ function App() {
           <Route path='/products/:id' element={<ProductView/>}></Route>
           <Route path='/cart' element={<Cart/>}></Route>
         </Routes>
-
       </main>
     </Router>
   );

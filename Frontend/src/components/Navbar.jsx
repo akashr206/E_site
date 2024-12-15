@@ -16,14 +16,16 @@ import {
   PopoverButton,
   PopoverGroup,
   PopoverPanel,
+
 } from '@headlessui/react'
 import {
   Bars3Icon,
   XMarkIcon,
+  MagnifyingGlassIcon
 } from '@heroicons/react/24/outline'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 
-const products = [
+const sareeProducts = [
   { name: 'Silk Sarees', href: '#' },
   { name: 'Kanchipuram Sarees', href: '#' },
   { name: 'Soft Silk', href: '#' },
@@ -31,9 +33,41 @@ const products = [
   { name: 'Fancy Sarees', href: '#' },
 ]
 
+const kurtiProducts = [
+  { name: 'Georgette Kurtis', href: '#' },
+  { name: 'Cotton Kurtis', href: '#' },
+  { name: 'Semi Silk Kurtis', href: '#' },
+  { name: 'Printed Kurtis', href: '#' },
+  { name: 'Chikankari Kurtis', href: '#' },
+  { name: 'Modal Kurtis', href: '#' },
+];
+
+const salwarProducts = [
+  { name: 'Georgette Salwar Suits', href: '#' },
+  { name: 'Cotton Salwar Suits', href: '#' },
+  { name: 'Tussar Salwar Suits', href: '#' },
+  { name: 'Semi Silk Salwar Suits', href: '#' },
+  { name: 'Banarasi Salwar Suits', href: '#' },
+  { name: 'Ajrak Salwar Sets', href: '#' },
+  { name: 'Modal Salwar Suits', href: '#' },
+  { name: 'Chanderi Silk Salwar Suits', href: '#' },
+  { name: 'Chikankari Salwar Suits', href: '#' },
+  { name: 'Tissue Salwar Suits', href: '#' },
+  { name: 'Ajrakh Salwar', href: '#' },
+];
+
+const readyMadeProducts = [
+  { name: 'Georgette Ready Made', href: '#' },
+  { name: 'Cotton Ready Made', href: '#' },
+  { name: 'Semi Silk Ready Made', href: '#' },
+  { name: 'Printed Ready Made', href: '#' },
+  { name: 'Chikankari Ready Made', href: '#' },
+];
+
+
 const CartLogo = () => {
   return (
-    <div className='flex '>
+    <div className='flex justify-center items-center'>
       <Link to={'/cart'} className='mx-2'>
         <img src={cartImg} />
       </Link>
@@ -63,8 +97,8 @@ export default function Navbar() {
   return (
     <header className="bg-white fixed w-[100vw] border-y z-50">
       <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-2 px-5 lg:px-8">
-        <div className="flex lg:flex-1">
-          <Link to="/" className="-m-1.5 p-1.5 flex items-center" >
+        <div className="flex">
+          <Link to="/" className="-m-1.5 p-1.5 flex items-center " >
             <span className="sr-only"></span>
             <img
               alt=""
@@ -85,19 +119,18 @@ export default function Navbar() {
             <Bars3Icon aria-hidden="true" className="size-6" />
           </button>
         </div>
-        <PopoverGroup className="hidden lg:flex lg:gap-x-12">
+        <PopoverGroup className="hidden justify-self-start lg:flex lg:gap-x-6 px-5">
           <Popover className="relative">
             <PopoverButton className="flex items-center gap-x-1 text-sm/6 font-semibold text-gray-900">
               Saree
               <ChevronDownIcon aria-hidden="true" className="size-5 flex-none text-gray-400" />
             </PopoverButton>
-
             <PopoverPanel
               transition
               className="absolute -left-8 top-full z-[52] mt-3 w-max max-w-md overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-gray-900/5 transition data-[closed]:translate-y-1 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in"
             >
               <div className="p-2 ">
-                {products.map((item) => (
+                {sareeProducts.map((item) => (
                   <div
                     key={item.name}
                     className="group relative flex items-center gap-x-6 rounded-lg  p-4 py-2 text-sm/6 hover:bg-gray-50"
@@ -113,34 +146,99 @@ export default function Navbar() {
               </div>
             </PopoverPanel>
           </Popover>
+          <Popover className="relative">
+            <PopoverButton className="flex items-center gap-x-1 text-sm/6 font-semibold text-gray-900">
+              Salwar Suits
+              <ChevronDownIcon aria-hidden="true" className="size-5 flex-none text-gray-400" />
+            </PopoverButton>
+            <PopoverPanel
+              transition
+              className="absolute -left-8 top-full z-[52] mt-3 w-max max-w-md overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-gray-900/5 transition data-[closed]:translate-y-1 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in"
+            >
+              <div className="p-2 ">
+                {salwarProducts.map((item) => (
+                  <div
+                    key={item.name}
+                    className="group relative flex items-center gap-x-6 rounded-lg  p-4 py-2 text-sm/6 hover:bg-gray-50"
+                  >
+                    <div className="flex-auto">
+                      <a href={item.href} className="block font-semibold text-gray-900">
+                        {item.name}
+                      </a>
 
-          <a href="#" className="text-sm/6 font-semibold text-gray-900">
-            Features
-          </a>
-          <a href="#" className="text-sm/6 font-semibold text-gray-900">
-            Marketplace
-          </a>
-          <a href="#" className="text-sm/6 font-semibold text-gray-900">
-            Company
-          </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </PopoverPanel>
+          </Popover>
+          <Popover className="relative">
+            <PopoverButton className="flex items-center gap-x-1 text-sm/6 font-semibold text-gray-900">
+              Kurtis
+              <ChevronDownIcon aria-hidden="true" className="size-5 flex-none text-gray-400" />
+            </PopoverButton>
+            <PopoverPanel
+              transition
+              className="absolute -left-8 top-full z-[52] mt-3 w-max max-w-md overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-gray-900/5 transition data-[closed]:translate-y-1 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in"
+            >
+              <div className="p-2 ">
+                {kurtiProducts.map((item) => (
+                  <div
+                    key={item.name}
+                    className="group relative flex items-center gap-x-6 rounded-lg  p-4 py-2 text-sm/6 hover:bg-gray-50"
+                  >
+                    <div className="flex-auto">
+                      <a href={item.href} className="block font-semibold text-gray-900">
+                        {item.name}
+                      </a>
+
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </PopoverPanel>
+          </Popover>
+          <Popover className="relative">
+            <PopoverButton className="flex items-center gap-x-1 text-sm/6 font-semibold text-gray-900">
+              Ready Made
+              <ChevronDownIcon aria-hidden="true" className="size-5 flex-none text-gray-400" />
+            </PopoverButton>
+            <PopoverPanel
+              transition
+              className="absolute -left-8 top-full z-[52] mt-3 w-max max-w-md overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-gray-900/5 transition data-[closed]:translate-y-1 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in"
+            >
+              <div className="p-2 ">
+                {readyMadeProducts.map((item) => (
+                  <div
+                    key={item.name}
+                    className="group relative flex items-center gap-x-6 rounded-lg  p-4 py-2 text-sm/6 hover:bg-gray-50"
+                  >
+                    <div className="flex-auto">
+                      <a href={item.href} className="block font-semibold text-gray-900">
+                        {item.name}
+                      </a>
+
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </PopoverPanel>
+          </Popover>
         </PopoverGroup>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          {/* <div className="flex items-center border rounded-md">
+          <div className="flex h-9 items-center mx-3 border rounded-md shadow-sm">
             <input
               type="text"
               placeholder="search"
               id="website-url"
-              className="w-full ml-2 bg-transparent outline-none"
+              className=" ml-2 w-72  h-full bg-transparent border-none outline-none"
             />
-            <div className="p-2 rounded-l-md bg-gray-50 border-r">
-              <img src={searchImg} className='mx-2 cursor-pointer' />
+            <div className="rounded-r-md rounded-l-sm bg-indigo-600 border-r flex h-full items-center justify-center shadow-sm px-2">
+              <MagnifyingGlassIcon  aria-hidden="true" className=" text-white size-5 " />
             </div>
-          </div> */}
-          <div>
-            <img src={searchImg} className='mx-2 cursor-pointer' />
           </div>
           {user ? <CartLogo onClick={() => setShowCart(true)} /> :
-            <Link to="/login" className="text-sm/6 font-semibold text-gray-900">
+            <Link to="/login" className="text-sm/6 flex items-center justify-center font-semibold text-gray-900">
               Log in <span aria-hidden="true" >&rarr;</span>
             </Link>
           }
@@ -172,11 +270,11 @@ export default function Navbar() {
               <div className="space-y-2 py-6">
                 <Disclosure as="div" className="-mx-3">
                   <DisclosureButton className="group flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
-                    Saree
+                    Sarees
                     <ChevronDownIcon aria-hidden="true" className="size-5 flex-none group-data-[open]:rotate-180" />
                   </DisclosureButton>
                   <DisclosurePanel className="mt-2 space-y-2">
-                    {[...products].map((item) => (
+                    {[...sareeProducts].map((item) => (
                       <DisclosureButton
                         key={item.name}
                         as="a"

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import Loading from '../components/Loading';
 
 const ProductView = () => {
     const { id } = useParams();
@@ -65,7 +66,7 @@ const ProductView = () => {
     };
 
     if (!product) {
-        return <p>Loading...</p>;
+        return <Loading></Loading>;
     }
 
     return (
@@ -105,7 +106,6 @@ const ProductView = () => {
                             </div>
                         </div>
 
-                        {/* Product Info */}
                         <div>
                             <motion.h1
                                 className="text-2xl font-bold tracking-tight text-gray-900"
@@ -132,7 +132,6 @@ const ProductView = () => {
                                 ₹{product.price}
                             </motion.p>
 
-                            {/* Variants */}
                             <div className="mt-6">
                                 <h3 className="text-sm font-medium text-gray-900">Variants</h3>
                                 <div className="mt-2">
@@ -151,7 +150,6 @@ const ProductView = () => {
                                 </div>
                             </div>
 
-                            {/* Selected Variant Details */}
                             {selectedVariant && (
                                 <motion.div
                                     className="mt-6"
@@ -168,7 +166,6 @@ const ProductView = () => {
                                 </motion.div>
                             )}
 
-                            {/* Add to Cart Button */}
                             <motion.button
                                 onClick={handleAddToCart}
                                 className={`mt-6 w-full py-2 rounded-md text-white ${isAdding
@@ -186,7 +183,6 @@ const ProductView = () => {
                         </div>
                     </div>
 
-                    {/* Product Description */}
                     <motion.div
                         className="mt-8"
                         initial={{ opacity: 0, y: 10 }}
@@ -197,7 +193,6 @@ const ProductView = () => {
                         <p className="mt-2 text-gray-600">{product.description}</p>
                     </motion.div>
 
-                    {/* Highlights */}
                     {product.tags.length > 0 && (
                         <motion.div
                             className="mt-6"
