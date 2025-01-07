@@ -1,326 +1,156 @@
-'use client'
-
-import { Link } from 'react-router-dom'
-import { useState, useEffect } from 'react'
-import logo from '../assets/logo.jpeg'
-import cartImg from '../assets/cart.svg'
-import searchImg from '../assets/search.svg'
-import accountImg from '../assets/account.svg'
-import {
-  Dialog,
-  DialogPanel,
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-  Popover,
-  PopoverButton,
-  PopoverGroup,
-  PopoverPanel,
-
-} from '@headlessui/react'
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Dialog, Popover, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
   XMarkIcon,
-  MagnifyingGlassIcon
-} from '@heroicons/react/24/outline'
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
+  ChevronDownIcon,
+} from "@heroicons/react/24/outline";
+import logo from "../assets/logo.jpg";
+import cartImg from "../assets/cart.svg";
+import accountImg from "../assets/account.svg";
 
-const sareeProducts = [
-  { name: 'Silk Sarees', href: '#' },
-  { name: 'Kanchipuram Sarees', href: '#' },
-  { name: 'Soft Silk', href: '#' },
-  { name: 'Cotton Sarees', href: '#' },
-  { name: 'Fancy Sarees', href: '#' },
-]
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
 
-const kurtiProducts = [
-  { name: 'Georgette Kurtis', href: '#' },
-  { name: 'Cotton Kurtis', href: '#' },
-  { name: 'Semi Silk Kurtis', href: '#' },
-  { name: 'Printed Kurtis', href: '#' },
-  { name: 'Chikankari Kurtis', href: '#' },
-  { name: 'Modal Kurtis', href: '#' },
-];
-
-const salwarProducts = [
-  { name: 'Georgette Salwar Suits', href: '#' },
-  { name: 'Cotton Salwar Suits', href: '#' },
-  { name: 'Tussar Salwar Suits', href: '#' },
-  { name: 'Semi Silk Salwar Suits', href: '#' },
-  { name: 'Banarasi Salwar Suits', href: '#' },
-  { name: 'Ajrak Salwar Sets', href: '#' },
-  { name: 'Modal Salwar Suits', href: '#' },
-  { name: 'Chanderi Silk Salwar Suits', href: '#' },
-  { name: 'Chikankari Salwar Suits', href: '#' },
-  { name: 'Tissue Salwar Suits', href: '#' },
-  { name: 'Ajrakh Salwar', href: '#' },
-];
-
-const readyMadeProducts = [
-  { name: 'Georgette Ready Made', href: '#' },
-  { name: 'Cotton Ready Made', href: '#' },
-  { name: 'Semi Silk Ready Made', href: '#' },
-  { name: 'Printed Ready Made', href: '#' },
-  { name: 'Chikankari Ready Made', href: '#' },
-];
-
-
-const CartLogo = () => {
-  return (
-    <div className='flex justify-center items-center'>
-      <Link to={'/cart'} className='mx-2'>
-        <img src={cartImg} />
-      </Link>
-      <Link to={'/account'}>
-        <img className='mx-2' src={accountImg} />
-      </Link>
-    </div>
-  )
-}
-
-
-export default function Navbar() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+const Navbar = () => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [user, setUser] = useState(false);
+
+  const sareeProducts = ["Silk Sarees", "Cotton Sarees", "Designer Sarees"];
+  const salwarProducts = ["Anarkali", "Churidar", "Palazzo"];
+  const kurtiProducts = ["Long Kurtis", "Short Kurtis", "Party Wear"];
+  const readyMadeProducts = ["Lehengas", "Gowns", "Skirts"];
 
   useEffect(() => {
     const isAuthenticated = async () => {
-      let response = await fetch("http://localhost:5000/api/auth/check", { credentials: 'include' })
-      if (response.status === 200) {
-        setUser(true)
+      try {
+        let response = await fetch(`${API_BASE_URL}/api/auth/check`, {
+          credentials: "include",
+        });
+        if (response.status === 200) {
+          setUser(true);
+        }
+      } catch (error) {
+        console.error("Error checking authentication:", error);
       }
-    }
-    isAuthenticated()
-  }, [])
+    };
+    isAuthenticated();
+  }, []);
 
+  const Dropdown = ({ title, items }) => (
+    <Popover className="relative">
+      <Popover.Button className="flex items-center text-sm font-semibold leading-6 text-gray-900">
+        {title}
+        <ChevronDownIcon className="h-5 w-5 text-gray-500 ml-1" />
+      </Popover.Button>
+      <Transition
+        as={Transition}
+        enter="transition ease-out duration-200"
+        enterFrom="opacity-0 translate-y-1"
+        enterTo="opacity-100 translate-y-0"
+        leave="transition ease-in duration-150"
+        leaveFrom="opacity-100 translate-y-0"
+        leaveTo="opacity-0 translate-y-1"
+      >
+        <Popover.Panel className="absolute left-0 z-10 mt-2 w-40 bg-white shadow-lg ring-1 ring-gray-900/5">
+          <div className="py-2">
+            {items.map((item) => (
+              <Link
+                key={item}
+                to={`/category/${item.toLowerCase().replace(/\s+/g, "-")}`}
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >
+                {item}
+              </Link>
+            ))}
+          </div>
+        </Popover.Panel>
+      </Transition>
+    </Popover>
+  );
+
+  const UserActions = () => {
+    return user ? (
+      <Link to="/cart" className="flex items-center">
+        <img src={cartImg} alt="Cart" className="h-6 w-6 mr-2" />
+        <span className="text-sm font-semibold">Cart</span>
+      </Link>
+    ) : (
+      <Link
+        to="/login"
+        className="text-sm font-semibold text-gray-900 flex items-center"
+      >
+        Log in <span aria-hidden="true" className="ml-1">&rarr;</span>
+      </Link>
+    );
+  };
 
   return (
-    <header className="bg-white fixed w-[100vw] border-y z-50">
-      <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-2 px-5 lg:px-8">
-        <div className="flex">
-          <Link to="/" className="-m-1.5 p-1.5 flex items-center " >
-            <span className="sr-only"></span>
-            <img
-              alt=""
-              src={logo}
-              className="h-11 rounded-full w-auto"
-            />
-
-
+    <header className="bg-white shadow-sm">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between p-4" aria-label="Global">
+        <div className="flex lg:flex-1">
+          <Link to="/" className="-m-1.5 p-1.5">
+            <img className="h-8 w-auto" src={logo} alt="Logo" />
           </Link>
         </div>
+
+        {/* Desktop Navigation */}
+        <div className="hidden lg:flex lg:gap-x-8">
+          <Dropdown title="Sarees" items={sareeProducts} />
+          <Dropdown title="Salwar Suits" items={salwarProducts} />
+          <Dropdown title="Kurtis" items={kurtiProducts} />
+          <Dropdown title="Ready-Made" items={readyMadeProducts} />
+        </div>
+
+        <div className="hidden lg:flex lg:gap-x-4">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search"
+              className="w-48 border border-gray-300 rounded-md px-2 py-1 text-sm"
+            />
+          </div>
+          <UserActions />
+        </div>
+
         <div className="flex lg:hidden">
           <button
             type="button"
-            onClick={() => setMobileMenuOpen(true)}
             className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
+            onClick={() => setMobileMenuOpen(true)}
           >
-            <span className="sr-only">Open main menu</span>
-            <Bars3Icon aria-hidden="true" className="size-6" />
+            <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>
         </div>
-        <PopoverGroup className="hidden justify-self-start lg:flex lg:gap-x-6 px-5">
-          <Popover className="relative">
-            <PopoverButton className="flex items-center gap-x-1 text-sm/6 font-semibold text-gray-900">
-              Saree
-              <ChevronDownIcon aria-hidden="true" className="size-5 flex-none text-gray-400" />
-            </PopoverButton>
-            <PopoverPanel
-              transition
-              className="absolute -left-8 top-full z-[52] mt-3 w-max max-w-md overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-gray-900/5 transition data-[closed]:translate-y-1 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in"
-            >
-              <div className="p-2 ">
-                {sareeProducts.map((item) => (
-                  <div
-                    key={item.name}
-                    className="group relative flex items-center gap-x-6 rounded-lg  p-4 py-2 text-sm/6 hover:bg-gray-50"
-                  >
-                    <div className="flex-auto">
-                      <a href={item.href} className="block font-semibold text-gray-900">
-                        {item.name}
-                      </a>
-
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </PopoverPanel>
-          </Popover>
-          <Popover className="relative">
-            <PopoverButton className="flex items-center gap-x-1 text-sm/6 font-semibold text-gray-900">
-              Salwar Suits
-              <ChevronDownIcon aria-hidden="true" className="size-5 flex-none text-gray-400" />
-            </PopoverButton>
-            <PopoverPanel
-              transition
-              className="absolute -left-8 top-full z-[52] mt-3 w-max max-w-md overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-gray-900/5 transition data-[closed]:translate-y-1 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in"
-            >
-              <div className="p-2 ">
-                {salwarProducts.map((item) => (
-                  <div
-                    key={item.name}
-                    className="group relative flex items-center gap-x-6 rounded-lg  p-4 py-2 text-sm/6 hover:bg-gray-50"
-                  >
-                    <div className="flex-auto">
-                      <a href={item.href} className="block font-semibold text-gray-900">
-                        {item.name}
-                      </a>
-
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </PopoverPanel>
-          </Popover>
-          <Popover className="relative">
-            <PopoverButton className="flex items-center gap-x-1 text-sm/6 font-semibold text-gray-900">
-              Kurtis
-              <ChevronDownIcon aria-hidden="true" className="size-5 flex-none text-gray-400" />
-            </PopoverButton>
-            <PopoverPanel
-              transition
-              className="absolute -left-8 top-full z-[52] mt-3 w-max max-w-md overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-gray-900/5 transition data-[closed]:translate-y-1 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in"
-            >
-              <div className="p-2 ">
-                {kurtiProducts.map((item) => (
-                  <div
-                    key={item.name}
-                    className="group relative flex items-center gap-x-6 rounded-lg  p-4 py-2 text-sm/6 hover:bg-gray-50"
-                  >
-                    <div className="flex-auto">
-                      <a href={item.href} className="block font-semibold text-gray-900">
-                        {item.name}
-                      </a>
-
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </PopoverPanel>
-          </Popover>
-          <Popover className="relative">
-            <PopoverButton className="flex items-center gap-x-1 text-sm/6 font-semibold text-gray-900">
-              Ready Made
-              <ChevronDownIcon aria-hidden="true" className="size-5 flex-none text-gray-400" />
-            </PopoverButton>
-            <PopoverPanel
-              transition
-              className="absolute -left-8 top-full z-[52] mt-3 w-max max-w-md overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-gray-900/5 transition data-[closed]:translate-y-1 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in"
-            >
-              <div className="p-2 ">
-                {readyMadeProducts.map((item) => (
-                  <div
-                    key={item.name}
-                    className="group relative flex items-center gap-x-6 rounded-lg  p-4 py-2 text-sm/6 hover:bg-gray-50"
-                  >
-                    <div className="flex-auto">
-                      <a href={item.href} className="block font-semibold text-gray-900">
-                        {item.name}
-                      </a>
-
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </PopoverPanel>
-          </Popover>
-        </PopoverGroup>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <div className="flex h-9 items-center mx-3 border rounded-md shadow-sm">
-            <input
-              type="text"
-              placeholder="search"
-              id="website-url"
-              className=" ml-2 w-72  h-full bg-transparent border-none outline-none"
-            />
-            <div className="rounded-r-md rounded-l-sm bg-indigo-600 border-r flex h-full items-center justify-center shadow-sm px-2">
-              <MagnifyingGlassIcon  aria-hidden="true" className=" text-white size-5 " />
-            </div>
-          </div>
-          {user ? <CartLogo onClick={() => setShowCart(true)} /> :
-            <Link to="/login" className="text-sm/6 flex items-center justify-center font-semibold text-gray-900">
-              Log in <span aria-hidden="true" >&rarr;</span>
-            </Link>
-          }
-        </div>
       </nav>
-      <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
-        <div className="fixed inset-0 z-10" />
-        <DialogPanel className="fixed inset-y-0 right-0 z-[52] w-full overflow-y-auto bg-white px-5 py-2 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+
+      <Dialog as="div" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
+        <Dialog.Panel className="fixed inset-0 z-10 overflow-y-auto bg-white px-4 py-6 lg:hidden">
           <div className="flex items-center justify-between">
-            <Link to="/" className="-m-1.5 p-1.5" onClick={() => setMobileMenuOpen(false)}>
-              <span className="sr-only">Your Company</span>
-              <img
-                alt=""
-                src={logo}
-                className="h-11 w-auto rounded-full"
-              />
+            <Link to="/" className="-m-1.5 p-1.5">
+              <img className="h-8 w-auto" src={logo} alt="Logo" />
             </Link>
             <button
               type="button"
-              onClick={() => setMobileMenuOpen(false)}
               className="-m-2.5 rounded-md p-2.5 text-gray-700"
+              onClick={() => setMobileMenuOpen(false)}
             >
-              <span className="sr-only">Close menu</span>
-              <XMarkIcon aria-hidden="true" className="size-6" />
+              <XMarkIcon className="h-6 w-6" aria-hidden="true" />
             </button>
           </div>
-          <div className="mt-6 flow-root">
-            <div className="-my-6 divide-y divide-gray-500/10">
-              <div className="space-y-2 py-6">
-                <Disclosure as="div" className="-mx-3">
-                  <DisclosureButton className="group flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
-                    Sarees
-                    <ChevronDownIcon aria-hidden="true" className="size-5 flex-none group-data-[open]:rotate-180" />
-                  </DisclosureButton>
-                  <DisclosurePanel className="mt-2 space-y-2">
-                    {[...sareeProducts].map((item) => (
-                      <DisclosureButton
-                        key={item.name}
-                        as="a"
-                        href={item.href}
-                        className="block rounded-lg py-2 pl-6 pr-3 text-sm/7 text-gray-900 font-medium hover:bg-gray-50"
-                      >
-                        {item.name}
-                      </DisclosureButton>
-                    ))}
-                  </DisclosurePanel>
-                </Disclosure>
-                <a
-                  href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
-                >
-                  Features
-                </a>
-                <a
-                  href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
-                >
-                  Marketplace
-                </a>
-                <a
-                  href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
-                >
-                  Company
-                </a>
-              </div>
-              <div className="py-6">
-                <Link
-                  to="/login"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
-                >
-                  Log in
-                </Link>
-              </div>
-              <div className="py-6">
-                <a href="http://localhost:5000/auth/logout">logout</a>
-              </div>
-            </div>
+          <div className="mt-6 space-y-4">
+            <Dropdown title="Sarees" items={sareeProducts} />
+            <Dropdown title="Salwar Suits" items={salwarProducts} />
+            <Dropdown title="Kurtis" items={kurtiProducts} />
+            <Dropdown title="Ready-Made" items={readyMadeProducts} />
           </div>
-        </DialogPanel>
+          <div className="mt-6">
+            <UserActions />
+          </div>
+        </Dialog.Panel>
       </Dialog>
     </header>
-  )
-}
+  );
+};
+
+export default Navbar;

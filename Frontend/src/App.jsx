@@ -14,7 +14,7 @@ function App() {
   return (
     <Router>
       <Navbar></Navbar>
-      <main className='  py-[60px]'>
+      <main className='py-[75px]'>
         <Routes>
           <Route path='/' element={<ProductsGrid />}></Route>
           <Route path='/account' element={<Account />}></Route>
