@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Dialog, Popover, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
@@ -9,17 +9,27 @@ import {
 import logo from "../assets/logo.jpg";
 import cartImg from "../assets/cart.svg";
 import accountImg from "../assets/account.svg";
+import searchImg from "../assets/search.svg";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+const API_BASE_URL = "http://localhost:5000";
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [user, setUser] = useState(false);
-
   const sareeProducts = ["Silk Sarees", "Cotton Sarees", "Designer Sarees"];
   const salwarProducts = ["Anarkali", "Churidar", "Palazzo"];
   const kurtiProducts = ["Long Kurtis", "Short Kurtis", "Party Wear"];
   const readyMadeProducts = ["Lehengas", "Gowns", "Skirts"];
+
+  const [Search, setSearch] = useState("")
+  async function searchProducts() {
+    const navigate = useNavigate();
+    navigate(`/search?query=${Search}`);
+  }
+
+  function handlesearch(e) {
+    setSearch(e.target.value)
+  }
 
   useEffect(() => {
     const isAuthenticated = async () => {
@@ -71,10 +81,16 @@ const Navbar = () => {
 
   const UserActions = () => {
     return user ? (
-      <Link to="/cart" className="flex items-center">
-        <img src={cartImg} alt="Cart" className="h-6 w-6 mr-2" />
-        <span className="text-sm font-semibold">Cart</span>
-      </Link>
+      <div className="flex">
+        <Link to="/cart" className="flex items-center">
+          <img src={cartImg} alt="Cart" className="h-6 w-6 mr-2" />
+        </Link>
+        <Link to="/account" className="flex items-center">
+          <img src={accountImg} alt="Account" className="h-6 w-6 mr-2" />
+        </Link>
+        
+      </div>
+      
     ) : (
       <Link
         to="/login"
@@ -95,19 +111,26 @@ const Navbar = () => {
         </div>
 
         {/* Desktop Navigation */}
-        <div className="hidden lg:flex lg:gap-x-8">
+        <div className="hidden lg:flex  lg:gap-x-4">
           <Dropdown title="Sarees" items={sareeProducts} />
           <Dropdown title="Salwar Suits" items={salwarProducts} />
           <Dropdown title="Kurtis" items={kurtiProducts} />
           <Dropdown title="Ready-Made" items={readyMadeProducts} />
         </div>
 
-        <div className="hidden lg:flex lg:gap-x-4">
-          <div className="relative">
+        <div className="hidden lg:flex ">
+          <div className="relative border rounded mx-2 p-1 w-[250px]">
             <input
               type="text"
+              onChange={()=> handlesearch}
+              onKeyDown={ (e) => e.key === "Enter" && searchProducts()}
               placeholder="Search"
-              className="w-48 border border-gray-300 rounded-md px-2 py-1 text-sm"
+              className="w-48 border-none outline-none bg-transparent border-gray-300 rounded-md px-2 py-1 text-sm"
+            />
+            <img
+              src={searchImg}
+              alt="Search"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2"
             />
           </div>
           <UserActions />
