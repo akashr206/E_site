@@ -1,19 +1,19 @@
-import React from 'react'
+import {useState, useEffect} from 'react'
 import Loading from '../components/Loading'
-import { useParams } from 'react-router-dom'
+import { useSearchParams,Link  } from 'react-router-dom'
 
 const Search = () => {
-    const {query} = useParams()
+    const [searchParams] = useSearchParams()
+    const query = searchParams.get('query')
     const [products, setproducts] = useState([])
     const [isloading, setIsLoading] = useState(true)
 
-    async function fetchProducts() {
-        const response = await fetch(`http://localhost:5000/search?query=${query}`)
-        const products = await response.json()
-        setproducts(products)
-    }
-
     useEffect(() => {
+        async function fetchProducts() {
+            const response = await fetch(`http://localhost:5000/search?query=${query}`)
+            const products = await response.json()
+            setproducts(products)
+        }
         async function loadData() {
             await Promise.all([fetchProducts()]);
             setIsLoading(false);
