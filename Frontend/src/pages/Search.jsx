@@ -1,67 +1,61 @@
-import {useState, useEffect} from 'react'
-import Loading from '../components/Loading'
-import { useSearchParams,Link  } from 'react-router-dom'
+import { useState, useEffect } from "react";
+import Loading from "../components/Loading";
+import { useSearchParams } from "react-router-dom";
+import Product from "../components/Product";
 
 const Search = () => {
-    const [searchParams] = useSearchParams()
-    const query = searchParams.get('query')
-    const [products, setproducts] = useState([])
-    const [isloading, setIsLoading] = useState(true)
+  const [searchParams] = useSearchParams();
+  const query = searchParams.get("query");
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        async function fetchProducts() {
-            const response = await fetch(`http://localhost:5000/search?query=${query}`)
-            const products = await response.json()
-            setproducts(products)
+  useEffect(() => {
+    async function fetchProducts() {
+      setIsLoading(true); 
+      try {
+        const response = await fetch(`http://localhost:5000/search?query=${query}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
         }
-        async function loadData() {
-            await Promise.all([fetchProducts()]);
-            setIsLoading(false);
-        }
-        loadData()
-    }, [])
-
-    if (!products) {
-        return <Loading></Loading>;
+        const products = await response.json();
+        setProducts(products);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setProducts([]);
+      } finally {
+        setIsLoading(false); 
+      }
     }
 
-    
+    fetchProducts();
+  }, [query]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (!products || products.length === 0) {
     return (
-        <div>
-            {isloading && <Loading></Loading>}
-            <div className="bg-white">
-                <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+      <div className="text-center py-10">
+        <p className="text-gray-600 text-lg">No products found for "{query}"</p>
+      </div>
+    );
+  }
 
-                    <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-                        {products.map((product) => (
-                            <div key={product.id} className="group relative">
-                                <img
-                                    src={product.images[0]}
-                                    className="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80"
-                                />
-                                <div className="mt-4 flex justify-between">
-                                    <div>
-                                        <h3 className="text-sm text-gray-700">
-                                            <Link to={`/products/${product.id}`}>
-                                                <span aria-hidden="true" className="absolute inset-0" />
-                                                {product.name}
-                                            </Link>
-                                        </h3>
-                                        <p className="mt-1 text-sm text-gray-500">{product.color}</p>
-                                    </div>
-                                    <p className="text-sm font-medium text-gray-900">{product.price}</p>
-                                </div>
-                                <div className='py-2'>
-                                    <button className='flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'>
-                                    Add to Cart</button>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
+  return (
+    <div>
+      {isLoading && <Loading></Loading>}
+      <div className="bg-white">
+        <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+          <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+            {products.map((product) => (
+              <Product key={product.id} product={product} />
+            ))}
+          </div>
         </div>
-    )
-}
+      </div>
+    </div>
+  );
+};
 
-export default Search
+export default Search;

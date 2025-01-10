@@ -15,7 +15,7 @@ const IconButton = ({ icon, label, link }) => {
 
 const Login = () => {
     return (
-        <div>
+        <div className='py-10 '>
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                     <img alt="MR Fashions" src={Logo} className="mx-auto h-16 rounded-full w-auto" />

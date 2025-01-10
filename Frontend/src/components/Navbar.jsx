@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Dialog, Popover, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
@@ -13,6 +13,7 @@ import searchImg from "../assets/search.svg";
 
 const API_BASE_URL = "http://localhost:5000";
 
+
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [user, setUser] = useState(false);
@@ -21,6 +22,14 @@ const Navbar = () => {
   const kurtiProducts = ["Long Kurtis", "Short Kurtis", "Party Wear"];
   const readyMadeProducts = ["Lehengas", "Gowns", "Skirts"];
   const [search, setSearch] = useState("");
+  const navigate = useNavigate();
+  
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && search.trim()) {
+      e.preventDefault(); 
+      navigate(`/search?query=${encodeURIComponent(search.trim())}`);
+    }
+  };
 
   useEffect(() => {
     const isAuthenticated = async () => {
@@ -57,7 +66,7 @@ const Navbar = () => {
             {items.map((item) => (
               <Link
                 key={item}
-                to={`/category/${item.toLowerCase().replace(/\s+/g, "-")}`}
+                to={`/category/${item.toLowerCase().replace(/\s+/g, "")}`}
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
                 {item}
@@ -73,10 +82,10 @@ const Navbar = () => {
     return user ? (
       <div className="flex">
         <Link to="/cart" className="flex items-center">
-          <img src={cartImg} alt="Cart" className="h-6 w-6 mr-2" />
+          <img src={cartImg} alt="Cart" className="h-6 w-6 mr-3" />
         </Link>
         <Link to="/account" className="flex items-center">
-          <img src={accountImg} alt="Account" className="h-6 w-6 mr-2" />
+          <img src={accountImg} alt="Account" className="h-6 w-6 mr-3" />
         </Link>
       </div>
     ) : (
@@ -113,30 +122,30 @@ const Navbar = () => {
         </div>
 
         <div className="hidden lg:flex">
-          <div className="relative border rounded mx-2 p-1 w-[250px]">
+          <form
+            className="relative border rounded mx-4 p-1 w-[250px]"
+            onSubmit={(e) => {
+              e.preventDefault(); 
+              if (search.trim()) {
+                navigate(`/search?query=${encodeURIComponent(search.trim())}`);
+              }
+            }}
+          >
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && search.trim()) {
-                  document.getElementById("search-link").click();
-                }
-              }}
+              onKeyDown={handleKeyDown}
               placeholder="Search"
               className="w-48 border-none outline-none bg-transparent border-gray-300 rounded-md px-2 py-1 text-sm"
             />
-            <a
-              id="search-link"
-              href={`/search?query=${encodeURIComponent(search.trim())}`}
-              className="hidden"
-            />
+            <button type="submit" className="hidden" />
             <img
               src={searchImg}
               alt="Search"
               className="absolute right-2 top-1/2 transform -translate-y-1/2"
             />
-          </div>
+          </form>
           <UserActions />
         </div>
 

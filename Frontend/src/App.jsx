@@ -10,12 +10,13 @@ import Login from './pages/Login'
 import Cart from './pages/Cart'
 import Account from './pages/Account';
 import Search from './pages/Search';
+import Category from './pages/Category';
 
 function App() {
   return (
     <Router>
-      <Navbar></Navbar>
-      <main className='py-[75px]'>
+      <Navbar className="fixed"></Navbar>
+      <main className='pb-9'>
         <Routes>
           <Route path='/' element={<ProductsGrid />}></Route>
           <Route path='/account' element={<Account />}></Route>
@@ -23,6 +24,7 @@ function App() {
           <Route path='/products/:id' element={<ProductView/>}></Route>
           <Route path='/cart' element={<Cart/>}></Route>
           <Route path='/search' element={<Search/>}></Route>
+          <Route path='/category/:query' element={<Category/>}></Route>
         </Routes>
       </main>
     </Router>
