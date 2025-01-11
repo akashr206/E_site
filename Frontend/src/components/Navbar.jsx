@@ -23,10 +23,10 @@ const Navbar = () => {
   const readyMadeProducts = ["Lehengas", "Gowns", "Skirts"];
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
-  
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && search.trim()) {
-      e.preventDefault(); 
+      e.preventDefault();
       navigate(`/search?query=${encodeURIComponent(search.trim())}`);
     }
   };
@@ -45,7 +45,7 @@ const Navbar = () => {
       }
     };
     isAuthenticated();
-  }, []);
+  }, [user]);
 
   const Dropdown = ({ title, items }) => (
     <Popover className="relative">
@@ -62,9 +62,10 @@ const Navbar = () => {
         leaveTo="opacity-0 translate-y-1"
       >
         <Popover.Panel className="absolute left-0 z-10 mt-2 w-40 bg-white shadow-lg ring-1 ring-gray-900/5">
-          <div className="py-2">
+          <div className="py-2" >
             {items.map((item) => (
               <Link
+                onClick={() => setMobileMenuOpen(false)}
                 key={item}
                 to={`/category/${item.toLowerCase().replace(/\s+/g, "")}`}
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -80,16 +81,17 @@ const Navbar = () => {
 
   const UserActions = () => {
     return user ? (
-      <div className="flex">
-        <Link to="/cart" className="flex items-center">
+      <div className="flex" >
+        <Link to="/cart" className="flex items-center" onClick={() => setMobileMenuOpen(false)}>
           <img src={cartImg} alt="Cart" className="h-6 w-6 mr-3" />
         </Link>
-        <Link to="/account" className="flex items-center">
+        <Link to="/account" className="flex items-center" onClick={() => setMobileMenuOpen(false)}>
           <img src={accountImg} alt="Account" className="h-6 w-6 mr-3" />
         </Link>
       </div>
     ) : (
       <Link
+        onClick={() => setMobileMenuOpen(false)}
         to="/login"
         className="text-sm font-semibold text-gray-900 flex items-center"
       >
@@ -113,7 +115,6 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* Desktop Navigation */}
         <div className="hidden lg:flex lg:gap-x-4">
           <Dropdown title="Sarees" items={sareeProducts} />
           <Dropdown title="Salwar Suits" items={salwarProducts} />
@@ -125,7 +126,7 @@ const Navbar = () => {
           <form
             className="relative border rounded mx-4 p-1 w-[250px]"
             onSubmit={(e) => {
-              e.preventDefault(); 
+              e.preventDefault();
               if (search.trim()) {
                 navigate(`/search?query=${encodeURIComponent(search.trim())}`);
               }
@@ -149,7 +150,16 @@ const Navbar = () => {
           <UserActions />
         </div>
 
-        <div className="flex lg:hidden">
+        <div className="flex items-center justify-center gap-2 lg:hidden">
+
+          <img
+            src={searchImg}
+            alt="Search"
+            className="w-6 h-6"
+          />
+          <Link to="/cart" className="flex items-center" onClick={() => setMobileMenuOpen(false)}>
+            <img src={cartImg} alt="Cart" className="h-6 w-6" />
+          </Link>
           <button
             type="button"
             className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
@@ -163,8 +173,8 @@ const Navbar = () => {
       <Dialog as="div" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
         <Dialog.Panel className="fixed inset-0 z-10 overflow-y-auto bg-white px-4 py-6 lg:hidden">
           <div className="flex items-center justify-between">
-            <Link to="/" className="-m-1.5 p-1.5">
-              <img className="h-8 w-auto" src={logo} alt="Logo" />
+            <Link to="/" onClick={() => setMobileMenuOpen(false)} className="-m-1.5 p-1.5">
+              <img className="h-8 w-auto rounded-full" src={logo} alt="Logo" />
             </Link>
             <button
               type="button"

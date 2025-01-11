@@ -1,0 +1,61 @@
+import React from 'react'
+import InputDisable from '../../components/ui/InputDisable';
+const Info = (props) => {
+
+    return (
+        <div className={`${props.isMobile ? "" : "shadow-md p-6"} `}>
+            <h2 className="text-xl font-semibold mb-4">
+                Personal Information{" "}
+            </h2>
+            <form className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label >First Name </label>
+                        <InputDisable
+                            type="text"
+                            value={props.user.name.split(" ")[0]}
+                            placeholder="First Name"
+                        />
+                    </div>
+                    <div>
+                        <label >Second Name </label>
+                        <InputDisable
+                            type="text"
+                            placeholder="Last Name"
+                            value={props.user.name.split(" ")[1]}
+                            className="p-3 border border-gray-300 bg-transparent outline-indigo-600 active:border-indigo-600 rounded-md w-full"
+                        />
+                    </div>
+
+
+                </div>
+
+                <div>
+                    <label className="block text-gray-600 mb-2">
+                        Email Address{" "}
+                    </label>
+                    <InputDisable
+                        type="email"
+                        value={props.user && props.user.email}
+                        placeholder="Email Address"
+                        disabled
+                        className="p-3 border border-gray-300 rounded-md bg-transparent w-full"
+                    />
+                </div>
+
+                <div>
+                    <label className="block text-gray-600 mb-2">
+                        Mobile Number{" "}
+                    </label>
+                    <input
+                        type="text"
+                        placeholder="+91XXXXXXXXXX"
+                        className="p-3 border bg-transparent border-gray-300 rounded-md w-full"
+                    />
+                </div>
+            </form>
+        </div>
+    )
+}
+
+export default Info

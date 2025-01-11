@@ -58,7 +58,6 @@ router.get('/callback', async (req, res) => {
     });
 
     const profile = await profileResponse.json();
-
     // Check if user exists in DB
     let user = await User.findOne({ email: profile.email });
     if (!user) {
@@ -66,6 +65,7 @@ router.get('/callback', async (req, res) => {
       user = new User({
         name: profile.name,
         email: profile.email,
+        image: profile.picture,
         uId: profile.sub,
         phone: '-----',  // Placeholder value for now
         isAdmin: false,  // Set to false initially or update as needed

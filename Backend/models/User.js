@@ -3,6 +3,7 @@ const {mongoose, Schema} = require('mongoose')
 const UserSchema = new Schema({
     uId : {type: String, required: true, unique: true},
     name: {type: String, required: true},
+    image: {type: String},
     email: {type: String, required: true, unique: true},
     phone: {type: String, required: true},
     password: {type: String},
