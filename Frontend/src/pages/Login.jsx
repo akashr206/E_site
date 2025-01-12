@@ -2,9 +2,10 @@ import React from 'react';
 import Logo from '../assets/logo.jpg';
 
 const IconButton = ({ icon, label, link }) => {
+    const API_URL = import.meta.env.VITE_APIURL;
     return (
         <a
-            href={`http://localhost:5000/auth/${link}`} // Redirect directly to the OAuth endpoint
+            href={`${API_URL}/auth/${link}`} // Redirect directly to the OAuth endpoint
             className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg bg-white hover:bg-gray-100 transition-shadow shadow-sm"
         >
             <img src={icon} alt={`${label} logo`} className="w-5 h-5" />
@@ -76,9 +77,9 @@ const Login = () => {
                     </form>
 
                     <div className='flex items-center gap-1 p-5 justify-center'>
-                        <div className='border w-[100px] h-0'></div>
+                        <div className='border w-[80px] h-0'></div>
                         <div><p className='from-neutral-800'>or continue with</p></div>
-                        <div className='border w-[100px] h-0'></div>
+                        <div className='border w-[80px] h-0'></div>
                     </div>
                     <div className="flex justify-center items-center gap-4">
                         <IconButton

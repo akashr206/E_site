@@ -8,14 +8,13 @@ const Category = () => {
     const  {query}  = useParams();
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-  
+    const API_URL = import.meta.env.VITE_APIURL;
     useEffect(() => {
-        console.log(query);
         
       async function fetchProducts() {
         setIsLoading(true); 
         try {
-          const response = await fetch(`http://localhost:5000/search?query=${query}`);
+          const response = await fetch(`${API_URL}/search?query=${query}`);
           if (!response.ok) {
             throw new Error("Failed to fetch products");
           }

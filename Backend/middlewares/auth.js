@@ -10,7 +10,7 @@ const isAuthenticated = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
-    req.user = await User.find({email : decoded.email})
+    req.user = await User.findOne({email : decoded.email})
     next();
   } catch (err) {
     res.status(400).send('Invalid token.');

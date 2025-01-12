@@ -10,12 +10,14 @@ import logo from "../assets/logo.jpg";
 import cartImg from "../assets/cart.svg";
 import accountImg from "../assets/account.svg";
 import searchImg from "../assets/search.svg";
+import MobileSearch from "./MobileSearch";
 
-const API_BASE_URL = "http://localhost:5000";
+const API_BASE_URL = import.meta.env.VITE_APIURL;
 
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileSearch, setMobileSearch] = useState(false);
   const [user, setUser] = useState(false);
   const sareeProducts = ["Silk Sarees", "Cotton Sarees", "Designer Sarees"];
   const salwarProducts = ["Anarkali", "Churidar", "Palazzo"];
@@ -105,10 +107,12 @@ const Navbar = () => {
 
   return (
     <header className="bg-white shadow-sm">
+      
       <nav
         className="mx-auto flex max-w-7xl items-center justify-between p-4"
         aria-label="Global"
       >
+        
         <div className="flex lg:flex-1">
           <Link to="/" className="-m-1.5 p-1.5">
             <img className="h-8 rounded-full w-auto" src={logo} alt="Logo" />
@@ -151,12 +155,14 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center justify-center gap-2 lg:hidden">
-
-          <img
-            src={searchImg}
-            alt="Search"
-            className="w-6 h-6"
-          />
+          
+            <img
+            onClick={() => mobileSearch ? setMobileSearch(false) : setMobileSearch(true)}
+              src={searchImg}
+              alt="Search"
+              className="w-6 h-6 cursor-pointer"
+            />
+          
           <Link to="/cart" className="flex items-center" onClick={() => setMobileMenuOpen(false)}>
             <img src={cartImg} alt="Cart" className="h-6 w-6" />
           </Link>
@@ -195,6 +201,7 @@ const Navbar = () => {
           </div>
         </Dialog.Panel>
       </Dialog>
+      {mobileSearch && <MobileSearch closeSearch={() => setMobileSearch(false)}/>}
     </header>
   );
 };

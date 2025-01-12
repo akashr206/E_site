@@ -6,9 +6,9 @@ import Info from './Account/Info';
 import Loading from '../components/Loading';
 import { useNavigate } from 'react-router-dom';
 
-
 const MyOrders = () => <div>Order Details Component</div>;
 const ManageAddresses = () => <div>Address Management Component</div>;
+
 
 const Account = () => {
   const [userData, setUserData] = useState([]);
@@ -16,13 +16,13 @@ const Account = () => {
   const [loading, setLoading] = useState(true); 
   const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
-
+  const API_URL = import.meta.env.VITE_APIURL;
   useEffect(() => {
     async function fetchData() {
       try {
         
         setLoading(true); 
-        const response = await fetch('http://localhost:5000/api/auth/check', {
+        const response = await fetch(`${API_URL}/api/auth/check`, {
           credentials: 'include',
         });
         if (response.status !== 200) {
@@ -50,7 +50,7 @@ const Account = () => {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'info':
-        return userData[0] ? <Info user={userData[0]} isMobile ={isMobile}/> : null;
+        return userData ? <Info user={userData} isMobile ={isMobile}/> : null;
       case 'orders':
         return <MyOrders />;
       case 'addresses':
@@ -67,8 +67,8 @@ const Account = () => {
       <div className="w-max  flex flex-col gap-3 p-3">
           <img
             src={
-              userData[0]
-                ? `${userData[0].image}`
+              userData
+                ? `${userData.image}`
                 : 'https://tse2.mm.bing.net/th?id=OIP.x7X2oAehk5M9IvGwO_K0PgHaHa&pid=Api&P=0&h=180'
             }
             alt="User"
@@ -112,8 +112,8 @@ const Account = () => {
         <div className="text-center rounded-sm min-w-[192px] shadow-md px-4 py-2 flex items-center">
           <img
             src={
-              userData[0]
-                ? `${userData[0].image}`
+              userData
+                ? `${userData.image}`
                 : 'https://tse2.mm.bing.net/th?id=OIP.x7X2oAehk5M9IvGwO_K0PgHaHa&pid=Api&P=0&h=180'
             }
             alt="User"
@@ -122,7 +122,7 @@ const Account = () => {
           <div className="flex flex-col ml-3 items-start">
             <p className="text-sm">Hello</p>
             <p className="text-md font-semibold">
-              {userData[0] ? `${userData[0].name}` : ''}
+              {userData ? `${userData.name}` : ''}
             </p>
           </div>
         </div>

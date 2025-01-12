@@ -1,45 +1,48 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import Loading from "./Loading";
 import Product from "./Product";
 
-// const products = [
-//     {
-//       id: 1,
-//       name: 'Basic Tee',
-//       href: '#',
-//       imageSrc: 'https://tailwindui.com/plus/img/ecommerce-images/product-page-01-related-product-01.jpg',
-//       imageAlt: "Front of men's Basic Tee in black.",
-//       price: '$35',
-//       color: 'Black',
-//     },
-//     // More products...
-//   ]
 const ProductsGrid = () => {
-  const [products, setproducts] = useState([]);
-  const [isloading, setIsLoading] = useState(true);
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   async function fetchProducts() {
-    const response = await fetch("http://localhost:5000/api/products/all");
-    const products = await response.json();
-    setproducts(products);
+    try {
+      const response = await fetch(`${import.meta.env.VITE_APIURL}/api/products/all`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch products");
+      }
+      const products = await response.json();
+      setProducts(products);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      setProducts([]);
+    }
   }
 
   useEffect(() => {
     async function loadData() {
-      await Promise.all([fetchProducts()]);
+      await fetchProducts();
       setIsLoading(false);
     }
     loadData();
   }, []);
 
-  if (!products) {
-    return <Loading></Loading>;
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (!products || products.length === 0) {
+    return (
+      <div className="text-center py-10">
+        <p className="text-gray-600 text-lg">No products available</p>
+      </div>
+    );
   }
 
   return (
     <div>
-      {isloading && <Loading></Loading>}
       <div className="bg-white">
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
           <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">

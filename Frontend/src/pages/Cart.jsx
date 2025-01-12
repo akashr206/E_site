@@ -9,10 +9,10 @@ import Loading from '../components/Loading'
 const CartItem = (product) => {
   const [quantity, setquantity] = useState(1)
   const [stock, setStock] = useState(3)
-
+  const API_URL = import.meta.env.VITE_APIURL;
   async function updateQuantity(id, quantity) {
     setquantity(quantity)
-    const response = await fetch(`http://localhost:5000/api/cart/update/`, {
+    const response = await fetch(`${API_URL}//api/cart/update/`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ const CartItem = (product) => {
 
   useEffect(() => {
     async function fetchStock() {
-      let response = await fetch(`http://localhost:5000/api/products/stock/${product.productId}?color=${product.color}&size=${product.size}`)
+      let response = await fetch(`${API_URL}/api/products/stock/${product.productId}?color=${product.color}&size=${product.size}`)
       let data = await response.json();
       if (data.stock < 3) {
         setStock(data.stock);
@@ -89,9 +89,9 @@ export default function Cart() {
   const [total, setTotal] = useState(0)
   const [isEmpty, setIsEmpty] = useState(true)
   const [isLoading, setIsLoading] = useState(true)
-
+  const API_URL = import.meta.env.VITE_APIURL;
   async function fetchCart() {
-    const response = await fetch('http://localhost:5000/api/cart/user', { credentials: 'include' })
+    const response = await fetch(`${API_URL}/api/cart/user`, { credentials: 'include' })
     const products = await response.json()
     if (products.length === 0) {
       setIsEmpty(true)
@@ -103,7 +103,7 @@ export default function Cart() {
 
   async function removeItem(id) {
     setIsLoading(true)
-    const response = await fetch(`http://localhost:5000/api/cart/remove/${id}`, {
+    const response = await fetch(`${API_URL}/api/cart/remove/${id}`, {
       method: 'DELETE',
       credentials: 'include'
     })
@@ -113,7 +113,7 @@ export default function Cart() {
 
   async function fetchTotal() {
     setIsLoading(true)
-    const response = await fetch('http://localhost:5000/api/cart/total', { credentials: 'include' })
+    const response = await fetch(`${API_URL}/api/cart/total`, { credentials: 'include' })
     const data = await response.json()
     setTotal(data.totalPrice)
     setIsLoading(false)
@@ -137,7 +137,7 @@ export default function Cart() {
 
   return (
     <>
-      <div className="max-w-7xl px-8 mx-auto">
+      <div className="max-w-7xl px-3 lg:px-8 mx-auto">
         <h1 className="text-3xl font-bold mb-6">Shopping Cart</h1>
         {isEmpty ? (
           <div className="flex flex-col items-center justify-center text-center bg-white p-6 rounded-lg shadow">

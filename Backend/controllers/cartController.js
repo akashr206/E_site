@@ -1,3 +1,4 @@
+const { log } = require('console');
 const {
     createCartItem,
     getUserCartItems,
@@ -14,6 +15,7 @@ const {
 const addToCart = async (req, res) => {
     const { productId, name, images, price, color, size, quantity } = req.body;
     const userId = req.user.id;
+    
 
     try {
         // Validate stock
@@ -41,7 +43,7 @@ const addToCart = async (req, res) => {
 // Get the user's cart
 const getCart = async (req, res) => {
     const userId = req.user.id;
-
+    
     try {
         const cartItems = await getUserCartItems(userId);
         res.status(200).json(cartItems);

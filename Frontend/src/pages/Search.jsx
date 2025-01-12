@@ -11,9 +11,9 @@ const Search = () => {
 
   useEffect(() => {
     async function fetchProducts() {
-      setIsLoading(true); 
+      setIsLoading(true);
       try {
-        const response = await fetch(`http://localhost:5000/search?query=${query}`);
+        const response = await fetch(`${import.meta.env.VITE_APIURL}/search?query=${query}`);
         if (!response.ok) {
           throw new Error("Failed to fetch products");
         }
@@ -23,7 +23,7 @@ const Search = () => {
         console.error("Error fetching products:", error);
         setProducts([]);
       } finally {
-        setIsLoading(false); 
+        setIsLoading(false);
       }
     }
 

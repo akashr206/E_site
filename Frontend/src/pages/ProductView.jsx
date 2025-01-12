@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Loading from '../components/Loading';
 
+const API_URL = import.meta.env.VITE_APIURL;
+
 const ProductView = () => {
     const { id } = useParams();
     const [product, setProduct] = useState(null);
@@ -10,11 +12,12 @@ const ProductView = () => {
     const [selectedImage, setSelectedImage] = useState(null);
     const [isAdding, setIsAdding] = useState(false); // Buffer state
     const [added, setAdded] = useState(false); // Added state
+    const [user, setUser] = useState(null);
 
     useEffect(() => {
         async function fetchProduct() {
             try {
-                const response = await fetch(`http://localhost:5000/api/products/one/${id}`);
+                const response = await fetch(`${API_URL}/api/products/one/${id}`);
                 const data = await response.json();
                 setProduct(data);
 
@@ -28,16 +31,24 @@ const ProductView = () => {
                 console.error('Error fetching product:', error);
             }
         }
+
+        async function fetchUser() {
+            const response = await fetch(`${API_URL}/api/auth/check`, {
+                credentials: 'include'
+            });
+            const data = await response.json();
+            setUser(data);
+        }
+        fetchUser();
         fetchProduct();
     }, [id]);
 
     const handleAddToCart = async () => {
-
         if (!selectedVariant) return;
         setIsAdding(true);
         setAdded(false);
 
-        const response = await fetch('http://localhost:5000/api/cart/add', {
+        const response = await fetch(`${API_URL}/api/cart/add`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -54,14 +65,11 @@ const ProductView = () => {
             credentials: 'include'
         });
 
-        
         setIsAdding(false);
         setAdded(true);
 
         // Reset "Added" status after 2 seconds
         setTimeout(() => setAdded(false), 2000);
-
-
     };
 
     if (!product) {
@@ -75,13 +83,13 @@ const ProductView = () => {
                     <div className="lg:grid lg:grid-cols-2 lg:gap-x-8">
                         {/* Images */}
                         <div>
-                            <div className="lg:col-span-2 p-1">
+                            <div className="lg:col-span flex items-center justify-center h-[420px] p-1">
                                 <AnimatePresence mode="wait">
                                     <motion.img
                                         key={selectedImage}
                                         src={selectedImage}
                                         alt={product.name}
-                                        className="rounded-lg w-full"
+                                        className=" object-cover h-full"
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
                                         exit={{ opacity: 0 }}
@@ -89,17 +97,17 @@ const ProductView = () => {
                                     />
                                 </AnimatePresence>
                             </div>
-                            <div className="flex p-1 overflow-x-scroll space-x-2">
+                            <div className="flex p-1  sm:justify-center lg:justify-center overflow-x-scroll space-x-2">
                                 {product.images.map((url, index) => (
                                     <motion.button
                                         key={index}
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
                                         onClick={() => setSelectedImage(url)}
-                                        className={`shrink-0 p-1 border ${selectedImage === url ? 'border-indigo-500' : 'border-gray-300'
-                                            } rounded-sm w-24 sm:w-28`}
+                                        className={`shrink-0 flex items-center justify-center p-1 border ${selectedImage === url ? 'border-indigo-500' : 'border-gray-300'
+                                            } rounded-sm w-16 h-16 sm:w-20 sm:h-20`}
                                     >
-                                        <img className="w-full h-auto sm:h-14 object-cover" src={url} alt="" />
+                                        <img className="h-full object-cover" src={url} alt="" />
                                     </motion.button>
                                 ))}
                             </div>
