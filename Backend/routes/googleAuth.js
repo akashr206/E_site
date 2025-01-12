@@ -58,7 +58,6 @@ router.get('/callback', async (req, res) => {
     });
 
     const profile = await profileResponse.json();
-    console.log(profile);
     
     // Check if user exists in DB
     let user = await User.findOne({ email: profile.email });
@@ -77,6 +76,9 @@ router.get('/callback', async (req, res) => {
 
     // Generate JWT token
     const token = generateToken(user);
+
+    console.log(process.env.NODE_ENV === 'production');
+    
 
     // Send JWT as HTTP-only cookie
     res.cookie('token', token, {
