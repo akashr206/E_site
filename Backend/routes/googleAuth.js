@@ -58,6 +58,8 @@ router.get('/callback', async (req, res) => {
     });
 
     const profile = await profileResponse.json();
+    console.log(profile);
+    
     // Check if user exists in DB
     let user = await User.findOne({ email: profile.email });
     if (!user) {
