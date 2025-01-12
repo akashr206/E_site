@@ -1,13 +1,16 @@
 import React from "react";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Product = (props) => {
   return (
     <div key={props.product.id} className="group relative">
-      <img
-        src={props.product.images[0]}
-        className="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80"
-      />
+      <div className="h-[220px] flex items-center justify-center">
+        <img
+          src={props.product.images[0]}
+          className=" h-full rounded-sm bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-[250px]"
+        /> 
+      </div>
+
       <div className="mt-4 flex justify-between">
         <div>
           <h3 className="text-sm text-gray-700">
@@ -22,7 +25,7 @@ const Product = (props) => {
       </div>
       <div className="py-2">
         <button className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-          Add to Cart
+          View Details
         </button>
       </div>
     </div>

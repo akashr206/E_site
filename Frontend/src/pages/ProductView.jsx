@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Loading from '../components/Loading';
-
+import Prompt from '../components/ui/Prompt';
 const API_URL = import.meta.env.VITE_APIURL;
 
 const ProductView = () => {
@@ -13,6 +13,8 @@ const ProductView = () => {
     const [isAdding, setIsAdding] = useState(false); // Buffer state
     const [added, setAdded] = useState(false); // Added state
     const [user, setUser] = useState(null);
+    const [prompt, setPrompt] = useState(false)
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchProduct() {
@@ -44,6 +46,11 @@ const ProductView = () => {
     }, [id]);
 
     const handleAddToCart = async () => {
+        if (!user) {
+            setPrompt(true)
+
+        }
+
         if (!selectedVariant) return;
         setIsAdding(true);
         setAdded(false);
@@ -66,10 +73,10 @@ const ProductView = () => {
         });
 
         setIsAdding(false);
-        setAdded(true);
-
-        // Reset "Added" status after 2 seconds
-        setTimeout(() => setAdded(false), 2000);
+        if (response.status === 200) {
+            setAdded(true);
+            setTimeout(() => setAdded(false), 2000);
+        }
     };
 
     if (!product) {
@@ -78,6 +85,15 @@ const ProductView = () => {
 
     return (
         <div className="bg-white">
+            {prompt && (
+                <Prompt
+                    title="Login Required"
+                    text="You need to log in to add items to your cart"
+                    to="login"
+                    toValue="Login"
+                    close={() => setPrompt(false)} 
+                />
+            ) }
             <div className="pt-6">
                 <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
                     <div className="lg:grid lg:grid-cols-2 lg:gap-x-8">
