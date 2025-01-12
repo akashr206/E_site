@@ -10,11 +10,15 @@ const ProductView = () => {
     const [product, setProduct] = useState(null);
     const [selectedVariant, setSelectedVariant] = useState(null);
     const [selectedImage, setSelectedImage] = useState(null);
-    const [isAdding, setIsAdding] = useState(false); // Buffer state
-    const [added, setAdded] = useState(false); // Added state
+    const [isAdding, setIsAdding] = useState(false); 
+    const [added, setAdded] = useState(false);
     const [user, setUser] = useState(null);
     const [prompt, setPrompt] = useState(false)
     const navigate = useNavigate();
+
+    useEffect(() => {
+        setIsAdding(false);
+    }, [prompt]);
 
     useEffect(() => {
         async function fetchProduct() {
