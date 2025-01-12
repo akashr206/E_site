@@ -77,14 +77,11 @@ router.get('/callback', async (req, res) => {
     // Generate JWT token
     const token = generateToken(user);
 
-    console.log(process.env.NODE_ENV === 'production');
-    
-
     // Send JWT as HTTP-only cookie
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // Set to true in production for secure cookies
-      sameSite: 'strict',
+      sameSite: 'None',
       maxAge: 3600000 * 24, // Set cookie expiration to 1 hour (or adjust as needed)
     });
 
