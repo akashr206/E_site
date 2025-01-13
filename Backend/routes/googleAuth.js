@@ -81,7 +81,7 @@ router.get('/callback', async (req, res) => {
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // Set to true in production for secure cookies
-      sameSite: 'None',
+      sameSite: 'N    one',
       maxAge: 3600000 * 24, // Set cookie expiration to 1 hour (or adjust as needed)
     });
 
