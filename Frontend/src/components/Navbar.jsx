@@ -49,7 +49,7 @@ const Navbar = () => {
 
   const Dropdown = ({ title, items }) => (
     <Popover className="relative">
-      <Popover.Button className="flex items-center text-lg md:text-sm font-semibold leading-6 text-gray-900">
+      <Popover.Button className="flex items-center text-lg md:text-sm leading-6 text-gray-900">
         {title}
         <ChevronDownIcon className="h-5 w-5 text-gray-500 ml-1" />
       </Popover.Button>
@@ -83,10 +83,10 @@ const Navbar = () => {
     return user ? (
       <div className="flex">
         <Link to="/cart" className="flex items-center" onClick={() => setMobileMenuOpen(false)}>
-          <img src={cartImg} alt="Cart" className="h-6 w-6 mr-3" />
+          <img src={cartImg} alt="Cart" className="h-7 w-7 mr-3" />
         </Link>
         <Link to="/account" className="flex items-center" onClick={() => setMobileMenuOpen(false)}>
-          <img src={accountImg} alt="Account" className="h-6 w-6 mr-3" />
+          <img src={accountImg} alt="Account" className="h-7 w-7 mr-3" />
         </Link>
       </div>
     ) : (
@@ -170,14 +170,14 @@ const Navbar = () => {
       <Dialog as="div" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
         <motion.div
           className="fixed inset-0 z-10 overflow-y-auto bg-white px-4 py-4 lg:hidden"
-          initial={{ x: '100%' }} 
-          animate={{ x: 0 }} 
-          exit={{ x: '100%' }} 
-          transition={{ duration: 0.2 }} 
+          initial={{ x: '100%' }}
+          animate={{ x: 0 }}
+          exit={{ x: '100%' }}
+          transition={{ duration: 0.2 }}
         >
           <div className="flex items-center justify-between">
             <Link to="/" onClick={() => setMobileMenuOpen(false)} className="-m-1.5 p-1.5">
-              <img className="h-8 w-auto rounded-full" src={logo} alt="Logo" />
+              <img className="h-10 w-auto rounded-full" src={logo} alt="Logo" />
             </Link>
             <button
               type="button"
@@ -188,11 +188,11 @@ const Navbar = () => {
             </button>
           </div>
           <motion.div
-            className="mt-6 space-y-4"
-            initial={{ opacity: 0, x: -20 }} 
-            animate={{ opacity: 1, x: 0 }} 
-            exit={{ opacity: 0, x: 20 }} 
-            transition={{ duration: 0.2, delay: 0.1 }} 
+            className="mt-6 ml-6  flex flex-col gap-2 space-y-4"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            transition={{ duration: 0.2, delay: 0.1 }}
           >
             <Dropdown title="Sarees" items={sareeProducts} />
             <Dropdown title="Salwar Suits" items={salwarProducts} />
@@ -201,12 +201,15 @@ const Navbar = () => {
           </motion.div>
           <motion.div
             className="mt-6"
-            initial={{ opacity: 0, x: -20 }} 
+            initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }} 
-            transition={{ duration: 0.2, delay: 0.2 }} 
+            exit={{ opacity: 0, x: 20 }}
+            transition={{ duration: 0.2, delay: 0.2 }}
           >
-            <UserActions />
+            <div className='ml-6'>
+
+              <UserActions  />
+            </div>
           </motion.div>
         </motion.div>
       </Dialog>
