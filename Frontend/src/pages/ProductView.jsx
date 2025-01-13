@@ -73,9 +73,10 @@ const ProductView = () => {
         });
 
         setIsAdding(false);
-        if (response.status === 200) {
+        
+        if (response.status === 201) {
             setAdded(true);
-            setTimeout(() => setAdded(false), 2000);
+            setTimeout(() => setAdded(false), 1500);
         }
     };
 

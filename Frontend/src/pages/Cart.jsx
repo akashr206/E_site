@@ -1,7 +1,7 @@
 'use client'
 
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-import { ShoppingCartIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
+import { LockClosedIcon, UserIcon } from "@heroicons/react/24/outline";
 import { Link, useNavigate } from 'react-router-dom'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { useEffect, useState } from 'react'
@@ -13,20 +13,26 @@ const NonCart = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex items-center justify-center absolute w-full -z-10 top-0 h-screen  px-4">
+    <div className="flex items-center justify-center absolute w-full -z-10 top-0 h-screen px-4">
       <div className="text-center bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
+        
+        <LockClosedIcon className="w-12 h-12 text-indigo-600 mx-auto mb-4" />
+        
         <h1 className="text-2xl font-bold text-gray-800 mb-4">
           Oops! Your Cart is Locked
         </h1>
         <p className="text-gray-600 mb-6">
           Login to unlock your cart and start adding your favorite items!
         </p>
+        
         <button
+
           onClick={() => navigate("/login")}
-          className="bg-indigo-600 text-white hover:bg-indigo-700 px-6 py-2 rounded-lg text-lg font-semibold"
+          className="bg-indigo-600 mx-auto text-white hover:bg-indigo-700 px-6 py-2 rounded-lg text-lg font-semibold flex items-center justify-center space-x-2"
         >
-          Login Now
+          <span>Login Now</span>
         </button>
+
         <p className="text-sm text-gray-500 mt-4">
           Don’t have an account?{" "}
           <span
@@ -39,8 +45,8 @@ const NonCart = () => {
       </div>
     </div>
   );
+};
 
-}
 
 const CartItem = (product) => {
   

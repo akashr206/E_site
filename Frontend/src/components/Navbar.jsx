@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Dialog, Popover, Transition } from "@headlessui/react";
+import { motion } from 'framer-motion';
 import {
   Bars3Icon,
   XMarkIcon,
@@ -41,7 +42,7 @@ const Navbar = () => {
         if (response.status === 200) {
           setUser(true);
         }
-      } catch (error) {}
+      } catch (error) { }
     };
     isAuthenticated();
   }, [user]);
@@ -137,7 +138,7 @@ const Navbar = () => {
             <button type="submit" className="hidden" />
             <img
               src={searchImg}
-              onClick={()=>search && navigate(`/search?query=${encodeURIComponent(search.trim())}`)}
+              onClick={() => search && navigate(`/search?query=${encodeURIComponent(search.trim())}`)}
               alt="Search"
               className="absolute cursor-pointer right-2 top-1/2 transform -translate-y-1/2"
             />
@@ -149,10 +150,10 @@ const Navbar = () => {
             onClick={() => setMobileSearch(true)}
             src={searchImg}
             alt="Search"
-            className="w-6 h-6 cursor-pointer"
+            className="w-7 h-7 cursor-pointer"
           />
           <Link to="/cart" className="flex items-center" onClick={() => setMobileMenuOpen(false)}>
-            <img src={cartImg} alt="Cart" className="h-6 w-6" />
+            <img src={cartImg} alt="Cart" className="h-7 w-7" />
           </Link>
           <button
             type="button"
@@ -162,12 +163,18 @@ const Navbar = () => {
               setMobileSearch(false);
             }}
           >
-            <Bars3Icon className="h-6 w-6" aria-hidden="true" />
+            <Bars3Icon className="h-8 w-8" aria-hidden="true" />
           </button>
         </div>
       </nav>
       <Dialog as="div" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
-        <Dialog.Panel className="fixed inset-0 z-10 overflow-y-auto bg-white px-4 py-4 lg:hidden">
+        <motion.div
+          className="fixed inset-0 z-10 overflow-y-auto bg-white px-4 py-4 lg:hidden"
+          initial={{ x: '100%' }} 
+          animate={{ x: 0 }} 
+          exit={{ x: '100%' }} 
+          transition={{ duration: 0.2 }} 
+        >
           <div className="flex items-center justify-between">
             <Link to="/" onClick={() => setMobileMenuOpen(false)} className="-m-1.5 p-1.5">
               <img className="h-8 w-auto rounded-full" src={logo} alt="Logo" />
@@ -180,16 +187,28 @@ const Navbar = () => {
               <XMarkIcon className="h-6 w-6" aria-hidden="true" />
             </button>
           </div>
-          <div className="mt-6 space-y-4">
+          <motion.div
+            className="mt-6 space-y-4"
+            initial={{ opacity: 0, x: -20 }} 
+            animate={{ opacity: 1, x: 0 }} 
+            exit={{ opacity: 0, x: 20 }} 
+            transition={{ duration: 0.2, delay: 0.1 }} 
+          >
             <Dropdown title="Sarees" items={sareeProducts} />
             <Dropdown title="Salwar Suits" items={salwarProducts} />
             <Dropdown title="Kurtis" items={kurtiProducts} />
             <Dropdown title="Ready-Made" items={readyMadeProducts} />
-          </div>
-          <div className="mt-6">
+          </motion.div>
+          <motion.div
+            className="mt-6"
+            initial={{ opacity: 0, x: -20 }} 
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }} 
+            transition={{ duration: 0.2, delay: 0.2 }} 
+          >
             <UserActions />
-          </div>
-        </Dialog.Panel>
+          </motion.div>
+        </motion.div>
       </Dialog>
       {mobileSearch && <MobileSearch closeSearch={() => setMobileSearch(false)} />}
     </header>
