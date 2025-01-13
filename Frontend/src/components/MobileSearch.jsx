@@ -44,18 +44,22 @@ const MobileSearch = (props) => {
             ref={searchRef}
             value={search}
             onBlur={props.closeSearch}
+            onKeyDown={(e) => e.key === 'Enter' ? handleSearch() : ''}
             onChange={(e) =>setSearch(e.target.value)}
             type="text"
             placeholder="Search..."
             className="bg-transparent border-none outline-none w-full h-full mx-4"
           />
           
-          <img
-            onClick={()=>handleSearch()}
+          {/* <img
+            onClick={()=>{
+              searchRef.current.focus();
+              handleSearch();
+            }}
             src={searchImg}
             className="cursor-pointer"
             alt="Search icon"
-          />
+          /> */}
         </div>
         <div className="h-full w-full z-40 bg-gray-500 opacity-40"></div>
       </div>

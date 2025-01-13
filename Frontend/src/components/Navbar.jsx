@@ -14,7 +14,6 @@ import MobileSearch from "./MobileSearch";
 
 const API_BASE_URL = import.meta.env.VITE_APIURL;
 
-
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSearch, setMobileSearch] = useState(false);
@@ -42,16 +41,14 @@ const Navbar = () => {
         if (response.status === 200) {
           setUser(true);
         }
-      } catch (error) {
-        console.error("Error checking authentication:", error);
-      }
+      } catch (error) {}
     };
     isAuthenticated();
   }, [user]);
 
   const Dropdown = ({ title, items }) => (
     <Popover className="relative">
-      <Popover.Button className="flex items-center text-sm font-semibold leading-6 text-gray-900">
+      <Popover.Button className="flex items-center text-lg font-semibold leading-6 text-gray-900">
         {title}
         <ChevronDownIcon className="h-5 w-5 text-gray-500 ml-1" />
       </Popover.Button>
@@ -64,7 +61,7 @@ const Navbar = () => {
         leaveTo="opacity-0 translate-y-1"
       >
         <Popover.Panel className="absolute left-0 z-10 mt-2 w-40 bg-white shadow-lg ring-1 ring-gray-900/5">
-          <div className="py-2" >
+          <div className="py-2">
             {items.map((item) => (
               <Link
                 onClick={() => setMobileMenuOpen(false)}
@@ -83,7 +80,7 @@ const Navbar = () => {
 
   const UserActions = () => {
     return user ? (
-      <div className="flex" >
+      <div className="flex">
         <Link to="/cart" className="flex items-center" onClick={() => setMobileMenuOpen(false)}>
           <img src={cartImg} alt="Cart" className="h-6 w-6 mr-3" />
         </Link>
@@ -95,7 +92,7 @@ const Navbar = () => {
       <Link
         onClick={() => setMobileMenuOpen(false)}
         to="/login"
-        className="text-sm font-semibold text-gray-900 flex items-center"
+        className="text-lg font-semibold text-gray-900 flex items-center"
       >
         Log in{" "}
         <span aria-hidden="true" className="ml-1">
@@ -106,26 +103,19 @@ const Navbar = () => {
   };
 
   return (
-    <header className="bg-white shadow-sm">
-      
-      <nav
-        className="mx-auto flex max-w-7xl items-center justify-between p-4"
-        aria-label="Global"
-      >
-        
+    <header className="bg-white z-15 shadow-sm">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between p-3 md:p-4" aria-label="Global">
         <div className="flex lg:flex-1">
           <Link to="/" className="-m-1.5 p-1.5">
             <img className="h-8 rounded-full w-auto" src={logo} alt="Logo" />
           </Link>
         </div>
-
         <div className="hidden lg:flex lg:gap-x-4">
           <Dropdown title="Sarees" items={sareeProducts} />
           <Dropdown title="Salwar Suits" items={salwarProducts} />
           <Dropdown title="Kurtis" items={kurtiProducts} />
           <Dropdown title="Ready-Made" items={readyMadeProducts} />
         </div>
-
         <div className="hidden lg:flex">
           <form
             className="relative border rounded mx-4 p-1 w-[250px]"
@@ -153,31 +143,30 @@ const Navbar = () => {
           </form>
           <UserActions />
         </div>
-
         <div className="flex items-center justify-center gap-2 lg:hidden">
-          
-            <img
-            onClick={() => mobileSearch ? setMobileSearch(false) : setMobileSearch(true)}
-              src={searchImg}
-              alt="Search"
-              className="w-6 h-6 cursor-pointer"
-            />
-          
+          <img
+            onClick={() => setMobileSearch(true)}
+            src={searchImg}
+            alt="Search"
+            className="w-6 h-6 cursor-pointer"
+          />
           <Link to="/cart" className="flex items-center" onClick={() => setMobileMenuOpen(false)}>
             <img src={cartImg} alt="Cart" className="h-6 w-6" />
           </Link>
           <button
             type="button"
             className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
-            onClick={() => setMobileMenuOpen(true)}
+            onClick={() => {
+              setMobileMenuOpen(true);
+              setMobileSearch(false);
+            }}
           >
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>
         </div>
       </nav>
-
       <Dialog as="div" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
-        <Dialog.Panel className="fixed inset-0 z-10 overflow-y-auto bg-white px-4 py-6 lg:hidden">
+        <Dialog.Panel className="fixed inset-0 z-10 overflow-y-auto bg-white px-4 py-4 lg:hidden">
           <div className="flex items-center justify-between">
             <Link to="/" onClick={() => setMobileMenuOpen(false)} className="-m-1.5 p-1.5">
               <img className="h-8 w-auto rounded-full" src={logo} alt="Logo" />
@@ -201,7 +190,7 @@ const Navbar = () => {
           </div>
         </Dialog.Panel>
       </Dialog>
-      {mobileSearch && <MobileSearch closeSearch={() => setMobileSearch(false)}/>}
+      {mobileSearch && <MobileSearch closeSearch={() => setMobileSearch(false)} />}
     </header>
   );
 };
