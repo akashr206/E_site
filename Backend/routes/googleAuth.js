@@ -80,9 +80,9 @@ router.get('/callback', async (req, res) => {
     // Send JWT as HTTP-only cookie
     res.cookie('token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Set to true in production for secure cookies
-      sameSite: 'N    one',
-      maxAge: 3600000 * 24, // Set cookie expiration to 1 hour (or adjust as needed)
+      secure: process.env.NODE_ENV === 'production', 
+      sameSite: 'None',
+      maxAge: 3600000 * 24, 
     });
 
     // Redirect to the frontend dashboard after login
