@@ -1,18 +1,54 @@
 'use client'
 
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-import { Link } from 'react-router-dom'
+import { ShoppingCartIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
+import { Link, useNavigate } from 'react-router-dom'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { useEffect, useState } from 'react'
 import Loading from '../components/Loading'
+import EmptyCart from '../components/EmptyCart';
+import { div } from 'framer-motion/client';
+
+const NonCart = () => {
+  const navigate = useNavigate();
+
+  return (
+    <div className="flex items-center justify-center absolute w-full -z-10 top-0 h-screen  px-4">
+      <div className="text-center bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">
+          Oops! Your Cart is Locked
+        </h1>
+        <p className="text-gray-600 mb-6">
+          Login to unlock your cart and start adding your favorite items!
+        </p>
+        <button
+          onClick={() => navigate("/login")}
+          className="bg-indigo-600 text-white hover:bg-indigo-700 px-6 py-2 rounded-lg text-lg font-semibold"
+        >
+          Login Now
+        </button>
+        <p className="text-sm text-gray-500 mt-4">
+          Don’t have an account?{" "}
+          <span
+            onClick={() => navigate("/register")}
+            className="text-indigo-600 font-medium hover:underline cursor-pointer"
+          >
+            Register here
+          </span>
+        </p>
+      </div>
+    </div>
+  );
+
+}
 
 const CartItem = (product) => {
-  const [quantity, setquantity] = useState(1)
+  
+  const [quantity, setquantity] = useState(product.quantity)
   const [stock, setStock] = useState(3)
   const API_URL = import.meta.env.VITE_APIURL;
   async function updateQuantity(id, quantity) {
-    setquantity(quantity)
-    const response = await fetch(`${API_URL}//api/cart/update/`, {
+    const response = await fetch(`${API_URL}/api/cart/update/`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -21,6 +57,7 @@ const CartItem = (product) => {
       credentials: 'include'
     });
     const data = await response.json();
+    setquantity(data.updatedItem.quantity)
     product.OnTotal()
     return data;
   }
@@ -37,11 +74,11 @@ const CartItem = (product) => {
   }, [])
 
   return (
-    <div className="flex items-start bg-white p-6 rounded-lg shadow">
-      <Link to={`/products/${product.productId}`}>
+    <div className="flex items-start bg-white p-3 rounded-lg shadow">
+      <Link className='w-24 h-24 flex justify-center items-center' to={`/products/${product.productId}`}>
         <img
           src={product.image}
-          className="w-24 h-24 rounded-lg object-cover"
+          className="h-full rounded-md object-contain"
         />
       </Link>
       <div className="ml-4 flex-1">
@@ -70,7 +107,7 @@ const CartItem = (product) => {
                 <MenuItem key={index}>
                   <a
                     onClick={() => updateQuantity(product.id, index + 1)}
-                    className="block px-4 py-2 w-max text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
+                    className="block cursor-pointer px-4 py-2 w-max text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
                   >
                     {index + 1}
                   </a>
@@ -89,6 +126,7 @@ export default function Cart() {
   const [total, setTotal] = useState(0)
   const [isEmpty, setIsEmpty] = useState(true)
   const [isLoading, setIsLoading] = useState(true)
+  const [user, setUser] = useState(null);
   const API_URL = import.meta.env.VITE_APIURL;
   async function fetchCart() {
     const response = await fetch(`${API_URL}/api/cart/user`, { credentials: 'include' })
@@ -114,43 +152,54 @@ export default function Cart() {
   async function fetchTotal() {
     setIsLoading(true)
     const response = await fetch(`${API_URL}/api/cart/total`, { credentials: 'include' })
-    const data = await response.json()
+    const data = await response.json()    
     setTotal(data.totalPrice)
     setIsLoading(false)
   }
 
   useEffect(() => {
-    async function loadData() {
+    async function checkAuth() {
       try {
-        setIsLoading(true)
-        await Promise.all([fetchCart(), fetchTotal()])
+        const response = await fetch(`${API_URL}/api/auth/check`, { credentials: 'include' })
+        const data = await response.json();
+        setUser(data);
       } catch (error) {
-        console.error("Error loading cart data:", error)
-      } finally {
-        setIsLoading(false)
+        console.error("Error checking authentication:", error);
       }
     }
-    loadData()
+
+/**
+ * Loads cart data by fetching the user's cart items and the total price.
+ * Sets the loading state while data is being fetched.
+ * Logs an error message if there is an issue loading the cart data.
+ */
+
+    async function loadData() {
+      try {
+        setIsLoading(true);
+        await Promise.all([fetchCart(), fetchTotal(),checkAuth()]);
+      } catch (error) {
+        console.error("Error loading cart data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadData();
+    
   }, [])
 
-  if(isLoading) return <Loading />
-
+  if (isLoading) return <Loading />
+  if (!user) return <NonCart />
   return (
     <>
-      <div className="max-w-7xl px-3 lg:px-8 mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Shopping Cart</h1>
-        {isEmpty ? (
-          <div className="flex flex-col items-center justify-center text-center bg-white p-6 rounded-lg shadow">
-            <p className="text-2xl font-bold mb-6">Your cart is empty</p>
-            <Link to="/products" className="mt-4 text-indigo-600 hover:text-indigo-500 text-lg font-medium">
-              Continue Shopping
-            </Link>
-          </div>
-        ) : (
+      <div className="max-w-7xl relative px-3 py-5 lg:px-8 mx-auto">
+        {isEmpty ? <EmptyCart /> : (
+          <div>
+            <h1 className='text-2xl font-bold mb-5'>Shopping Cart</h1>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
               {products.map((product) => {
-                return <CartItem OnTotal={fetchTotal} OnRemove={removeItem} id={product._id} productId={product.productId} key={product._id} name={product.name} image={product.images[0]} color={product.color} size={product.size} price={product.price} />
+                return <CartItem OnTotal={fetchTotal} OnRemove={removeItem} id={product._id} productId={product.productId} key={product._id} name={product.name} image={product.images[0]} color={product.color} quantity={product.quantity} size={product.size} price={product.price} />
               })}
             </div>
             <div className="bg-white p-6 h-max rounded-lg shadow">
@@ -158,23 +207,24 @@ export default function Cart() {
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span className="font-medium">${total}.00</span>
+                  <span className="font-medium">₹{total}.00</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Shipping estimate</span>
-                  <span className="font-medium">$100.00</span>
+                  <span className="font-medium">₹100.00</span>
                 </div>
               </div>
               <div className="border-t mt-4 pt-4">
                 <div className="flex justify-between text-lg font-semibold">
                   <span>Order total</span>
-                  <span>${total + 100}.00</span>
+                  <span>₹{total + 100}.00</span>
                 </div>
               </div>
               <button className="w-full mt-6 bg-indigo-600 text-white py-2 rounded-lg shadow hover:bg-indigo-500">
                 Checkout
               </button>
             </div>
+          </div>
           </div>
         )}
       </div>

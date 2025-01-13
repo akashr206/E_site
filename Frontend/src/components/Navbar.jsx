@@ -48,7 +48,7 @@ const Navbar = () => {
 
   const Dropdown = ({ title, items }) => (
     <Popover className="relative">
-      <Popover.Button className="flex items-center text-lg font-semibold leading-6 text-gray-900">
+      <Popover.Button className="flex items-center text-lg md:text-sm font-semibold leading-6 text-gray-900">
         {title}
         <ChevronDownIcon className="h-5 w-5 text-gray-500 ml-1" />
       </Popover.Button>
@@ -67,7 +67,7 @@ const Navbar = () => {
                 onClick={() => setMobileMenuOpen(false)}
                 key={item}
                 to={`/category/${item.toLowerCase().replace(/\s+/g, "")}`}
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                className="block px-4 py-2 text-md text-gray-700 hover:bg-gray-100"
               >
                 {item}
               </Link>
@@ -92,7 +92,7 @@ const Navbar = () => {
       <Link
         onClick={() => setMobileMenuOpen(false)}
         to="/login"
-        className="text-lg font-semibold text-gray-900 flex items-center"
+        className="text-lg md:text-sm font-semibold text-gray-900 flex items-center"
       >
         Log in{" "}
         <span aria-hidden="true" className="ml-1">
@@ -107,7 +107,7 @@ const Navbar = () => {
       <nav className="mx-auto flex max-w-7xl items-center justify-between p-3 md:p-4" aria-label="Global">
         <div className="flex lg:flex-1">
           <Link to="/" className="-m-1.5 p-1.5">
-            <img className="h-8 rounded-full w-auto" src={logo} alt="Logo" />
+            <img className="h-10 rounded-full w-auto" src={logo} alt="Logo" />
           </Link>
         </div>
         <div className="hidden lg:flex lg:gap-x-4">
@@ -137,8 +137,9 @@ const Navbar = () => {
             <button type="submit" className="hidden" />
             <img
               src={searchImg}
+              onClick={()=>search && navigate(`/search?query=${encodeURIComponent(search.trim())}`)}
               alt="Search"
-              className="absolute right-2 top-1/2 transform -translate-y-1/2"
+              className="absolute cursor-pointer right-2 top-1/2 transform -translate-y-1/2"
             />
           </form>
           <UserActions />

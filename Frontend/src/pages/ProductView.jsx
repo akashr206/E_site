@@ -17,10 +17,6 @@ const ProductView = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        setIsAdding(false);
-    }, [prompt]);
-
-    useEffect(() => {
         async function fetchProduct() {
             try {
                 const response = await fetch(`${API_URL}/api/products/one/${id}`);
@@ -52,7 +48,7 @@ const ProductView = () => {
     const handleAddToCart = async () => {
         if (!user) {
             setPrompt(true)
-
+            return
         }
 
         if (!selectedVariant) return;
@@ -101,7 +97,6 @@ const ProductView = () => {
             <div className="pt-6">
                 <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
                     <div className="lg:grid lg:grid-cols-2 lg:gap-x-8">
-                        {/* Images */}
                         <div>
                             <div className="lg:col-span flex items-center justify-center h-[420px] p-1">
                                 <AnimatePresence mode="wait">
