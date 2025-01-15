@@ -19,7 +19,7 @@ function App() {
       <Navbar className="fixed"></Navbar>
       <main className='pb-9'>
         <Routes>
-          <Route path='/' element={<ProductsGrid />}></Route>
+          <Route path='/' element={<Home />}></Route>
           <Route path='/account' element={<Account />}></Route>
           <Route path='/login' element={<Login />}></Route>
           <Route path='/products/:id' element={<ProductView/>}></Route>

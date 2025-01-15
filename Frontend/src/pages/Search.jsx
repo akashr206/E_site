@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Loading from "../components/Loading";
 import { useSearchParams } from "react-router-dom";
 import Product from "../components/Product";
+import ProductsGrid from "../components/ProductsGrid";
 
 const Search = () => {
   const [searchParams] = useSearchParams();
@@ -42,18 +43,10 @@ const Search = () => {
     );
   }
 
-  return (
+  return(
     <div>
-      {isLoading && <Loading></Loading>}
-      <div className="bg-white">
-        <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-          <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-            {products.map((product) => (
-              <Product key={product.id} product={product} />
-            ))}
-          </div>
-        </div>
-      </div>
+      <h1 className="text-gray-600 my-3 font-semibold text-center text-lg mb-4">Search results for "{query}"</h1>
+      <ProductsGrid products = {products}></ProductsGrid>
     </div>
   );
 };
