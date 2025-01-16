@@ -2,50 +2,31 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Dialog, Popover, Transition } from "@headlessui/react";
 import { motion } from 'framer-motion';
-import {
-  Bars3Icon,
-  XMarkIcon,
-  ChevronDownIcon,
-} from "@heroicons/react/24/outline";
+import { Bars3Icon, XMarkIcon, ChevronDownIcon,} from "@heroicons/react/24/outline";
 import logo from "../assets/logo.jpg";
 import cartImg from "../assets/cart.svg";
 import accountImg from "../assets/account.svg";
 import searchImg from "../assets/search.svg";
 import MobileSearch from "./MobileSearch";
-
-const API_BASE_URL = import.meta.env.VITE_APIURL;
+import { useAuth } from "../Contexts/AuthContext.";
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSearch, setMobileSearch] = useState(false);
-  const [user, setUser] = useState(false);
+  const {user, logout} = useAuth();
   const sareeProducts = ["Silk Sarees", "Cotton Sarees", "Designer Sarees"];
   const salwarProducts = ["Anarkali", "Churidar", "Palazzo"];
   const kurtiProducts = ["Long Kurtis", "Short Kurtis", "Party Wear"];
   const readyMadeProducts = ["Lehengas", "Gowns", "Skirts"];
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
-
+  
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && search.trim()) {
       e.preventDefault();
       navigate(`/search?query=${encodeURIComponent(search.trim())}`);
     }
   };
-
-  useEffect(() => {
-    const isAuthenticated = async () => {
-      try {
-        let response = await fetch(`${API_BASE_URL}/api/auth/check`, {
-          credentials: "include",
-        });
-        if (response.status === 200) {
-          setUser(true);
-        }
-      } catch (error) { }
-    };
-    isAuthenticated();
-  }, [user]);
 
   const Dropdown = ({ title, items }) => (
     <Popover className="relative">

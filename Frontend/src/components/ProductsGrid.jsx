@@ -1,15 +1,7 @@
 import React from "react";
-import { useEffect, useState } from "react";
-import Loading from "./Loading";
 import Product from "./Product";
 
 const ProductsGrid = ({products}) => {
-  // const [products, setProducts] = useState([]);
-  
-
-
-  
-
   if (!products || products.length === 0) {
     return (
       <div className="text-center py-10">

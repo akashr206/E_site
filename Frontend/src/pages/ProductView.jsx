@@ -3,7 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Loading from '../components/Loading';
 import Prompt from '../components/ui/Prompt';
-const API_URL = import.meta.env.VITE_APIURL;
+import { API_URL } from '../config/api';
+import { useAuth } from '../Contexts/AuthContext.';
 
 const ProductView = () => {
     const { id } = useParams();
@@ -12,7 +13,7 @@ const ProductView = () => {
     const [selectedImage, setSelectedImage] = useState(null);
     const [isAdding, setIsAdding] = useState(false); 
     const [added, setAdded] = useState(false);
-    const [user, setUser] = useState(null);
+    const {user} = useAuth()
     const [prompt, setPrompt] = useState(false)
     const navigate = useNavigate();
 
@@ -33,15 +34,6 @@ const ProductView = () => {
                 console.error('Error fetching product:', error);
             }
         }
-
-        async function fetchUser() {
-            const response = await fetch(`${API_URL}/api/auth/check`, {
-                credentials: 'include'
-            });
-            const data = await response.json();
-            setUser(data);
-        }
-        fetchUser();
         fetchProduct();
     }, [id]);
 

@@ -1,11 +1,11 @@
 import React from 'react';
 import Logo from '../assets/logo.jpg';
+import { API_URL } from '../config/api';
 
 const IconButton = ({ icon, label, link }) => {
-    const API_URL = import.meta.env.VITE_APIURL;
     return (
         <a
-            href={`${API_URL}/auth/${link}`} // Redirect directly to the OAuth endpoint
+            href={`${API_URL}/auth/${link}`}
             className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg bg-white hover:bg-gray-100 transition-shadow shadow-sm"
         >
             <img src={icon} alt={`${label} logo`} className="w-5 h-5" />

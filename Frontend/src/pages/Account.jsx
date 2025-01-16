@@ -5,52 +5,35 @@ import pinImg from '../assets/pin.svg';
 import Info from './Account/Info';
 import Loading from '../components/Loading';
 import { useNavigate } from 'react-router-dom';
-
+import { API_URL } from '../config/api';
+import { useAuth } from '../Contexts/AuthContext.';
 const MyOrders = () => <div>Order Details Component</div>;
 const ManageAddresses = () => <div>Address Management Component</div>;
 
 
 const Account = () => {
-  const [userData, setUserData] = useState([]);
+  const {user, loadingUser, setUser} = useAuth()
   const [activeTab, setActiveTab] = useState('info');
-  const [loading, setLoading] = useState(true); 
   const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
-  const API_URL = import.meta.env.VITE_APIURL;
+  
   useEffect(() => {
-    async function fetchData() {
-      try {
-        
-        setLoading(true); 
-        const response = await fetch(`${API_URL}/api/auth/check`, {
-          credentials: 'include',
-        });
-        if (response.status !== 200) {
-          navigate('/login');
-        } else {
-          const data = await response.json();
-          setUserData(data);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false); 
-      }
+    if (!loadingUser && !user) {
+      setUser(null)
+      navigate('/login');
     }
-
-    fetchData();
     const checkDevice = () => {
       setIsMobile(window.innerWidth <= 768); 
     };
     checkDevice();
     window.addEventListener("resize", checkDevice);
     return () => window.removeEventListener("resize", checkDevice);
-  }, [navigate]);
+  }, [loadingUser, user, navigate]);
 
   const renderTabContent = () => {
     switch (activeTab) {
       case 'info':
-        return userData ? <Info user={userData} isMobile ={isMobile}/> : null;
+        return user ? <Info user={user} isMobile ={isMobile}/> : null;
       case 'orders':
         return <MyOrders />;
       case 'addresses':
@@ -60,15 +43,15 @@ const Account = () => {
     }
   };
 
-  if (loading) return <Loading />;
+  if (loadingUser) return <Loading />;
 
   if(isMobile) return (
     <div className="flex min-h-screen max-w-[960px] mx-auto bg-gray-100">
       <div className="w-max  flex flex-col gap-3 p-3">
           <img
             src={
-              userData
-                ? `${userData.image}`
+              user
+                ? `${user.image}`
                 : 'https://tse2.mm.bing.net/th?id=OIP.x7X2oAehk5M9IvGwO_K0PgHaHa&pid=Api&P=0&h=180'
             }
             alt="User"
@@ -112,8 +95,8 @@ const Account = () => {
         <div className="text-center rounded-sm min-w-[192px] shadow-md px-4 py-2 flex items-center">
           <img
             src={
-              userData
-                ? `${userData.image}`
+              user
+                ? `${user.image}`
                 : 'https://tse2.mm.bing.net/th?id=OIP.x7X2oAehk5M9IvGwO_K0PgHaHa&pid=Api&P=0&h=180'
             }
             alt="User"
@@ -122,7 +105,7 @@ const Account = () => {
           <div className="flex flex-col ml-3 items-start">
             <p className="text-sm">Hello</p>
             <p className="text-md font-semibold">
-              {userData ? `${userData.name}` : ''}
+              {user ? `${user.name}` : ''}
             </p>
           </div>
         </div>

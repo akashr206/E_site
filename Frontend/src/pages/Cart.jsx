@@ -7,11 +7,10 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { useEffect, useState } from 'react'
 import Loading from '../components/Loading'
 import EmptyCart from '../components/EmptyCart';
-import { div } from 'framer-motion/client';
-
+import { useAuth } from '../Contexts/AuthContext.';
+import { API_URL } from '../config/api';
 const NonCart = () => {
   const navigate = useNavigate();
-
   return (
     <div className="flex items-center justify-center absolute w-full -z-10 top-0 h-screen px-4">
       <div className="text-center bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
@@ -50,23 +49,10 @@ const NonCart = () => {
 
 const CartItem = (product) => {
   
-  const [quantity, setquantity] = useState(product.quantity)
+  const [quantity, setquantity] = useState(1)
   const [stock, setStock] = useState(3)
-  const API_URL = import.meta.env.VITE_APIURL;
-  async function updateQuantity(id, quantity) {
-    const response = await fetch(`${API_URL}/api/cart/update/`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ quantity, cartItemId: id }),
-      credentials: 'include'
-    });
-    const data = await response.json();
-    setquantity(data.updatedItem.quantity)
-    product.OnTotal()
-    return data;
-  }
+  
+  
 
   useEffect(() => {
     async function fetchStock() {
@@ -99,7 +85,7 @@ const CartItem = (product) => {
         <Menu as="div" className="relative inline-block text-left m-4">
           <div>
             <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-              {quantity}
+              {product.quantity}
               <ChevronDownIcon aria-hidden="true" className="-mr-1 size-5 text-gray-400" />
             </MenuButton>
           </div>
@@ -112,7 +98,7 @@ const CartItem = (product) => {
               {Array.from({ length: stock }, (_, index) => (
                 <MenuItem key={index}>
                   <a
-                    onClick={() => updateQuantity(product.id, index + 1)}
+                    onClick={() => product.onUpdate(product.id, index + 1)}
                     className="block cursor-pointer px-4 py-2 w-max text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
                   >
                     {index + 1}
@@ -132,8 +118,8 @@ export default function Cart() {
   const [total, setTotal] = useState(0)
   const [isEmpty, setIsEmpty] = useState(true)
   const [isLoading, setIsLoading] = useState(true)
-  const [user, setUser] = useState(null);
-  const API_URL = import.meta.env.VITE_APIURL;
+  const {user, loadingUser} = useAuth()
+  
   async function fetchCart() {
     const response = await fetch(`${API_URL}/api/cart/user`, { credentials: 'include' })
     const products = await response.json()
@@ -155,6 +141,20 @@ export default function Cart() {
     setIsLoading(false)
   }
 
+  async function updateQuantity(id, quantity) {
+    const response = await fetch(`${API_URL}/api/cart/update/`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ quantity, cartItemId: id }),
+      credentials: 'include'
+    });
+    const data = await response.json();
+    fetchCart()
+    fetchTotal()
+    return data;
+  }
   async function fetchTotal() {
     setIsLoading(true)
     const response = await fetch(`${API_URL}/api/cart/total`, { credentials: 'include' })
@@ -164,38 +164,22 @@ export default function Cart() {
   }
 
   useEffect(() => {
-    async function checkAuth() {
-      try {
-        const response = await fetch(`${API_URL}/api/auth/check`, { credentials: 'include' })
-        const data = await response.json();
-        setUser(data);
-      } catch (error) {
-        console.error("Error checking authentication:", error);
-      }
-    }
-
-/**
- * Loads cart data by fetching the user's cart items and the total price.
- * Sets the loading state while data is being fetched.
- * Logs an error message if there is an issue loading the cart data.
- */
 
     async function loadData() {
       try {
         setIsLoading(true);
-        await Promise.all([fetchCart(), fetchTotal(),checkAuth()]);
+        await Promise.all([fetchCart(), fetchTotal()]);
       } catch (error) {
         console.error("Error loading cart data:", error);
       } finally {
         setIsLoading(false);
       }
     }
-    loadData();
-    
+      loadData();
   }, [])
 
-  if (isLoading) return <Loading />
-  if (!user) return <NonCart />
+  if (isLoading ) return <Loading />
+  if (!user && !loadingUser) return <NonCart />
   return (
     <>
       <div className="max-w-7xl relative px-3 py-5 lg:px-8 mx-auto">
@@ -205,7 +189,7 @@ export default function Cart() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
               {products.map((product) => {
-                return <CartItem OnTotal={fetchTotal} OnRemove={removeItem} id={product._id} productId={product.productId} key={product._id} name={product.name} image={product.images[0]} color={product.color} quantity={product.quantity} size={product.size} price={product.price} />
+                return <CartItem onUpdate={(id,quantity)=>updateQuantity(id,quantity)} OnRemove={removeItem} id={product._id} productId={product.productId} key={product._id} name={product.name} image={product.images[0]} color={product.color} quantity={product.quantity} size={product.size} price={product.price} />
               })}
             </div>
             <div className="bg-white p-6 h-max rounded-lg shadow">

@@ -2,13 +2,12 @@ import { useParams } from 'react-router-dom';
 import { useState, useEffect } from "react";
 import Loading from "../components/Loading";
 import Product from "../components/Product";
-
+import { API_URL } from '../config/api';
 
 const Category = () => {
     const  {query}  = useParams();
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const API_URL = import.meta.env.VITE_APIURL;
     useEffect(() => {
         
       async function fetchProducts() {

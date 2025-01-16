@@ -93,11 +93,6 @@ router.get('/callback', async (req, res) => {
   }
 });
 
-// Logout endpoint
-router.post('/logout', (req, res) => {
-  // Clear the token cookie to log the user out
-  res.clearCookie('token');
-  res.status(200).send({ message: 'Logged out successfully' });
-});
+
 
 module.exports = router;
