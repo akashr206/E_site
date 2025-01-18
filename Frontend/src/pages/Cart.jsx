@@ -178,7 +178,7 @@ export default function Cart() {
       loadData();
   }, [])
 
-  if (isLoading ) return <Loading />
+  if (isLoading && loadingUser) return <Loading />
   if (!user && !loadingUser) return <NonCart />
   return (
     <>

@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const isAuthenticated = require('./middlewares/auth');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 const { default: mongoose } = require('mongoose');
@@ -41,7 +42,7 @@ connectDB();
 // Routes
 app.use('/api/products', ProductRoutes);
 app.use('/search', searchRoutes);
-app.use('/api/cart', cartRoutes);
+app.use('/api/cart', isAuthenticated, cartRoutes);
 
 // Authentication routes (Login, Logout)
 app.use('/auth/google', googleAuth);

@@ -1,5 +1,4 @@
 const express = require('express');
-const isAuthenticated = require('../middlewares/auth');
 const {
     addToCart,
     getCart,
@@ -12,12 +11,12 @@ const {
 
 const router = express.Router();
 
-router.post('/add',isAuthenticated, addToCart);
-router.get('/user', isAuthenticated, getCart);
-router.put('/update',isAuthenticated, updateCartQuantity);
-router.delete('/remove/:itemId',isAuthenticated, removeFromCart);
-router.delete('/clear',isAuthenticated, clearCart);
-router.get('/total',isAuthenticated, getCartTotalPrice);
+router.post('/add', addToCart);
+router.get('/user',  getCart);
+router.put('/update', updateCartQuantity);
+router.delete('/remove/:itemId', removeFromCart);
+router.delete('/clear', clearCart);
+router.get('/total', getCartTotalPrice);
 router.get('/count', getCartCount);
 
 module.exports = router;

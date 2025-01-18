@@ -82,7 +82,7 @@ router.get('/callback', async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', 
       sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'strict',
-      maxAge: 3600000 * 24, 
+      maxAge: 3600000 * 48, 
     });
 
     // Redirect to the frontend dashboard after login
