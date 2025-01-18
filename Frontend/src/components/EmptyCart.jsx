@@ -4,7 +4,7 @@ import { ShoppingCartIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
 
 const EmptyCart = () => {
   return (
-    <div className="flex items-center justify-center h-[90vh] ">
+    <div className="flex items-center justify-center h-[100vh] ">
       <div className="flex flex-col items-center text-center bg-white p-8 rounded-lg shadow-md transition-all duration-300 hover:shadow-xl">
         <div className="bg-indigo-100 p-4 rounded-full mb-4">
           <ShoppingCartIcon className="h-12 w-12 text-indigo-600" />

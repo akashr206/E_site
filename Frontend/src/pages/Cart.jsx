@@ -116,7 +116,7 @@ const CartItem = (product) => {
 export default function Cart() {
   const [products, setProducts] = useState([])
   const [total, setTotal] = useState(0)
-  const [isEmpty, setIsEmpty] = useState(true)
+  const [isEmpty, setIsEmpty] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const {user, loadingUser} = useAuth()
   
@@ -178,7 +178,7 @@ export default function Cart() {
       loadData();
   }, [])
 
-  if (isLoading && loadingUser) return <Loading />
+  if (isLoading || loadingUser) return <Loading />
   if (!user && !loadingUser) return <NonCart />
   return (
     <>
