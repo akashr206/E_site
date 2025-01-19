@@ -4,9 +4,10 @@ import Logo from '../assets/logo.jpg';
 // import { initializeRecaptcha } from '../../../Backend/firebase/reCaptcha'; // Import initializeRecaptcha
 
 const IconButton = ({ icon, label, link }) => {
+    const API_URL = import.meta.env.VITE_APIURL
     return (
         <a
-            href={`/auth/${link}`}
+            href={`${API_URL}/auth/${link}`}
             className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg bg-white hover:bg-gray-100 transition-shadow shadow-sm"
         >
             <img src={icon} alt={`${label} logo`} className="w-5 h-5" />
