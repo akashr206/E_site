@@ -7,23 +7,23 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { useEffect, useState } from 'react'
 import Loading from '../components/Loading'
 import EmptyCart from '../components/EmptyCart';
-import { useAuth } from '../Contexts/AuthContext.';
+import { useAuth } from '../Contexts/AuthContext';
 import { API_URL } from '../config/api';
 const NonCart = () => {
   const navigate = useNavigate();
   return (
     <div className="flex items-center justify-center absolute w-full -z-10 top-0 h-screen px-4">
       <div className="text-center bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
-        
+
         <LockClosedIcon className="w-12 h-12 text-indigo-600 mx-auto mb-4" />
-        
+
         <h1 className="text-2xl font-bold text-gray-800 mb-4">
           Oops! Your Cart is Locked
         </h1>
         <p className="text-gray-600 mb-6">
           Login to unlock your cart and start adding your favorite items!
         </p>
-        
+
         <button
 
           onClick={() => navigate("/login")}
@@ -48,11 +48,10 @@ const NonCart = () => {
 
 
 const CartItem = (product) => {
-  
-  const [quantity, setquantity] = useState(1)
+
   const [stock, setStock] = useState(3)
-  
-  
+
+
 
   useEffect(() => {
     async function fetchStock() {
@@ -76,7 +75,7 @@ const CartItem = (product) => {
       <div className="ml-4 flex-1">
         <h2 className="text-lg font-semibold">{product.name}</h2>
         <p className="text-gray-500">{product.color} &bull; {product.size}</p>
-        <p className="mt-2 text-gray-700 font-medium">{product.price}</p>
+        <p className="mt-2 text-gray-700 font-medium">₹{product.price}.00</p>
       </div>
       <div className="flex flex-col items-center space-x-2">
         <button onClick={() => product.OnRemove(product.id)} className="text-gray-400 flex justify-end w-full hover:text-red-500">
@@ -118,8 +117,8 @@ export default function Cart() {
   const [total, setTotal] = useState(0)
   const [isEmpty, setIsEmpty] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const {user, loadingUser} = useAuth()
-  
+  const { user, loadingUser } = useAuth()
+
   async function fetchCart() {
     const response = await fetch(`${API_URL}/api/cart/user`, { credentials: 'include' })
     const products = await response.json()
@@ -158,7 +157,7 @@ export default function Cart() {
   async function fetchTotal() {
     setIsLoading(true)
     const response = await fetch(`${API_URL}/api/cart/total`, { credentials: 'include' })
-    const data = await response.json()    
+    const data = await response.json()
     setTotal(data.totalPrice)
     setIsLoading(false)
   }
@@ -175,21 +174,21 @@ export default function Cart() {
         setIsLoading(false);
       }
     }
-      loadData();
+    loadData();
   }, [])
 
   if (isLoading || loadingUser) return <Loading />
   if (!user && !loadingUser) return <NonCart />
+  if (isEmpty) return <EmptyCart />
   return (
     <>
-      <div className="max-w-7xl relative px-3 py-5 lg:px-8 mx-auto">
-        {isEmpty ? <EmptyCart /> : (
-          <div>
-            <h1 className='text-2xl font-bold mb-5'>Shopping Cart</h1>
+      <div className="max-w-7xl lg:mb-12 relative px-3 py-5 lg:px-8 mx-auto">
+        <div>
+          <h1 className='text-2xl font-bold mb-5'>Shopping Cart</h1>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
               {products.map((product) => {
-                return <CartItem onUpdate={(id,quantity)=>updateQuantity(id,quantity)} OnRemove={removeItem} id={product._id} productId={product.productId} key={product._id} name={product.name} image={product.images[0]} color={product.color} quantity={product.quantity} size={product.size} price={product.price} />
+                return <CartItem onUpdate={(id, quantity) => updateQuantity(id, quantity)} OnRemove={removeItem} id={product._id} productId={product.productId} key={product._id} name={product.name} image={product.images[0]} color={product.color} quantity={product.quantity} size={product.size} price={product.price} />
               })}
             </div>
             <div className="bg-white p-6 h-max rounded-lg shadow">
@@ -215,8 +214,8 @@ export default function Cart() {
               </button>
             </div>
           </div>
-          </div>
-        )}
+        </div>
+
       </div>
     </>
   )

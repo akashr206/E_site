@@ -9,6 +9,7 @@ const {
     getCartTotal,
     getCartItemCount,
     validateStock,
+    updateCartItemVariant
 } = require('../services/cart');
 
 // Add a product to the cart
@@ -16,7 +17,6 @@ const addToCart = async (req, res) => {
     const { productId, name, images, price, color, size, quantity } = req.body;
     const userId = req.user.id;
     
-
     try {
         // Validate stock
         const isStockAvailable = await validateStock(productId, color, size, quantity);
@@ -26,10 +26,11 @@ const addToCart = async (req, res) => {
 
         // Check if product is already in the cart
         const productExists = await isProductInCart(productId, userId);
+        
         if (productExists) {
-            return res.status(400).json({ message: 'Product is already in the cart' });
+            updateCartItemVariant(productExists, color, size);
+            return res.status(200).json({ message: 'Cart updated' });
         }
-
         // Add the product to the cart
         const cartItem = await createCartItem({ productId, name, images, color, price, size, quantity, userId });
         res.status(201).json({ message: 'Product added to cart', cartItem });
@@ -115,6 +116,7 @@ const getCartCount = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 module.exports = {
     addToCart,

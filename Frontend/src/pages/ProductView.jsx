@@ -4,32 +4,86 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Loading from '../components/Loading';
 import Prompt from '../components/ui/Prompt';
 import { API_URL } from '../config/api';
-import { useAuth } from '../Contexts/AuthContext.';
+import { useAuth } from '../Contexts/AuthContext';
 
 const ProductView = () => {
     const { id } = useParams();
     const [product, setProduct] = useState(null);
     const [selectedVariant, setSelectedVariant] = useState(null);
+    const [colors, setColors] = useState(null)
+    const [sizes, setSizes] = useState([" "])
+    const [selectedColor, setSelectedColor] = useState(null)
+    const [selectedSize, setSelectedSize] = useState(null)
     const [selectedImage, setSelectedImage] = useState(null);
-    const [isAdding, setIsAdding] = useState(false); 
+    const [isAdding, setIsAdding] = useState(false);
+    const [isUpdated, setIsUpdated] = useState(false);
     const [added, setAdded] = useState(false);
-    const {user} = useAuth()
+    const [error, setError] = useState(false);
+    const { user } = useAuth()
     const [prompt, setPrompt] = useState(false)
-    const navigate = useNavigate();
+
+    function handleSelectColor(color){
+        setSelectedColor(color)
+    }
+
+    useEffect(() => {
+        if (colors) {
+            let selected = colors.find(c => Object.keys(c)[0] === selectedColor)
+            console.log(selected[selectedColor]);
+            setSizes(selected[selectedColor])
+            setSelectedSize(selected[selectedColor][0])
+        }
+    }, [selectedColor])
+    
+
+    function fetchSizes(product) {
+        const varies = product.variants;
+        const colors = {};
+        varies.forEach(vary => {
+            let color = vary.color.toLowerCase();
+            const size = vary.size;
+            const stock = vary.stock;
+
+            color = color.charAt(0).toUpperCase() + color.slice(1);
+            if (!colors[color]) {
+                colors[color] = new Set();
+            }
+    
+            if (stock > 0) {
+                colors[color].add(size);
+            }
+        });
+    
+        const formattedColors = Object.keys(colors).map(color => {
+            return { [color]: Array.from(colors[color]) };
+        });
+    
+        // console.log('Formatted Colors:', formattedColors);
+        setColors(formattedColors);
+        setSelectedColor(Object.keys(formattedColors[0])[0]);
+    }
+    
+
 
     useEffect(() => {
         async function fetchProduct() {
             try {
                 const response = await fetch(`${API_URL}/api/products/one/${id}`);
-                const data = await response.json();
-                setProduct(data);
+                if (response.status === 200) {
+                    const data = await response.json();
+                    setProduct(data)
+                    if (data.variants?.length > 0) {
+                        fetchSizes(data)
+                        setSelectedVariant(data.variants[0]);
+                        
+                    }
+                    if (data.images?.length > 0) {
+                        setSelectedImage(data.images[0]);
+                    }
+                } else {
+                    setError(true)
+                }
 
-                if (data.variants.length > 0) {
-                    setSelectedVariant(data.variants[0]);
-                }
-                if (data.images.length > 0) {
-                    setSelectedImage(data.images[0]);
-                }
             } catch (error) {
                 console.error('Error fetching product:', error);
             }
@@ -43,7 +97,7 @@ const ProductView = () => {
             return
         }
 
-        if (!selectedVariant) return;
+        if (!selectedColor && !selectedSize) return;
         setIsAdding(true);
         setAdded(false);
 
@@ -58,25 +112,36 @@ const ProductView = () => {
                 images: product.images,
                 price: product.price,
                 quantity: 1,
-                color: selectedVariant.color,
-                size: selectedVariant.size
+                color: selectedColor,
+                size: selectedSize
             }),
             credentials: 'include'
         });
 
         setIsAdding(false);
-        
+
         if (response.status === 201) {
             setAdded(true);
-            setTimeout(() => setAdded(false), 1500);
+            setTimeout(() => setAdded(false), 1000);
+        }
+        if (response.status === 200) {
+            setIsUpdated(true);
+            setTimeout(() => setIsUpdated(false), 1000);
         }
     };
+
+    
+    if (error) {
+        return (
+            <h1>"There was an error Finding the Product"</h1>
+        )
+    }
 
     if (!product) {
         return <Loading></Loading>;
     }
 
-    return (
+    if (!error) return (
         <div className="bg-white">
             {prompt && (
                 <Prompt
@@ -84,9 +149,9 @@ const ProductView = () => {
                     text="You need to log in to add items to your cart"
                     to="login"
                     toValue="Login"
-                    close={() => setPrompt(false)} 
+                    close={() => setPrompt(false)}
                 />
-            ) }
+            )}
             <div className="pt-6">
                 <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
                     <div className="lg:grid lg:grid-cols-2 lg:gap-x-8">
@@ -144,48 +209,48 @@ const ProductView = () => {
                                 animate={{ opacity: 1 }}
                                 transition={{ duration: 0.4, delay: 0.3 }}
                             >
-                                ₹{product.price}
+                                ₹{product.price}.00
                             </motion.p>
 
                             <div className="mt-6">
                                 <h3 className="text-sm font-medium text-gray-900">Variants</h3>
                                 <div className="mt-2">
-                                    {product.variants.map((variant, index) => (
+                                    <div className="font-medium my-3">Color : {selectedColor}</div>
+                                    {colors.map((color, index) => (
+                                        
+                                        
                                         <motion.button
                                             key={index}
                                             whileHover={{ scale: 1.05 }}
                                             whileTap={{ scale: 0.95 }}
-                                            onClick={() => setSelectedVariant(variant)}
-                                            className={`p-2 border ${selectedVariant === variant ? 'border-indigo-500' : 'border-gray-300'
-                                                } rounded-md mr-2`}
+                                            onClick={() => handleSelectColor(Object.keys(color)[0])}
+                                            className={`p-2 border ${selectedColor === Object.keys(color)[0] ? 'bg-indigo-500 text-white' : 'border-gray-300'
+                                                } rounded-sm mr-2`}
                                         >
-                                            {variant.color} - {variant.size}
+                                            {Object.keys(color)[0]}
+                                        </motion.button>
+                                    ))}
+                                    <div className="font-medium my-3">Size : {selectedSize}</div>
+                                    {sizes.map((size, index) => (
+                                        <motion.button
+                                            key={index}
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}
+                                            onClick={() => setSelectedSize(size)}
+                                            className={`p-2 border ${selectedSize === size ? 'bg-indigo-500 text-white' : 'border-gray-300'
+                                                } rounded-sm mr-2`}
+                                        >
+                                            {size}
                                         </motion.button>
                                     ))}
                                 </div>
                             </div>
 
-                            {selectedVariant && (
-                                <motion.div
-                                    className="mt-6"
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.3 }}
-                                >
-                                    <p>
-                                        <span className="font-medium">Color:</span> {selectedVariant.color}
-                                    </p>
-                                    <p>
-                                        <span className="font-medium">Size:</span> {selectedVariant.size}
-                                    </p>
-                                </motion.div>
-                            )}
-
                             <motion.button
                                 onClick={handleAddToCart}
                                 className={`mt-6 w-full py-2 rounded-md text-white ${isAdding
                                     ? 'bg-gray-400 cursor-not-allowed'
-                                    : added
+                                    : added || isUpdated
                                         ? 'bg-green-500'
                                         : 'bg-indigo-600 hover:bg-indigo-700'
                                     }`}
@@ -193,7 +258,7 @@ const ProductView = () => {
                                 whileHover={!isAdding && !added ? { scale: 1.02 } : undefined}
                                 whileTap={!isAdding && !added ? { scale: 0.98 } : undefined}
                             >
-                                {isAdding ? 'Adding...' : added ? 'Added to Cart' : 'Add to Cart'}
+                                {isAdding ? 'Adding...' : added ? 'Added to Cart' : isUpdated ? 'Updated the Cart' : 'Add to Cart'}
                             </motion.button>
                         </div>
                     </div>

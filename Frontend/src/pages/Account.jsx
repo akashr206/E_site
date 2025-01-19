@@ -6,7 +6,7 @@ import Info from './Account/Info';
 import Loading from '../components/Loading';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../config/api';
-import { useAuth } from '../Contexts/AuthContext.';
+import { useAuth } from '../Contexts/AuthContext';
 const MyOrders = () => <div>Order Details Component</div>;
 const ManageAddresses = () => <div>Address Management Component</div>;
 
@@ -20,7 +20,6 @@ const Account = () => {
   useEffect(() => {
     if (!loadingUser && !user) {
       setUser(null)
-      navigate('/login');
     }
     const checkDevice = () => {
       setIsMobile(window.innerWidth <= 768); 

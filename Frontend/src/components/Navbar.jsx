@@ -8,7 +8,7 @@ import cartImg from "../assets/cart.svg";
 import accountImg from "../assets/account.svg";
 import searchImg from "../assets/search.svg";
 import MobileSearch from "./MobileSearch";
-import { useAuth } from "../Contexts/AuthContext.";
+import { useAuth } from "../Contexts/AuthContext";
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -27,6 +27,12 @@ const Navbar = () => {
       navigate(`/search?query=${encodeURIComponent(search.trim())}`);
     }
   };
+  
+  const handleLogout = () => {
+    logout();
+    navigate('/')
+    setMobileMenuOpen(false);
+  }
 
   const Dropdown = ({ title, items }) => (
     <Popover className="relative">
@@ -190,6 +196,12 @@ const Navbar = () => {
             <div className='ml-6'>
 
               <UserActions  />
+              {user && <p className="text-lg cursor-pointer md:text-sm text-red-500 my-3 font-semibold flex items-center" onClick={handleLogout}>
+                Logout
+              </p>}
+            </div>
+            <div>
+              
             </div>
           </motion.div>
         </motion.div>

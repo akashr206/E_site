@@ -19,7 +19,7 @@ const updateProduct = async (id, updateItem) => {
 const findProductById = async (id) => {
     const product = await Products.findOne({id : id});
     if (!product) {
-        throw new Error('Product not found');
+        return null
     }
     return product;
 };

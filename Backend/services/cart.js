@@ -1,3 +1,4 @@
+const { log } = require('console');
 const CartItem = require('../models/CartItem');
 const Product = require('../models/Product'); // Product model for stock validation
 
@@ -23,6 +24,16 @@ const updateCartItemQuantity = async (id, quantity) => {
     return updatedItem;
 };
 
+// Update the variant of a product in the cart
+const updateCartItemVariant = async (id, color, size) => {
+    const updatedItem = await CartItem.findByIdAndUpdate(
+        id,
+        { color, size },
+        { new: true }
+    );
+    return updatedItem;
+};
+
 // Remove a product from the cart
 const removeProductFromCart = async (itemId) => {
     const removedProduct = await CartItem.findByIdAndDelete(itemId);
@@ -38,7 +49,7 @@ const clearUserCart = async (userId) => {
 // Check if a product is already in the user's cart
 const isProductInCart = async (productId, userId) => {
     const product = await CartItem.findOne({ productId, userId });
-    return product ? true : false;
+    return product?._id
 };
 
 // Retrieve the total price of all products in the user's cart
@@ -88,4 +99,5 @@ module.exports = {
     getCartTotal,
     getCartItemCount,
     validateStock,
+    updateCartItemVariant
 };

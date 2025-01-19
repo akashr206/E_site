@@ -1,6 +1,15 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 import InputDisable from '../../components/ui/InputDisable';
+import { useAuth } from '../../Contexts/AuthContext';
 const Info = (props) => {
+    const navigate = useNavigate();
+    const { logout } = useAuth();
+    const handleLogout = () => {
+        logout();
+        navigate('/')
+        // setMobileMenuOpen(false);
+      }
 
     return (
         <div className={`${props.isMobile ? "" : "shadow-md p-6"} `}>
@@ -54,6 +63,9 @@ const Info = (props) => {
                     />
                 </div>
             </form>
+            <p className="text-lg cursor-pointer text-red-500 my-3 font-semibold flex justify-center" onClick={handleLogout}>
+                Logout
+              </p>
         </div>
     )
 }
