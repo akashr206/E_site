@@ -28,8 +28,8 @@ const Login = () => {
             return;
         }
         try {
-            const recaptchaContainer = document.getElementById("recaptcha-container"); // Get the recaptcha container element
-            await initializeRecaptcha(recaptchaContainer); // Pass the element to initializeRecaptcha
+            const recaptchaContainer = document.getElementById("recaptcha-container");
+            await initializeRecaptcha(recaptchaContainer); 
             const result = await sendOtp(phoneNumber, recaptchaContainer);
             setConfirmationResult(result);
             setIsOtpSent(true);

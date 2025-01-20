@@ -1,7 +1,7 @@
 // Recaptcha.js
 import { getAuth, RecaptchaVerifier } from "firebase/auth";
-
-const Auth = getAuth();
+import app from './config'
+const Auth = getAuth(app);
 
 const initializeRecaptcha = async (auth = Auth, containerId) => {
     return new Promise((resolve, reject) => {
