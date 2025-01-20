@@ -1,5 +1,5 @@
 // PhoneAuth.js
-import { getAuth, signInWithPhoneNumber } from "firebase/auth";
+import { getAuth, signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
 import { initializeRecaptcha } from "./reCaptcha";
 import app from './config';
 
