@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Logo from '../assets/logo.jpg';
 // import { sendOtp } from '../../../Backend/firebase/PhoneAuth';
-// import { initializeRecaptcha } from '../../../Backend/firebase/reCaptcha'; // Import initializeRecaptcha
+// import { initializeRecaptcha } from '../../../Backend/firebase/reCaptcha';
 
 const IconButton = ({ icon, label, link }) => {
     const API_URL = import.meta.env.VITE_APIURL
@@ -23,7 +23,6 @@ const Login = () => {
     const [isOtpSent, setIsOtpSent] = useState(false);
 
     const handleSendOtp = async () => {
-        return
         if (!phoneNumber) {
             alert("Please enter a valid phone number");
             return;
@@ -42,7 +41,6 @@ const Login = () => {
     };
 
     const handleVerifyOtp = async () => {
-        return
         if (!otp) {
             alert("Please enter the OTP");
             return;
