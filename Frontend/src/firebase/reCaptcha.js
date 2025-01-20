@@ -6,11 +6,6 @@ const Auth = getAuth(app);
 const initializeRecaptcha = async (auth = Auth, containerId) => {
     return new Promise((resolve, reject) => {
         try {
-            if (window.recaptchaVerifier) {
-                resolve();
-                return;
-            }
-
             window.recaptchaVerifier = new RecaptchaVerifier(
                 containerId,
                 {

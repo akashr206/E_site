@@ -7,21 +7,7 @@ const auth = getAuth(app);
 
 const sendOtp = async (phoneNumber, recaptchaContainerId) => {
     try {
-        window.recaptchaVerifier = new RecaptchaVerifier(
-            recaptchaContainerId,
-            {
-                size: "invisible",
-                callback: (response) => {
-                    console.log("reCAPTCHA solved:", response);
-                    resolve();
-                },
-                "expired-callback": () => {
-                    console.warn("reCAPTCHA expired. Please try again.");
-                    reject("reCAPTCHA expired.");
-                },
-            },
-            auth
-        );
+        await initializeRecaptcha(auth, recaptchaContainerId)
 
         const confirmationResult = await signInWithPhoneNumber(
             auth,
