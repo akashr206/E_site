@@ -5,13 +5,6 @@ import app from './config';
 
 const auth = getAuth(app);
 
-/**
- * Sends OTP to the specified phone number.
- *
- * @param {string} phoneNumber 
- * @param {string} recaptchaContainerId
- * @returns {Promise<object>}
- */
 const sendOtp = async (phoneNumber, recaptchaContainerId) => {
     try {
         await initializeRecaptcha(auth, recaptchaContainerId);
