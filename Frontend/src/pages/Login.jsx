@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Logo from '../assets/logo.jpg';
-// import { sendOtp } from '../../../Backend/firebase/PhoneAuth';
-// import { initializeRecaptcha } from '../../../Backend/firebase/reCaptcha';
+import { sendOtp } from '../../../Backend/firebase/PhoneAuth';
+import { initializeRecaptcha } from '../../../Backend/firebase/reCaptcha';
 
 const IconButton = ({ icon, label, link }) => {
     const API_URL = import.meta.env.VITE_APIURL
