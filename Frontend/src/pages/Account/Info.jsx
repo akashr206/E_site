@@ -52,16 +52,6 @@ const Info = (props) => {
                     />
                 </div>
 
-                <div>
-                    <label className="block text-gray-600 mb-2">
-                        Mobile Number{" "}
-                    </label>
-                    <input
-                        type="text"
-                        placeholder="+91XXXXXXXXXX"
-                        className="p-3 border bg-transparent border-gray-300 rounded-md w-full"
-                    />
-                </div>
             </form>
             <p className="text-lg cursor-pointer text-red-500 my-3 font-semibold flex justify-center" onClick={handleLogout}>
                 Logout

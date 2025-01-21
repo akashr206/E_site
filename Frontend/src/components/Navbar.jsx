@@ -9,6 +9,8 @@ import accountImg from "../assets/account.svg";
 import searchImg from "../assets/search.svg";
 import MobileSearch from "./MobileSearch";
 import { useAuth } from "../Contexts/AuthContext";
+import { API_URL } from "../config/api";
+import googleImg from '../assets/google.png'
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -30,8 +32,7 @@ const Navbar = () => {
   
   const handleLogout = () => {
     logout();
-    navigate('/')
-    setMobileMenuOpen(false);
+    window.location.href = '/'
   }
 
   const Dropdown = ({ title, items }) => (
@@ -79,13 +80,13 @@ const Navbar = () => {
     ) : (
       <Link
         onClick={() => setMobileMenuOpen(false)}
-        to="/login"
-        className="text-lg md:text-sm font-semibold text-gray-900 flex items-center"
+        to={`${API_URL}/auth/google`}
+        className="text-lg md:text-sm font-semibold text-gray-900 flex gap-2 items-center"
       >
-        Log in{" "}
         <span aria-hidden="true" className="ml-1">
-          &rarr;
+          <img className="w-6 h-6" src={googleImg} alt="" />
         </span>
+        Log in{" "}
       </Link>
     );
   };
@@ -155,6 +156,9 @@ const Navbar = () => {
         </div>
       </nav>
       <Dialog as="div" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
+        <div className="w-screen relative h-screen ">
+
+        
         <motion.div
           className="fixed inset-0 z-10 overflow-y-auto bg-white px-4 py-4 lg:hidden"
           initial={{ x: '100%' }}
@@ -205,6 +209,7 @@ const Navbar = () => {
             </div>
           </motion.div>
         </motion.div>
+        </div>
       </Dialog>
       {mobileSearch && <MobileSearch closeSearch={() => setMobileSearch(false)} />}
     </header>
