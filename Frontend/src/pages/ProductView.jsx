@@ -29,7 +29,6 @@ const ProductView = () => {
     useEffect(() => {
         if (colors) {
             let selected = colors.find(c => Object.keys(c)[0] === selectedColor)
-            console.log(selected[selectedColor]);
             setSizes(selected[selectedColor])
             setSelectedSize(selected[selectedColor][0])
         }
@@ -224,8 +223,8 @@ const ProductView = () => {
                                             whileHover={{ scale: 1.05 }}
                                             whileTap={{ scale: 0.95 }}
                                             onClick={() => handleSelectColor(Object.keys(color)[0])}
-                                            className={`p-2 border ${selectedColor === Object.keys(color)[0] ? 'bg-indigo-500 text-white' : 'border-gray-300'
-                                                } rounded-sm mr-2`}
+                                            className={`p-2 rounded-lg border ${selectedColor === Object.keys(color)[0] ? 'bg-indigo-500 text-white' : 'border-gray-300'
+                                                } mr-2`}
                                         >
                                             {Object.keys(color)[0]}
                                         </motion.button>
@@ -237,8 +236,8 @@ const ProductView = () => {
                                             whileHover={{ scale: 1.05 }}
                                             whileTap={{ scale: 0.95 }}
                                             onClick={() => setSelectedSize(size)}
-                                            className={`p-2 border ${selectedSize === size ? 'bg-indigo-500 text-white' : 'border-gray-300'
-                                                } rounded-sm mr-2`}
+                                            className={`p-2 min-w-11 border ${selectedSize === size ? 'bg-indigo-500 text-white' : 'border-gray-300'
+                                                } rounded-lg mr-2`}
                                         >
                                             {size}
                                         </motion.button>

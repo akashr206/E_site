@@ -9,7 +9,7 @@ const VariantSchema = new Schema({
     size: { 
         type: String, 
         required: true, 
-        enum: ['XS', 'S', 'M', 'L', 'XL', 'XXL']
+        enum: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'Free Size']
     },
     stock: { 
         type: Number, 
