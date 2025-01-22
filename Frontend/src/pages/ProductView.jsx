@@ -211,7 +211,7 @@ const ProductView = () => {
                                 ₹{product.price}.00
                             </motion.p>
 
-                            <div className="mt-6">
+                            <div className="mt-4">
                                 <h3 className="text-sm font-medium text-gray-900">Variants</h3>
                                 <div className="mt-2">
                                     <div className="font-medium my-3">Color : {selectedColor}</div>
@@ -272,7 +272,7 @@ const ProductView = () => {
                         <p className="mt-2 text-gray-600">{product.description}</p>
                     </motion.div>
 
-                    {product.tags.length > 0 && (
+                    {/* {product.tags.length > 0 && (
                         <motion.div
                             className="mt-6"
                             initial={{ opacity: 0, y: 10 }}
@@ -291,7 +291,7 @@ const ProductView = () => {
                                 ))}
                             </ul>
                         </motion.div>
-                    )}
+                    )} */}
                 </div>
             </div>
         </div>

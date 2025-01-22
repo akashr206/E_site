@@ -1,15 +1,12 @@
 const Products = require('../models/Product')
 
-const findProducts = async (query)=>{
+
+const findProducts = async (query) => {
     const searchedProducts = await Products.find(
-        {
-            $or: [
-                { name: { $regex: query, $options: "i" } },
-                { tags: { $regex: query, $options: "i" } }
-            ]
-        }
-    );
+        { $text: { $search: query } },
+        { score: { $meta: "textScore" } }
+    ).sort({ score: { $meta: "textScore" } });
     return searchedProducts
 }
 
-module.exports = {findProducts}
+module.exports = { findProducts }

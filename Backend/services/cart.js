@@ -28,7 +28,7 @@ const updateCartItemQuantity = async (id, quantity) => {
 const updateCartItemVariant = async (id, color, size) => {
     const updatedItem = await CartItem.findByIdAndUpdate(
         id,
-        { color, size },
+        { color, size, quantity : 1 },
         { new: true }
     );
     return updatedItem;

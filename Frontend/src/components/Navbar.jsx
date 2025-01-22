@@ -55,7 +55,7 @@ const Navbar = () => {
               <Link
                 onClick={() => setMobileMenuOpen(false)}
                 key={item}
-                to={`/category/${item.toLowerCase().replace(/\s+/g, "")}`}
+                to={`/category/${item.toLowerCase().replace(/\s+/g, " ")}`}
                 className="block px-4 py-2 text-md text-gray-700 hover:bg-gray-100"
               >
                 {item}
