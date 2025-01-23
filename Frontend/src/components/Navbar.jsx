@@ -1,16 +1,21 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Dialog, Popover, Transition } from "@headlessui/react";
 import { motion } from 'framer-motion';
-import { Bars3Icon, XMarkIcon, ChevronDownIcon,} from "@heroicons/react/24/outline";
+
+import { Dialog } from "@headlessui/react";
+import { Bars3Icon, XMarkIcon} from "@heroicons/react/24/outline";
+
+import MobileSearch from "./MobileSearch";
+import Dropdown from './ui/Dropdown';
+
 import logo from "../assets/logo.jpg";
 import cartImg from "../assets/cart.svg";
 import accountImg from "../assets/account.svg";
 import searchImg from "../assets/search.svg";
-import MobileSearch from "./MobileSearch";
+import googleImg from '../assets/google.png'
+
 import { useAuth } from "../Contexts/AuthContext";
 import { API_URL } from "../config/api";
-import googleImg from '../assets/google.png'
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -34,38 +39,6 @@ const Navbar = () => {
     logout();
     window.location.href = '/'
   }
-
-  const Dropdown = ({ title, items }) => (
-    <Popover className="relative">
-      <Popover.Button className="flex items-center text-lg md:text-sm leading-6 text-gray-900">
-        {title}
-        <ChevronDownIcon className="h-5 w-5 text-gray-500 ml-1" />
-      </Popover.Button>
-      <Transition
-        enter="transition ease-out duration-200"
-        enterFrom="opacity-0 translate-y-1"
-        enterTo="opacity-100 translate-y-0"
-        leave="transition ease-in duration-150"
-        leaveFrom="opacity-100 translate-y-0"
-        leaveTo="opacity-0 translate-y-1"
-      >
-        <Popover.Panel className="absolute left-0 z-10 mt-2 w-40 bg-white shadow-lg ring-1 ring-gray-900/5">
-          <div className="py-2">
-            {items.map((item) => (
-              <Link
-                onClick={() => setMobileMenuOpen(false)}
-                key={item}
-                to={`/category/${item.toLowerCase().replace(/\s+/g, " ")}`}
-                className="block px-4 py-2 text-md text-gray-700 hover:bg-gray-100"
-              >
-                {item}
-              </Link>
-            ))}
-          </div>
-        </Popover.Panel>
-      </Transition>
-    </Popover>
-  );
 
   const UserActions = () => {
     return user ? (

@@ -1,18 +1,19 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from "react";
+
 import Loading from "../components/Loading";
 import ProductsGrid from "../components/ProductsGrid";
 import { API_URL } from '../config/api';
+import FilterAndSort from '../components/FilterAndSort';
+
 
 const Category = () => {
   const { query } = useParams();
   const [products, setProducts] = useState([]);
+  const [sortedProducts, setSortedProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [filterOpen, setFilterOpen] = useState(false)
-  const [sortOpen, setSortOpen] = useState(false)
 
   useEffect(() => {
-
     async function fetchProducts() {
       setIsLoading(true);
       try {
@@ -22,9 +23,11 @@ const Category = () => {
         }
         const products = await response.json();
         setProducts(products);
+        setSortedProducts(products); 
       } catch (error) {
         console.error("Error fetching products:", error);
         setProducts([]);
+        setSortedProducts([]);
       } finally {
         setIsLoading(false);
       }
@@ -33,39 +36,52 @@ const Category = () => {
     fetchProducts();
   }, [query]);
 
+  const handleSortChange = (sortby) => {
+    let sorted = [...products];
+
+    switch (sortby) {
+      case 'Newest':
+        sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        break;
+      case 'Oldest':
+        sorted.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        break;
+      case 'Price: low to high':
+        sorted.sort((a, b) => a.price - b.price);
+        break;
+      case 'Price: high to low':
+        sorted.sort((a, b) => b.price - a.price);
+        break;
+      default:
+        break;
+    }
+
+    setSortedProducts(sorted);
+  };
+
   if (isLoading) {
     return <Loading />;
   }
 
   if (!products || products.length === 0) {
     return (
-      <div className="text-center py-10">
-        <p className="text-gray-600 text-lg">No products found for "{query}"</p>
+      <div className="text-center flex flex-col justify-center items-center">
+        <p className="text-gray-600 py-6 text-lg">No products found for "{query}"</p>
       </div>
     );
   }
-  function capitalizeFirstLetter(word) {
-    if (!word) return '';
-    return word.charAt(0).toUpperCase() + word.slice(1);
-  }
 
   return (
-    <div className='p-2 flex flex-col justify-center items-center'>
-      <div className='my-2 w-full flex justify-between max-w-5xl sont bold'>
-        Category &#9658; {capitalizeFirstLetter(query)}
-
-        <div className='flex '>
-          <button className='p-2 m-2 border rounded-md border-grqy-800'>
-            Filter
-          </button>
-          <button className='p-2 m-2 border rounded-md border-grqy-800'>
-            Sort by
-          </button>
-        </div>
+    <div className="p-2 flex flex-col justify-center items-center">
+      <div className="my-2 px-5 w-full flex flex-col sm:items-center sm:flex-row justify-between max-w-5xl">
+        <h1 className="text-3xl font-semibold">
+          {query.toUpperCase()}
+        </h1>
+        <FilterAndSort onSortChange={handleSortChange}/>
       </div>
-      <ProductsGrid products={products}></ProductsGrid>
+      <ProductsGrid products={sortedProducts} />
     </div>
   );
-}
+};
 
-export default Category
+export default Category;

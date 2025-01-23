@@ -1,6 +1,5 @@
 import React from "react";
 import Product from "./Product";
-
 const ProductsGrid = ({products}) => {
   if (!products || products.length === 0) {
     return (
@@ -14,7 +13,7 @@ const ProductsGrid = ({products}) => {
     <div>
       <div className="bg-white">
         <div className="mx-auto max-w-3xl px-4 md:px-8 lg:max-w-7xl ">
-          <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-10 lg:grid-cols-4 xl:grid-cols-5 xl:gap-x-8">
+          <div className=" grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-10 lg:grid-cols-4 xl:grid-cols-5 xl:gap-x-8">
             {products.map((product) => (
               <Product key={product.id} product={product} />
             ))}
