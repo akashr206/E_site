@@ -3,14 +3,14 @@ import { useState, useEffect } from "react";
 
 import Loading from "../components/Loading";
 import ProductsGrid from "../components/ProductsGrid";
-import { API_URL } from '../config/api';
 import FilterAndSort from '../components/FilterAndSort';
+import { API_URL } from '../config/api';
 
 
 const Category = () => {
   const { query } = useParams();
   const [products, setProducts] = useState([]);
-  const [sortedProducts, setSortedProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]); // Filtered and sorted products
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -23,11 +23,11 @@ const Category = () => {
         }
         const products = await response.json();
         setProducts(products);
-        setSortedProducts(products); 
+        setFilteredProducts(products); // Initialize filtered products
       } catch (error) {
         console.error("Error fetching products:", error);
         setProducts([]);
-        setSortedProducts([]);
+        setFilteredProducts([]);
       } finally {
         setIsLoading(false);
       }
@@ -37,7 +37,7 @@ const Category = () => {
   }, [query]);
 
   const handleSortChange = (sortby) => {
-    let sorted = [...products];
+    let sorted = [...filteredProducts]; // Sort the filtered products
 
     switch (sortby) {
       case 'Newest':
@@ -56,7 +56,15 @@ const Category = () => {
         break;
     }
 
-    setSortedProducts(sorted);
+    setFilteredProducts(sorted);
+  };
+
+  const handleFilterChange = ({ minPrice, maxPrice }) => {
+    const filtered = products.filter(
+      (product) =>
+        product.price >= (minPrice || 0) && product.price <= (maxPrice || Infinity)
+    );
+    setFilteredProducts(filtered);
   };
 
   if (isLoading) {
@@ -77,11 +85,12 @@ const Category = () => {
         <h1 className="text-3xl font-semibold">
           {query.toUpperCase()}
         </h1>
-        <FilterAndSort onSortChange={handleSortChange}/>
+        <FilterAndSort onSortChange={handleSortChange} onFilterChange={handleFilterChange} />
       </div>
-      <ProductsGrid products={sortedProducts} />
+      <ProductsGrid products={filteredProducts} />
     </div>
   );
 };
+
 
 export default Category;

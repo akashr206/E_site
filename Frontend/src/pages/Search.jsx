@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
-import Loading from "../components/Loading";
 import { useSearchParams } from "react-router-dom";
-import Product from "../components/Product";
+import Loading from "../components/Loading";
+import FilterAndSort from "../components/FilterAndSort";
 import ProductsGrid from "../components/ProductsGrid";
 
 const Search = () => {
   const [searchParams] = useSearchParams();
   const query = searchParams.get("query");
   const [products, setProducts] = useState([]);
+  const [sortedProducts, setSortedProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -20,6 +21,7 @@ const Search = () => {
         }
         const products = await response.json();
         setProducts(products);
+        setSortedProducts(products);
       } catch (error) {
         console.error("Error fetching products:", error);
         setProducts([]);
@@ -27,9 +29,31 @@ const Search = () => {
         setIsLoading(false);
       }
     }
-
     fetchProducts();
   }, [query]);
+
+  const handleSortChange = (sortby) => {
+    let sorted = [...products];
+
+    switch (sortby) {
+      case 'Newest':
+        sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        break;
+      case 'Oldest':
+        sorted.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        break;
+      case 'Price: low to high':
+        sorted.sort((a, b) => a.price - b.price);
+        break;
+      case 'Price: high to low':
+        sorted.sort((a, b) => b.price - a.price);
+        break;
+      default:
+        break;
+    }
+
+    setSortedProducts(sorted);
+  };
 
   if (isLoading) {
     return <Loading />;
@@ -43,10 +67,15 @@ const Search = () => {
     );
   }
 
-  return(
-    <div>
-      <h1 className="text-gray-600 my-3 font-semibold text-center text-lg mb-4">Search results for "{query}"</h1>
-      <ProductsGrid products = {products}></ProductsGrid>
+  return (
+    <div className="p-2 flex flex-col justify-center items-center">
+      <div className="my-2 px-5 w-full flex flex-col sm:items-center sm:flex-row justify-between max-w-5xl">
+        <h1 className="text-3xl font-semibold">
+          Search results for "{query}"
+        </h1>
+        <FilterAndSort onSortChange={handleSortChange} />
+      </div>
+      <ProductsGrid products={sortedProducts} />
     </div>
   );
 };
