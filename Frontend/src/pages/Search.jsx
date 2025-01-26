@@ -8,7 +8,7 @@ const Search = () => {
   const [searchParams] = useSearchParams();
   const query = searchParams.get("query");
   const [products, setProducts] = useState([]);
-  const [sortedProducts, setSortedProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const Search = () => {
         }
         const products = await response.json();
         setProducts(products);
-        setSortedProducts(products);
+        setFilteredProducts(products);
       } catch (error) {
         console.error("Error fetching products:", error);
         setProducts([]);
@@ -33,7 +33,7 @@ const Search = () => {
   }, [query]);
 
   const handleSortChange = (sortby) => {
-    let sorted = [...products];
+    let sorted = [...filteredProducts];
 
     switch (sortby) {
       case 'Newest':
@@ -52,7 +52,15 @@ const Search = () => {
         break;
     }
 
-    setSortedProducts(sorted);
+    setFilteredProducts(sorted);
+  };
+
+  const handleFilterChange = ({ minPrice, maxPrice }) => {
+    const filtered = products.filter(
+      (product) =>
+        product.price >= (minPrice || 0) && product.price <= (maxPrice || Infinity)
+    );
+    setFilteredProducts(filtered);
   };
 
   if (isLoading) {
@@ -61,8 +69,8 @@ const Search = () => {
 
   if (!products || products.length === 0) {
     return (
-      <div className="text-center py-10">
-        <p className="text-gray-600 text-lg">No products found for "{query}"</p>
+      <div className="text-center flex flex-col justify-center items-center">
+        <p className="text-gray-600 py-6 text-lg">No products found for "{query}"</p>
       </div>
     );
   }
@@ -71,11 +79,11 @@ const Search = () => {
     <div className="p-2 flex flex-col justify-center items-center">
       <div className="my-2 px-5 w-full flex flex-col sm:items-center sm:flex-row justify-between max-w-5xl">
         <h1 className="text-3xl font-semibold">
-          Search results for "{query}"
+          {query.toUpperCase()}
         </h1>
-        <FilterAndSort onSortChange={handleSortChange} />
+        <FilterAndSort onSortChange={handleSortChange} onFilterChange={handleFilterChange} />
       </div>
-      <ProductsGrid products={sortedProducts} />
+      <ProductsGrid products={filteredProducts} />
     </div>
   );
 };

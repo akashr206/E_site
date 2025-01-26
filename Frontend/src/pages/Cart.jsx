@@ -26,21 +26,13 @@ const NonCart = () => {
 
         <button
 
-          onClick={() => navigate("/login")}
+          onClick={() => window.location.href = `${API_URL}/auth/google`}
           className="bg-indigo-600 mx-auto text-white hover:bg-indigo-700 px-6 py-2 rounded-lg text-lg font-semibold flex items-center justify-center space-x-2"
         >
           <span>Login Now</span>
         </button>
 
-        <p className="text-sm text-gray-500 mt-4">
-          Don’t have an account?{" "}
-          <span
-            onClick={() => navigate("/register")}
-            className="text-indigo-600 font-medium hover:underline cursor-pointer"
-          >
-            Register here
-          </span>
-        </p>
+        
       </div>
     </div>
   );
@@ -174,7 +166,11 @@ export default function Cart() {
         setIsLoading(false);
       }
     }
-    loadData();
+    if(user){
+      loadData();
+    } else{
+      setIsLoading(false)
+    }
   }, [])
 
   if (isLoading || loadingUser) return <Loading />

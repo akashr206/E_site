@@ -10,7 +10,7 @@ import { API_URL } from '../config/api';
 const Category = () => {
   const { query } = useParams();
   const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]); // Filtered and sorted products
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const Category = () => {
         }
         const products = await response.json();
         setProducts(products);
-        setFilteredProducts(products); // Initialize filtered products
+        setFilteredProducts(products);
       } catch (error) {
         console.error("Error fetching products:", error);
         setProducts([]);
@@ -37,7 +37,7 @@ const Category = () => {
   }, [query]);
 
   const handleSortChange = (sortby) => {
-    let sorted = [...filteredProducts]; // Sort the filtered products
+    let sorted = [...filteredProducts];
 
     switch (sortby) {
       case 'Newest':
