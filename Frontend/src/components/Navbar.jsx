@@ -100,7 +100,7 @@ const Navbar = () => {
                 </div>
                 <div className="hidden lg:flex">
                     <form
-                        className="relative border rounded mx-4 p-1 w-[250px]"
+                        className="flex items-center relative"
                         onSubmit={(e) => {
                             e.preventDefault();
                             if (search.trim()) {
@@ -118,7 +118,7 @@ const Navbar = () => {
                             onChange={(e) => setSearch(e.target.value)}
                             onKeyDown={handleKeyDown}
                             placeholder="Search"
-                            className="w-48 border-none outline-none bg-transparent border-gray-300 rounded-md px-2 py-1 text-sm"
+                            className="relative border mx-4 p-1 w-[250px] focus:ring-2 focus:ring-indigo-500 focus:border-none outline-none bg-transparent border-border rounded px-2 py-1.5 text-sm"
                         />
                         <button type="submit" className="hidden" />
                         <Search
@@ -130,25 +130,28 @@ const Navbar = () => {
                                     )}`
                                 )
                             }
-                            alt="Search"
-                            className="absolute cursor-pointer w-4 mx-1 right-2 top-1/2 transform -translate-y-1/2"
+                            className="absolute z-10 cursor-pointer w-4 mx-1.5 right-5 top-1/2 transform -translate-y-1/2"
                         />
                     </form>
                     <UserActions />
                 </div>
-                <div className="flex items-center justify-center gap-2 lg:hidden">
-                    <img
+                <div className="flex items-center justify-center gap-1 lg:hidden">
+                    <Button
                         onClick={() => setMobileSearch(true)}
-                        src={searchImg}
-                        alt="Search"
-                        className="w-7 h-7 cursor-pointer"
-                    />
+                        variant={"ghost"}
+                        className="py-2 px-3"
+                    >
+                        <Search size={32} />
+                    </Button>
+
                     <Link
                         to="/cart"
                         className="flex items-center"
                         onClick={() => setMobileMenuOpen(false)}
                     >
-                        <ShoppingCart></ShoppingCart>
+                        <Button variant={"ghost"} className="py-2 px-3">
+                            <ShoppingCart></ShoppingCart>
+                        </Button>
                     </Link>
                     <button
                         type="button"
@@ -158,7 +161,7 @@ const Navbar = () => {
                             setMobileSearch(false);
                         }}
                     >
-                        <Bars3Icon className="h-8 w-8" aria-hidden="true" />
+                        <Bars3Icon className="h-5 w-5 m-1" aria-hidden="true" />
                     </button>
                 </div>
             </nav>

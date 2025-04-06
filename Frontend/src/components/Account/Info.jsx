@@ -12,7 +12,7 @@ const Info = (props) => {
       }
 
     return (
-        <div className={`${props.isMobile ? "" : "shadow-md p-6"} `}>
+        <div className={`${props.isMobile ? "p-5" : "shadow-md p-6"} `}>
             <h2 className="text-xl font-semibold mb-4">
                 Personal Information{" "}
             </h2>

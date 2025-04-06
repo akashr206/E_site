@@ -72,7 +72,7 @@ router.get('/callback', async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', 
       sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'strict',
-      maxAge: 3600000 * 48, 
+      maxAge: 48 * 3600 * 1000, 
     });
 
     res.redirect(`${process.env.FRONTEND_URL}/`);

@@ -1,4 +1,3 @@
-const { log } = require('console');
 const CartItem = require('../models/CartItem');
 const Product = require('../models/Product'); // Product model for stock validation
 

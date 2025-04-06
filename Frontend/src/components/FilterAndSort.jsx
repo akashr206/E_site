@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Popover, Transition } from "@headlessui/react";
-
+import { Button } from '../components/ui/button';
 const SortDown = ({ onSortChange }) => {
   const [sortby, setSortby] = useState('Newest');
 
@@ -24,7 +24,7 @@ const SortDown = ({ onSortChange }) => {
   return (
     <Popover className="relative">
       <Popover.Button
-        className="flex p-2 m-2 outline-none border rounded-md border-gray-300 items-center text-md leading-6 text-gray-900"
+        className="flex py-2 px-4 m-2 outline-none border rounded-md border-border items-center text-baseleading-6 text-foreground"
       >
         Sort by: {sortby}
       </Popover.Button>
@@ -40,7 +40,7 @@ const SortDown = ({ onSortChange }) => {
         <Popover.Panel className="absolute left-0 z-10 rounded-md mt-2 w-max bg-white shadow-lg ring-1 ring-gray-900/5">
           {({ close }) => (
             <div className="py-2 px-2">
-              <ul className="flex flex-col py-2 text-lg">
+              <ul className="flex flex-col py-2 ">
                 {sortOptions.map((option) => (
                   <li
                     key={option}
@@ -89,7 +89,7 @@ const Filter = ({ onFilterChange }) => {
   return (
     <Popover className="relative">
       <Popover.Button
-        className="p-2 m-2 border outline-none rounded-md border-gray-300 text-md leading-6 text-gray-900"
+        className="py-2 px-4 m-2 border outline-none rounded-md border-border text-base leading-6 text-foreground"
       >
         Filter
       </Popover.Button>

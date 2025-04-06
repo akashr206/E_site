@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import searchImg from '../assets/search.svg';
-import {Link, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 
 const MobileSearch = (props) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);

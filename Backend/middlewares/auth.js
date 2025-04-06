@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 
 const isAuthenticated = async (req, res, next) => {
   const token = req.cookies.token; 
+  
   if (!token) {
     return res.status(401).send('Access denied. No token provided.');
   }
@@ -12,6 +13,8 @@ const isAuthenticated = async (req, res, next) => {
     req.user = await User.findOne({email : decoded.email})
     next();
   } catch (err) {
+    console.log(err);
+    
     res.status(400).send('Invalid token.');
   }
 };
