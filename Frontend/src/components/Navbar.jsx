@@ -54,7 +54,7 @@ const Navbar = () => {
                     </Button>
                 </Link>
                 <Link
-                    to="/account"
+                    to="/account?tab=info"
                     className="flex items-center"
                     onClick={() => setMobileMenuOpen(false)}
                 >

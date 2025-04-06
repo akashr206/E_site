@@ -17,8 +17,9 @@ const Account = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const { user, loadingUser, setUser } = useAuth();
     const [activeTab, setActiveTab] = useState(
-        searchParams.get("tab").length || "info"
+        searchParams.get("tab") ? searchParams.get("tab") : "info"
     );
+
     const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
@@ -34,7 +35,7 @@ const Account = () => {
     }, [loadingUser, user, navigate]);
 
     useEffect(() => {
-        setActiveTab(searchParams.get("tab"));
+        setActiveTab(searchParams.get("tab") || "info");
     }, [searchParams.get("tab")]);
 
     const renderTabContent = () => {
@@ -72,7 +73,7 @@ const Account = () => {
 
                     <ul className="text-center w-max gap-3 py-2 flex flex-col rounded-sm">
                         <li
-                            className={`font-semibold text-gray-700 rounded-full px-3 flex gap-2 items-center py-3 cursor-pointer ${
+                            className={`font-semibold  rounded-full px-3 flex gap-2 items-center py-3 cursor-pointer ${
                                 activeTab === "info"
                                     ? "text-indigo-600 bg-indigo-100"
                                     : "opacity-75"
@@ -82,7 +83,7 @@ const Account = () => {
                             <img src={accountImg} alt="Profile Information" />
                         </li>
                         <li
-                            className={`font-semibold text-gray-700 px-3 rounded-full flex gap-2 items-center py-3 cursor-pointer ${
+                            className={`font-semibold  px-3 rounded-full flex gap-2 items-center py-3 cursor-pointer ${
                                 activeTab === "orders"
                                     ? "text-indigo-600 bg-indigo-100 opacity-100"
                                     : "opacity-75"
@@ -95,8 +96,10 @@ const Account = () => {
                             <img src={orderImg} alt="My Orders" />
                         </li>
                         <li
-                            className={`font-semibold text-gray-700 px-3 rounded-full flex gap-2 items-center py-3 cursor-pointer ${
-                                activeTab === "addresses" || activeTab === "add"
+                            className={`font-semibold  px-3 rounded-full flex gap-2 items-center py-3 cursor-pointer ${
+                                activeTab === "addresses" ||
+                                activeTab === "add" ||
+                                activeTab === "edit"
                                     ? "text-indigo-600 bg-indigo-100 opacity-100"
                                     : "opacity-75"
                             }`}
@@ -136,7 +139,7 @@ const Account = () => {
 
                 <ul className="text-center min-w-[192px] shadow-md py-2 flex flex-col rounded-sm">
                     <li
-                        className={`font-semibold text-gray-700 px-4 flex gap-2 items-center py-3 cursor-pointer ${
+                        className={`font-semibold px-4 flex gap-2 items-center py-3 cursor-pointer ${
                             activeTab === "info"
                                 ? "text-indigo-600 bg-indigo-100"
                                 : ""
@@ -150,7 +153,7 @@ const Account = () => {
                         Profile Information
                     </li>
                     <li
-                        className={`font-semibold text-gray-700 px-4 flex gap-2 py-3 cursor-pointer ${
+                        className={`font-semibold px-4 flex gap-2 py-3 cursor-pointer ${
                             activeTab === "orders"
                                 ? "text-indigo-600 bg-indigo-100"
                                 : ""
@@ -164,8 +167,10 @@ const Account = () => {
                         My Orders
                     </li>
                     <li
-                        className={`font-semibold text-gray-700 px-4 flex gap-2 items-center py-3 cursor-pointer ${
-                            activeTab === "addresses"
+                        className={`font-semibold  px-4 flex gap-2 items-center py-3 cursor-pointer ${
+                            activeTab === "addresses" ||
+                            activeTab === "add" ||
+                            activeTab === "edit"
                                 ? "text-indigo-600 bg-indigo-100"
                                 : ""
                         }`}
