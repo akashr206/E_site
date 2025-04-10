@@ -6,7 +6,8 @@ import Info from "@/components/Account/Info";
 import Loading from "../components/Loading";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Contexts/AuthContext";
-const MyOrders = () => <div>Order Details Component</div>;
+import OrdersPreview from "../components/Account/OrderPreview";
+import OrderDetails from "../components/Account/OrderDetails";
 import ManageAddresses from "../components/Account/ManageAddresses";
 import { useSearchParams } from "react-router-dom";
 import AddressForm from "../components/Account/AddressForm";
@@ -43,7 +44,9 @@ const Account = () => {
             case "info":
                 return user ? <Info user={user} isMobile={isMobile} /> : null;
             case "orders":
-                return <MyOrders />;
+                return <OrdersPreview />;
+            case "details":
+                return <OrderDetails />;
             case "addresses":
                 return <ManageAddresses />;
             case "add":
@@ -59,7 +62,7 @@ const Account = () => {
 
     if (isMobile)
         return (
-            <div className="flex min-h-screen max-w-5xl mx-auto bg-border">
+            <div className="flex min-h-screen max-w-5xl mx-auto bg-border/15">
                 <div className="w-max  flex flex-col gap-3 p-3">
                     <img
                         src={
@@ -119,7 +122,7 @@ const Account = () => {
     return (
         <div className="flex min-h-screen max-w-5xl mx-auto bg-border">
             <div className="w-1/3 bg-white flex flex-col gap-5 p-5">
-                <div className="text-center rounded-sm min-w-[192px] shadow-md px-4 py-2 flex items-center">
+                <div className="text-center rounded-sm min-w-[192px] shadow px-4 py-2 flex items-center">
                     <img
                         src={
                             user
@@ -137,7 +140,7 @@ const Account = () => {
                     </div>
                 </div>
 
-                <ul className="text-center min-w-[192px] shadow-md py-2 flex flex-col rounded-sm">
+                <ul className="text-center min-w-[192px] shadow py-2 flex flex-col rounded-sm">
                     <li
                         className={`font-semibold px-4 flex gap-2 items-center py-3 cursor-pointer ${
                             activeTab === "info"

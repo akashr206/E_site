@@ -11,6 +11,7 @@ const ProductRoutes = require("./routes/productsRoutes");
 const searchRoutes = require("./routes/searchRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const addressRoutes = require("./routes/addressRoutes");
+const orderRoutes = require("./routes/orderRoutes");
 
 const app = express();
 dotenv.config();
@@ -50,6 +51,7 @@ app.use("/api/products", ProductRoutes);
 app.use("/search", searchRoutes);
 app.use("/api/cart", isAuthenticated, cartRoutes);
 app.use("/api/address", isAuthenticated, addressRoutes);
+app.use("/api/orders", isAuthenticated, orderRoutes);
 
 // Authentication routes (Login, Logout)
 app.use("/auth/google", googleAuth);

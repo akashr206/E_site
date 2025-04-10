@@ -10,13 +10,13 @@ import MobileSearch from "./MobileSearch";
 import Dropdown from "./ui/Dropdown";
 
 import logo from "../assets/logo.jpg";
-import accountImg from "../assets/account.svg";
-import searchImg from "../assets/search.svg";
 import googleImg from "../assets/google.png";
 import { ShoppingCart, UserRound, Search } from "lucide-react";
 
 import { useAuth } from "../Contexts/AuthContext";
 import { API_URL } from "../config/api";
+import { useContext } from "react";
+import { CartLength } from "../Contexts/CartContext";
 
 const Navbar = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -28,6 +28,8 @@ const Navbar = () => {
     const readyMadeProducts = ["Lehengas", "Gowns", "Skirts"];
     const [search, setSearch] = useState("");
     const navigate = useNavigate();
+
+    const { cartLen } = useContext(CartLength);
 
     const handleKeyDown = (e) => {
         if (e.key === "Enter" && search.trim()) {
@@ -49,8 +51,14 @@ const Navbar = () => {
                     className="flex items-center"
                     onClick={() => setMobileMenuOpen(false)}
                 >
-                    <Button variant={"ghost"} className="p-2 px-3">
+                    <Button variant={"ghost"} className="p-2 relative px-3">
                         <ShoppingCart></ShoppingCart>
+
+                        {cartLen > 0 && (
+                            <span className="w-3.5 h-3.5 rounded-full bg-indigo-500 top-1 right-1 absolute flex items-center justify-center text-[10px] text-white">
+                                {cartLen}
+                            </span>
+                        )}
                     </Button>
                 </Link>
                 <Link
@@ -149,8 +157,17 @@ const Navbar = () => {
                         className="flex items-center"
                         onClick={() => setMobileMenuOpen(false)}
                     >
-                        <Button variant={"ghost"} className="py-2 px-3">
+                        <Button
+                            variant={"ghost"}
+                            className="py-2 relative px-3"
+                        >
                             <ShoppingCart></ShoppingCart>
+
+                            {cartLen > 0 && (
+                                <span className="w-3.5 h-3.5 rounded-full bg-indigo-500 top-1 right-1 absolute flex items-center justify-center text-[10px] text-white">
+                                    {cartLen}
+                                </span>
+                            )}
                         </Button>
                     </Link>
                     <button

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import Loading from "../components/Loading";
@@ -6,6 +6,7 @@ import Prompt from "../components/ui/Prompt";
 import { API_URL } from "../config/api";
 import { useAuth } from "../Contexts/AuthContext";
 import { ShoppingCart } from "lucide-react";
+import { CartLength } from "../Contexts/CartContext";
 
 const ProductView = () => {
     const { id } = useParams();
@@ -22,6 +23,7 @@ const ProductView = () => {
     const [error, setError] = useState(false);
     const { user } = useAuth();
     const [prompt, setPrompt] = useState(false);
+    const { fetchCart } = useContext(CartLength);
 
     function handleSelectColor(color) {
         setSelectedColor(color);
@@ -121,6 +123,7 @@ const ProductView = () => {
         if (response.status === 201) {
             setAdded(true);
             setTimeout(() => setAdded(false), 1000);
+            fetchCart()
         }
         if (response.status === 200) {
             setIsUpdated(true);

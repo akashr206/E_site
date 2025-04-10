@@ -1,14 +1,18 @@
 "use client";
 
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-import { LockClosedIcon, UserIcon } from "@heroicons/react/24/outline";
-import { Link, useNavigate } from "react-router-dom";
+import { LockClosedIcon } from "@heroicons/react/24/outline";
+import { Button } from "../components/ui/button";
+import { Link } from "react-router-dom";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { useEffect, useState } from "react";
 import Loading from "../components/Loading";
 import EmptyCart from "../components/EmptyCart";
 import { useAuth } from "../Contexts/AuthContext";
 import { API_URL } from "../config/api";
+import ShippingAddressSelector from "../components/ShippingAddressSelector";
+import { toast } from "sonner";
+import { Users } from "lucide-react";
 const NonCart = () => {
     return (
         <div className="flex items-center justify-center absolute w-full -z-10 top-0 h-screen px-4">
@@ -123,11 +127,12 @@ export default function Cart() {
     const [total, setTotal] = useState(0);
     const [isEmpty, setIsEmpty] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [selectedAddress, setSelectedAddress] = useState(null);
     const { user, loadingUser } = useAuth();
+    const [subTotal, setSubTotal] = useState(0);
     const tax = 10;
-    const shippingCost = 40;
+    const shippingCost = 100;
     const discount = 50;
-    const totalAmount = total + tax + shippingCost - discount;
 
     async function fetchCart() {
         const response = await fetch(`${API_URL}/api/cart/user`, {
@@ -166,15 +171,66 @@ export default function Cart() {
         fetchTotal();
         return data;
     }
+
     async function fetchTotal() {
         setIsLoading(true);
         const response = await fetch(`${API_URL}/api/cart/total`, {
             credentials: "include",
         });
         const data = await response.json();
-        setTotal(data.totalPrice);
+        setSubTotal(data.totalPrice);
+        setTotal(data.totalPrice + shippingCost + tax - discount)
         setIsLoading(false);
     }
+
+    async function handleCheckout() {
+        if (!selectedAddress) {
+            toast.warning("Please select a shipping address before checkout");
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/api/orders`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    addressId: selectedAddress._id,
+                    items: products.map((p) => ({
+                        productId: p.productId,
+                        quantity: p.quantity,
+                        price: p.price,
+                        productName: p.name,
+                        variant: {
+                            color: p.color,
+                            size: p.size,
+                        },
+                    })),
+                    summary: {
+                        tax,
+                        discount,
+                        shippingCost,
+                        totalAmount : total,
+                        subTotal 
+                    },
+                }),
+                credentials: "include",
+            });
+
+            const orderData = await response.json();
+
+            // Redirect to payment or confirmation page
+            // window.location.href = `/payment/${orderData.orderId}`;
+        } catch (error) {
+            console.error("Checkout error:", error);
+            alert("There was an error processing your checkout");
+        }
+    }
+
+    const handleAddressSelect = (address) => {
+        setSelectedAddress(address);
+    };
 
     useEffect(() => {
         async function loadData() {
@@ -187,16 +243,13 @@ export default function Cart() {
                 setIsLoading(false);
             }
         }
-        if (user) {
-            loadData();
-        } else {
-            setIsLoading(false);
-        }
+        loadData();
     }, []);
 
     if (isLoading || loadingUser) return <Loading />;
     if (!user && !loadingUser) return <NonCart />;
     if (isEmpty) return <EmptyCart />;
+
     return (
         <>
             <div className="max-w-7xl lg:mb-12 relative px-3 py-5 lg:px-8 mx-auto">
@@ -224,45 +277,77 @@ export default function Cart() {
                                 );
                             })}
                         </div>
-                        <div className="bg-white p-6 h-max rounded-lg shadow">
-                            <h2 className="text-lg font-semibold mb-4">
-                                Order summary
-                            </h2>
-                            <div className="space-y-2">
-                                <div className="flex justify-between">
-                                    <span>Subtotal</span>
-                                    <span className="font-medium">
-                                        ₹{total}.00
-                                    </span>
+                        <div>
+                            <ShippingAddressSelector
+                                onAddressSelect={handleAddressSelect}
+                            />
+                            <div className="p-6 h-max rounded-lg shadow">
+                                <h2 className="text-lg font-semibold mb-4">
+                                    Order summary
+                                </h2>
+                                <div className="space-y-2">
+                                    <div className="flex justify-between">
+                                        <span>Subtotal</span>
+                                        <span className="font-medium">
+                                            ₹{subTotal}.00
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span>Tax</span>
+                                        <span className="font-medium">
+                                            ₹{tax}.00
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span>Shipping</span>
+                                        <span className="font-medium">
+                                            ₹{shippingCost}.00
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span>Discount</span>
+                                        <span className="font-medium text-green-600">
+                                            -₹{discount}.00
+                                        </span>
+                                    </div>
                                 </div>
-                                <div className="flex justify-between">
-                                    <span>Tax</span>
-                                    <span className="font-medium">
-                                        ₹{tax}.00
-                                    </span>
+
+                                {selectedAddress && (
+                                    <div className="mt-4 pt-4 border-t">
+                                        <h3 className="font-semibold text-sm mb-2">
+                                            Shipping to:
+                                        </h3>
+                                        <p className="text-sm">
+                                            {selectedAddress.name}
+                                        </p>
+                                        <p className="text-sm text-gray-600">
+                                            {selectedAddress.street}
+                                        </p>
+                                        <p className="text-sm text-gray-600">
+                                            {selectedAddress.city},{" "}
+                                            {selectedAddress.state}{" "}
+                                            {selectedAddress.postalCode}
+                                        </p>
+                                    </div>
+                                )}
+
+                                <div className="border-t mt-4 pt-4">
+                                    <div className="flex justify-between text-lg font-semibold">
+                                        <span>Order total</span>
+                                        <span>₹{total}.00</span>
+                                    </div>
                                 </div>
-                                <div className="flex justify-between">
-                                    <span>Shipping</span>
-                                    <span className="font-medium">
-                                        ₹{shippingCost}.00
-                                    </span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span>Discount</span>
-                                    <span className="font-medium text-green-600">
-                                        -₹{discount}.00
-                                    </span>
-                                </div>
+
+                                <Button
+                                    onClick={handleCheckout}
+                                    className="w-full mt-6"
+                                    disabled={!selectedAddress}
+                                >
+                                    {selectedAddress
+                                        ? "Checkout"
+                                        : "Select an address to continue"}
+                                </Button>
                             </div>
-                            <div className="border-t mt-4 pt-4">
-                                <div className="flex justify-between text-lg font-semibold">
-                                    <span>Order total</span>
-                                    <span>₹{totalAmount}.00</span>
-                                </div>
-                            </div>
-                            <button className="w-full mt-6 bg-indigo-600 text-white py-2 rounded-lg shadow hover:bg-indigo-500">
-                                Checkout
-                            </button>
                         </div>
                     </div>
                 </div>

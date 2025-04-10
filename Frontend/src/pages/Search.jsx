@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import Loading from "../components/Loading";
 import FilterAndSort from "../components/FilterAndSort";
 import ProductsGrid from "../components/ProductsGrid";
+import { Search as SearchIcon } from "lucide-react";
 
 const Search = () => {
   const [searchParams] = useSearchParams();
@@ -64,26 +65,53 @@ const Search = () => {
   };
 
   if (isLoading) {
-    return <Loading />;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <Loading />
+      </div>
+    );
   }
 
   if (!products || products.length === 0) {
     return (
-      <div className="text-center flex flex-col justify-center items-center">
-        <p className="text-gray-600 py-6 text-lg">No products found for "{query}"</p>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 px-4">
+        <div className="text-center max-w-md">
+          <SearchIcon className="mx-auto h-12 w-12 text-gray-400" />
+          <h2 className="mt-2 text-xl font-semibold text-gray-900">No results found</h2>
+          <p className="mt-1 text-gray-500">
+            We couldn't find any products matching "{query}". Try checking your spelling or using different keywords.
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="p-2 flex flex-col justify-center items-center">
-      <div className="my-2 px-5 w-full flex flex-col sm:items-center sm:flex-row justify-between max-w-5xl">
-        <h1 className="text-3xl font-semibold">
-          {query.toUpperCase()}
-        </h1>
-        <FilterAndSort onSortChange={handleSortChange} onFilterChange={handleFilterChange} />
+    <div className=" min-h-screen relative pb-96">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="border-b border-border pb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div className="mb-4 sticky top-0 sm:mb-0">
+              <h1 className="text-2xl font-semibold tracking-tight ">
+                Search Results for "{query}"
+              </h1>
+              <p className="mt-1 text-sm text-gray-500">
+                {filteredProducts.length} {filteredProducts.length === 1 ? 'product' : 'products'} found
+              </p>
+            </div>
+            <div className="w-full sm:w-auto">
+              <FilterAndSort 
+                onSortChange={handleSortChange} 
+                onFilterChange={handleFilterChange} 
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8">
+          <ProductsGrid products={filteredProducts} />
+        </div>
       </div>
-      <ProductsGrid products={filteredProducts} />
     </div>
   );
 };

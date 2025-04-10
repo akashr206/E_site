@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Product = (props) => {
   return (
-    <div key={props.product.id} className="group flex flex-col justify-between shadow-md p-2 md:p-3 rounded-md relative">
+    <div key={props.product.id} className="group flex flex-col justify-between shadow p-2 md:p-3 rounded-md relative">
       <div className="h-[220px] flex items-center justify-center">
         <img
           src={props.product.images[0]}
