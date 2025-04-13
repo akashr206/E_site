@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useIsMobile } from "@/hooks/use-mobile";
-import AdminSidebar from "../../components/Admin/sidebar";
+import AdminSidebar from "../../components/Admin/Sidebar";
 import DashboardOverview from "./DashboardOverview";
 import ProductsPage from "./ProductsPage";
 import OrdersPage from "./OrdersPage";
