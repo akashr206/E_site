@@ -7,9 +7,12 @@ const {
     countProducts,
     findStock,
 } = require("../services/products");
-const { v4: uuidv4 } = require("uuid");
-const { nanoid } = require("nanoid");
-
+async function generateId(size) {
+    const { nanoid } = await import('nanoid');
+    const id = nanoid(size);
+    return id
+  }
+  
 const AddProduct = async (req, res) => {
     try {
         console.log(req.body.images.length);
@@ -26,7 +29,7 @@ const AddProduct = async (req, res) => {
             images,
         } = req.body;
 
-        const id = nanoid(10);
+        const id = generateId(10);
 
         const product = {
             id,
