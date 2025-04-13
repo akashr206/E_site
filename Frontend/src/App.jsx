@@ -9,7 +9,7 @@ import Cart from "./pages/Cart";
 import Account from "./pages/Account";
 import Search from "./pages/Search";
 import Category from "./pages/Category";
-import Dashboard from "./pages/admin/dashboard";
+import Dashboard from "./pages/admin/Dashboard";
 
 function App() {
 
