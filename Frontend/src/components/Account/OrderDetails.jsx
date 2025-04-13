@@ -8,6 +8,8 @@ import {
     Calendar,
     Clock,
     AlertCircle,
+    Home,
+    Briefcase,
 } from "lucide-react";
 
 import {
@@ -45,25 +47,47 @@ const OrderDetails = () => {
     useEffect(() => {
         const fetchOrderDetails = async () => {
             try {
-                const response = await fetch(`${API_URL}/api/orders/${orderId}`, {
-                    credentials: "include",
-                });
-                const data = await response.json()
-                console.log(data);
+                const response = await fetch(
+                    `${API_URL}/api/orders/${orderId}`,
+                    {
+                        credentials: "include",
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error(
+                        `Error ${response.status}: ${response.statusText}`
+                    );
+                }
+
+                const data = await response.json();
+
+                if (!data || !data.order) {
+                    throw new Error("Invalid response format");
+                }
+                console.log(data.order);
+
                 setOrder(data.order);
                 setLoading(false);
             } catch (err) {
                 setError(
-                    "Failed to fetch order details. Please try again later."
+                    err.message ||
+                        "Failed to fetch order details. Please try again later."
                 );
                 setLoading(false);
             }
         };
 
-        fetchOrderDetails();
+        if (orderId) {
+            fetchOrderDetails();
+        } else {
+            setError("Order ID is missing");
+            setLoading(false);
+        }
     }, [orderId]);
 
     const formatDate = (dateString) => {
+        if (!dateString) return "N/A";
         const options = { year: "numeric", month: "short", day: "numeric" };
         return new Date(dateString).toLocaleDateString(undefined, options);
     };
@@ -140,7 +164,7 @@ const OrderDetails = () => {
         return (
             <div className="container mx-auto px-4 py-8 max-w-5xl">
                 <Button variant="outline" className="mb-6" asChild>
-                    <Link to={"?tab=orders"}>
+                    <Link to="/orders">
                         <ArrowLeft className="mr-2 h-4 w-4" />
                         Back to Orders
                     </Link>
@@ -159,7 +183,7 @@ const OrderDetails = () => {
     return (
         <div className="container mx-auto px-4 py-8 max-w-5xl">
             <Button variant="outline" className="mb-6" asChild>
-                <Link to="?tab=orders">
+                <Link to="/orders">
                     <ArrowLeft className="mr-2 h-4 w-4" />
                     Back to Orders
                 </Link>
@@ -170,7 +194,7 @@ const OrderDetails = () => {
                     <div className="flex flex-col sm:flex-row justify-between sm:items-center">
                         <div>
                             <CardTitle className="text-2xl">
-                                Order #{order._id.substring(0, 8)}
+                                Order #{order._id && order._id.substring(0, 8)}
                             </CardTitle>
                             <CardDescription className="flex items-center mt-1">
                                 <Calendar className="mr-1 h-3.5 w-3.5" />
@@ -181,8 +205,9 @@ const OrderDetails = () => {
                             variant={getStatusColor(order.status)}
                             className="mt-2 sm:mt-0"
                         >
-                            {order.status.charAt(0).toUpperCase() +
-                                order.status.slice(1)}
+                            {order.status &&
+                                order.status.charAt(0).toUpperCase() +
+                                    order.status.slice(1)}
                         </Badge>
                     </div>
                 </CardHeader>
@@ -203,7 +228,10 @@ const OrderDetails = () => {
                                 <CardHeader className="pb-3">
                                     <CardTitle className="text-lg flex items-center">
                                         <Package className="mr-2 h-5 w-5" />
-                                        Items ({order.items.length})
+                                        Items (
+                                        {(order.items && order.items.length) ||
+                                            0}
+                                        )
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent className="p-0">
@@ -219,48 +247,61 @@ const OrderDetails = () => {
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
-                                            {order.items.map((item, index) => (
-                                                <TableRow key={index}>
-                                                    <TableCell className="font-medium">
-                                                        {item.productName}
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        {item.variant ? (
-                                                            <span>
-                                                                {item.variant
-                                                                    .color &&
-                                                                    `Color: ${item.variant.color}`}
-                                                                {item.variant
-                                                                    .color &&
-                                                                    item.variant
-                                                                        .size &&
-                                                                    " / "}
-                                                                {item.variant
-                                                                    .size &&
-                                                                    `Size: ${item.variant.size}`}
-                                                            </span>
-                                                        ) : (
-                                                            <span className="text-muted-foreground">
-                                                                No variant
-                                                            </span>
-                                                        )}
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        {item.quantity}
-                                                    </TableCell>
-                                                    <TableCell className="text-right">
-                                                        
-                                                        <div className="text-xs text-muted-foreground">
-                                                            
-₹
-                                                            {item.price.toFixed(
-                                                                2
-                                                            )}{" "}
-                                                            each
-                                                        </div>
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
+                                            {order.items &&
+                                                order.items.map(
+                                                    (item, index) => (
+                                                        <TableRow key={index}>
+                                                            <TableCell className="font-medium">
+                                                                <Link
+                                                                    to={`/products/${item.productId}`}
+                                                                >
+                                                                    {
+                                                                        item.productName
+                                                                    }
+                                                                </Link>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {item.variant ? (
+                                                                    <span>
+                                                                        {item
+                                                                            .variant
+                                                                            .color &&
+                                                                            `Color: ${item.variant.color}`}
+                                                                        {item
+                                                                            .variant
+                                                                            .color &&
+                                                                            item
+                                                                                .variant
+                                                                                .size &&
+                                                                            " / "}
+                                                                        {item
+                                                                            .variant
+                                                                            .size &&
+                                                                            `Size: ${item.variant.size}`}
+                                                                    </span>
+                                                                ) : (
+                                                                    <span className="text-muted-foreground">
+                                                                        No
+                                                                        variant
+                                                                    </span>
+                                                                )}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {item.quantity}
+                                                            </TableCell>
+                                                            <TableCell className="text-right">
+                                                                <div className="text-xs text-muted-foreground">
+                                                                    ₹
+                                                                    {item.price &&
+                                                                        item.price.toFixed(
+                                                                            2
+                                                                        )}{" "}
+                                                                    each
+                                                                </div>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    )
+                                                )}
                                         </TableBody>
                                     </Table>
                                 </CardContent>
@@ -279,11 +320,12 @@ const OrderDetails = () => {
                                                 Subtotal
                                             </span>
                                             <span>
-                                                
-₹
-                                                {order.summary.subTotal.toFixed(
-                                                    2
-                                                )}
+                                                ₹
+                                                {order.summary &&
+                                                    order.summary.subTotal &&
+                                                    order.summary.subTotal.toFixed(
+                                                        2
+                                                    )}
                                             </span>
                                         </div>
                                         <div className="flex justify-between">
@@ -291,11 +333,13 @@ const OrderDetails = () => {
                                                 Shipping
                                             </span>
                                             <span>
-                                                
-₹
-                                                {order.summary.shippingCost.toFixed(
-                                                    2
-                                                )}
+                                                ₹
+                                                {order.summary &&
+                                                    order.summary
+                                                        .shippingCost &&
+                                                    order.summary.shippingCost.toFixed(
+                                                        2
+                                                    )}
                                             </span>
                                         </div>
                                         <div className="flex justify-between">
@@ -303,31 +347,36 @@ const OrderDetails = () => {
                                                 Tax
                                             </span>
                                             <span>
-                                                
-₹{order.summary.tax.toFixed(2)}
-                                            </span>
-                                        </div>
-                                        {order.summary.discount > 0 && (
-                                            <div className="flex justify-between text-green-600">
-                                                <span>Discount</span>
-                                                <span>
-                                                    -
-₹
-                                                    {order.summary.discount.toFixed(
+                                                ₹
+                                                {order.summary &&
+                                                    order.summary.tax &&
+                                                    order.summary.tax.toFixed(
                                                         2
                                                     )}
-                                                </span>
-                                            </div>
-                                        )}
+                                            </span>
+                                        </div>
+                                        {order.summary &&
+                                            order.summary.discount > 0 && (
+                                                <div className="flex justify-between text-green-600">
+                                                    <span>Discount</span>
+                                                    <span>
+                                                        - ₹
+                                                        {order.summary.discount.toFixed(
+                                                            2
+                                                        )}
+                                                    </span>
+                                                </div>
+                                            )}
                                         <Separator className="my-2" />
                                         <div className="flex justify-between font-medium text-lg">
                                             <span>Total</span>
                                             <span>
-                                                
-₹
-                                                {order.summary.totalAmount.toFixed(
-                                                    2
-                                                )}
+                                                ₹
+                                                {order.summary &&
+                                                    order.summary.totalAmount &&
+                                                    order.summary.totalAmount.toFixed(
+                                                        2
+                                                    )}
                                             </span>
                                         </div>
                                     </div>
@@ -336,7 +385,7 @@ const OrderDetails = () => {
                         </TabsContent>
 
                         <TabsContent value="details">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="grid gap-6">
                                 <Card>
                                     <CardHeader className="pb-3">
                                         <CardTitle className="text-lg flex items-center">
@@ -350,9 +399,63 @@ const OrderDetails = () => {
                                                 <h4 className="text-sm font-medium text-muted-foreground mb-1">
                                                     Delivery Address
                                                 </h4>
-                                                <p className="whitespace-pre-line">
-                                                    {order.shippingAddress}
-                                                </p>
+                                                <div>
+                                                    <p className="font-medium flex items-center gap-2">
+                                                        <span className="">
+                                                            {order.shippingAddress &&
+                                                            order
+                                                                .shippingAddress
+                                                                .tag ===
+                                                                "Home" ? (
+                                                                <Home
+                                                                    size={18}
+                                                                />
+                                                            ) : order.shippingAddress &&
+                                                              order
+                                                                  .shippingAddress
+                                                                  .tag ===
+                                                                  "Work" ? (
+                                                                <Briefcase
+                                                                    size={18}
+                                                                />
+                                                            ) : (
+                                                                ""
+                                                            )}
+                                                        </span>
+                                                        {order.shippingAddress &&
+                                                            order
+                                                                .shippingAddress
+                                                                .tag}
+                                                    </p>
+                                                    <p className="text-sm text-gray-600">
+                                                        {order.shippingAddress &&
+                                                            order
+                                                                .shippingAddress
+                                                                .street}
+                                                    </p>
+                                                    <p className="text-sm text-gray-600">
+                                                        {order.shippingAddress &&
+                                                            order
+                                                                .shippingAddress
+                                                                .city}
+                                                        {order.shippingAddress &&
+                                                            ", "}
+                                                        {order.shippingAddress &&
+                                                            order
+                                                                .shippingAddress
+                                                                .state}{" "}
+                                                        {order.shippingAddress &&
+                                                            order
+                                                                .shippingAddress
+                                                                .postalCode}
+                                                    </p>
+                                                    <p className="text-sm text-gray-600">
+                                                        {order.shippingAddress &&
+                                                            order
+                                                                .shippingAddress
+                                                                .phone}
+                                                    </p>
+                                                </div>
                                             </div>
                                             <Separator />
                                             <div className="space-y-2">
@@ -361,7 +464,9 @@ const OrderDetails = () => {
                                                         Method
                                                     </span>
                                                     <span className="capitalize">
-                                                        {order.shipping.method}
+                                                        {order.shipping &&
+                                                            order.shipping
+                                                                .method}
                                                     </span>
                                                 </div>
                                                 <div className="flex justify-between items-center">
@@ -370,16 +475,20 @@ const OrderDetails = () => {
                                                     </span>
                                                     <Badge
                                                         variant={getStatusColor(
-                                                            order.shipping
-                                                                .status
+                                                            order.shipping &&
+                                                                order.shipping
+                                                                    .status
                                                         )}
                                                     >
-                                                        {order.shipping.status
-                                                            .charAt(0)
-                                                            .toUpperCase() +
-                                                            order.shipping.status.slice(
-                                                                1
-                                                            )}
+                                                        {order.shipping &&
+                                                            order.shipping
+                                                                .status &&
+                                                            order.shipping.status
+                                                                .charAt(0)
+                                                                .toUpperCase() +
+                                                                order.shipping.status.slice(
+                                                                    1
+                                                                )}
                                                     </Badge>
                                                 </div>
                                                 <div className="flex justify-between items-center">
@@ -388,8 +497,9 @@ const OrderDetails = () => {
                                                     </span>
                                                     <span>
                                                         {formatDate(
-                                                            order.shipping
-                                                                .estimatedDeliveryDate
+                                                            order.shipping &&
+                                                                order.shipping
+                                                                    .estimatedDeliveryDate
                                                         )}
                                                     </span>
                                                 </div>
@@ -413,7 +523,9 @@ const OrderDetails = () => {
                                                         Method
                                                     </span>
                                                     <span className="uppercase">
-                                                        {order.payment.method}
+                                                        {order.payment &&
+                                                            order.payment
+                                                                .method}
                                                     </span>
                                                 </div>
                                                 <div className="flex justify-between items-center">
@@ -422,31 +534,38 @@ const OrderDetails = () => {
                                                     </span>
                                                     <Badge
                                                         variant={getStatusColor(
-                                                            order.payment.status
+                                                            order.payment &&
+                                                                order.payment
+                                                                    .status
                                                         )}
                                                     >
-                                                        {order.payment.status
-                                                            .charAt(0)
-                                                            .toUpperCase() +
-                                                            order.payment.status.slice(
-                                                                1
-                                                            )}
+                                                        {order.payment &&
+                                                            order.payment
+                                                                .status &&
+                                                            order.payment.status
+                                                                .charAt(0)
+                                                                .toUpperCase() +
+                                                                order.payment.status.slice(
+                                                                    1
+                                                                )}
                                                     </Badge>
                                                 </div>
-                                                {order.payment
-                                                    .transactionId && (
-                                                    <div className="flex justify-between items-center">
-                                                        <span className="text-sm text-muted-foreground">
-                                                            Transaction ID
-                                                        </span>
-                                                        <span className="font-mono text-sm">
-                                                            {
-                                                                order.payment
-                                                                    .transactionId
-                                                            }
-                                                        </span>
-                                                    </div>
-                                                )}
+                                                {order.payment &&
+                                                    order.payment
+                                                        .transactionId && (
+                                                        <div className="flex justify-between items-center">
+                                                            <span className="text-sm text-muted-foreground">
+                                                                Transaction ID
+                                                            </span>
+                                                            <span className="font-mono text-sm">
+                                                                {
+                                                                    order
+                                                                        .payment
+                                                                        .transactionId
+                                                                }
+                                                            </span>
+                                                        </div>
+                                                    )}
                                             </div>
                                         </div>
                                     </CardContent>

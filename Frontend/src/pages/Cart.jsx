@@ -217,8 +217,13 @@ export default function Cart() {
                 }),
                 credentials: "include",
             });
-
+            if(response.ok){
+                toast.success("Order placed successfully!")
+            } else {
+                toast.error("There qas an error placing your order")
+            }
             const orderData = await response.json();
+            await Promise.all([fetchCart(), fetchTotal()]);
 
             // Redirect to payment or confirmation page
             // window.location.href = `/payment/${orderData.orderId}`;

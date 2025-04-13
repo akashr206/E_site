@@ -62,8 +62,8 @@ const Account = () => {
 
     if (isMobile)
         return (
-            <div className="flex min-h-screen max-w-5xl mx-auto bg-border/15">
-                <div className="w-max  flex flex-col gap-3 p-3">
+            <div className="flex min-h-screen  max-w-5xl mx-auto bg-border/15">
+                <div className="w-max hidden  flex-col gap-3 p-3">
                     <img
                         src={
                             user
@@ -157,7 +157,8 @@ const Account = () => {
                     </li>
                     <li
                         className={`font-semibold px-4 flex gap-2 py-3 cursor-pointer ${
-                            activeTab === "orders"
+                            activeTab === "orders"||
+                            activeTab === "details"
                                 ? "text-indigo-600 bg-indigo-100"
                                 : ""
                         }`}

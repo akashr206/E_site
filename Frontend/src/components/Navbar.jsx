@@ -17,8 +17,11 @@ import { useAuth } from "../Contexts/AuthContext";
 import { API_URL } from "../config/api";
 import { useContext } from "react";
 import { CartLength } from "../Contexts/CartContext";
+import { useLocation } from "react-router-dom";
 
 const Navbar = () => {
+    const location = useLocation();
+    const pathName = location.pathname;
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [mobileSearch, setMobileSearch] = useState(false);
     const { user, logout } = useAuth();
@@ -84,6 +87,10 @@ const Navbar = () => {
             </Link>
         );
     };
+
+    if(pathName.includes("admin")){
+        return
+    }
 
     return (
         <header className="bg-white z-15 shadow-sm">

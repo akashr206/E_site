@@ -6,14 +6,12 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Calendar, Package } from "lucide-react";
-import { useSearchParams } from "react-router-dom";
 
 const OrdersPreview = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState("all");
-  const [searchParams, setSearchParams] = useSearchParams()
 
   useEffect(() => {
     const fetchOrders = async () => {

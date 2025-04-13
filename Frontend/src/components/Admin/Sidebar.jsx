@@ -1,0 +1,159 @@
+import {
+    BarChart3,
+    Box,
+    Home,
+    LogOut,
+    Package,
+    Settings,
+    ShoppingCart,
+    Users,
+} from "lucide-react";
+import {
+    SidebarProvider,
+    Sidebar,
+    SidebarContent,
+    SidebarHeader,
+    SidebarFooter,
+    SidebarMenu,
+    SidebarMenuItem,
+    SidebarMenuButton,
+    SidebarGroup,
+    SidebarGroupLabel,
+    SidebarGroupContent,
+    SidebarInset,
+} from "@/components/ui/sidebar";
+import { Button } from "@headlessui/react";
+import { useNavigate } from "react-router-dom";
+
+const AdminSidebar = ({ renderPage, setActivePage, activePage }) => {
+    const navigate = useNavigate();
+    return (
+        <SidebarProvider>
+            <Sidebar>
+                <SidebarHeader >
+                    <div className="flex items-center justify-start gap-2">
+                        <img src="/logo.jpg" alt="logo" className="w-12 h-12 rounded-full" />
+                        <span className="text-lg font-bold">Admin </span>
+                    </div>
+                </SidebarHeader>
+                <SidebarContent>
+                    <SidebarGroup>
+                        <SidebarGroupLabel>Main</SidebarGroupLabel>
+                        <SidebarGroupContent>
+                            <SidebarMenu>
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton
+                                        isActive={activePage === "dashboard"}
+                                        onClick={() => {
+                                            setActivePage("dashboard");
+                                            navigate("/admin/dashboard");
+                                        }}
+                                    >
+                                        <Home className="h-4 w-4" />
+                                        <span>Dashboard</span>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton
+                                        isActive={activePage === "products"}
+                                        onClick={() => {
+                                            setActivePage("products");
+                                            navigate("/admin/products");
+                                        }}
+                                    >
+                                        <Package className="h-4 w-4" />
+                                        <span>Products</span>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton
+                                        isActive={activePage === "orders"}
+                                        onClick={() => {
+                                            setActivePage("orders");
+                                            navigate("/admin/orders");
+                                        }}
+                                    >
+                                        <ShoppingCart className="h-4 w-4" />
+                                        <span>Orders</span>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton
+                                        isActive={activePage === "users"}
+                                        onClick={() => {
+                                            setActivePage("users");
+                                            navigate("/admin/users");
+                                        }}
+                                    >
+                                        <Users className="h-4 w-4" />
+                                        <span>Users</span>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            </SidebarMenu>
+                        </SidebarGroupContent>
+                    </SidebarGroup>
+                    <SidebarGroup>
+                        <SidebarGroupLabel>Analytics</SidebarGroupLabel>
+                        <SidebarGroupContent>
+                            <SidebarMenu>
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton
+                                        isActive={activePage === "analytics"}
+                                        onClick={() => {
+                                            setActivePage("analytics");
+                                            navigate("/admin/analytics");
+                                        }}
+                                    >
+                                        <BarChart3 className="h-4 w-4" />
+                                        <span>Reports</span>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            </SidebarMenu>
+                        </SidebarGroupContent>
+                    </SidebarGroup>
+                </SidebarContent>
+                <SidebarFooter className="border-t p-4">
+                    <div className="flex flex-col gap-4">
+                        <div className="flex items-center justify-between">
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => {
+                                    setActivePage("settings");
+                                    navigate("/admin/settings");
+                                }}
+                            >
+                                <Settings className="h-4 w-4" />
+                                <span className="sr-only">Settings</span>
+                            </Button>
+                            <Button variant="ghost" size="icon">
+                                <LogOut className="h-4 w-4" />
+                                <span className="sr-only">Log out</span>
+                            </Button>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <div className="relative h-8 w-8 rounded-full bg-primary/10">
+                                <span className="absolute inset-0 flex items-center justify-center text-xs font-medium text-primary">
+                                    AD
+                                </span>
+                            </div>
+                            <div className="flex flex-col">
+                                <span className="text-sm font-medium">
+                                    Admin User
+                                </span>
+                                <span className="text-xs text-muted-foreground">
+                                    admin@example.com
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </SidebarFooter>
+            </Sidebar>
+            <SidebarInset className="flex-1 overflow-auto p-6">
+                {renderPage()}
+            </SidebarInset>
+        </SidebarProvider>
+    );
+};
+
+export default AdminSidebar;

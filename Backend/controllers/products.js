@@ -1,9 +1,20 @@
-const { createProduct, findAllProducts, updateProduct, findProductById, deleteProduct, countProducts, findStock } = require('../services/products')
-const { v4: uuidv4 } = require('uuid')
+const {
+    createProduct,
+    findAllProducts,
+    updateProduct,
+    findProductById,
+    deleteProduct,
+    countProducts,
+    findStock,
+} = require("../services/products");
+const { v4: uuidv4 } = require("uuid");
+const { nanoid } = require("nanoid");
 
 const AddProduct = async (req, res) => {
     try {
-        const {
+        console.log(req.body.images.length);
+
+        let {
             name,
             price,
             mrp,
@@ -15,7 +26,8 @@ const AddProduct = async (req, res) => {
             images,
         } = req.body;
 
-        const id = uuidv4();
+        const id = nanoid(10);
+
         const product = {
             id,
             name,
@@ -25,80 +37,91 @@ const AddProduct = async (req, res) => {
             material,
             description,
             tags,
-            variants, 
-            images
+            variants,
+            images: images.map((e) => e.url),
+            imageIds: images.map((e) => e.public_id),
         };
-        const addedProduct = await createProduct(product)
-        res.json({message : 'Succesfully added the product', ...addedProduct })
-    } catch (err) {
-        res.json({error : `Error adding Product ${err}`})
-    }
-}
 
-const getAllProducts = async (req,res) => {
+        const addedProduct = await createProduct(product);
+        res.json({ message: "Succesfully added the product",  });
+    } catch (err) {
+        res.json({ error: `Error adding Product ${err}` });
+    }
+};
+
+const getAllProducts = async (req, res) => {
     try {
-        const products = await findAllProducts()
-        res.json(products)
+        const products = await findAllProducts();
+        res.json(products);
     } catch (error) {
-        res.status(400).json({message: 'Error Fetching Products', error })
+        res.status(400).json({ message: "Error Fetching Products", error });
     }
-}
+};
 
-const editProduct = async (req,res) => {
+const editProduct = async (req, res) => {
     try {
-        const id = req.params.id
-        const updateItem = req.body
-        await updateProduct(id,updateItem)
-        res.json({message : 'Item Updated successfully'})
+        const id = req.params.id;
+        const updateItem = req.body;
+        await updateProduct(id, updateItem);
+        res.json({ message: "Item Updated successfully" });
     } catch (err) {
-        res.json({error : `Error Updating product ${err}`})
+        res.json({ error: `Error Updating product ${err}` });
     }
-}
+};
 
-const getProductById = async (req,res) => {
+const getProductById = async (req, res) => {
     try {
-        const productId = req.params.id
-        const product = await findProductById(productId)
-        
-        if(product){
-            return res.status(200).json(product)
+        const productId = req.params.id;
+        const product = await findProductById(productId);
+
+        if (product) {
+            return res.status(200).json(product);
         } else {
-            return res.status(204).json({message : 'No such Product is found'})
+            return res
+                .status(204)
+                .json({ message: "No such Product is found" });
         }
-        
     } catch (error) {
-        res.status(204).json({message : 'error fetching the product', error: error})
+        res.status(204).json({
+            message: "error fetching the product",
+            error: error,
+        });
     }
-}
+};
 
-const removeProduct = async (req,res) => {
+const removeProduct = async (req, res) => {
     try {
-        const productId = req.params.id
-        await deleteProduct(productId)
-        res.status(200).json({message : 'Successfully Removed the product'})
+        const productId = req.params.id;
+        await deleteProduct(productId);
+        res.status(200).json({ message: "Successfully Removed the product" });
     } catch (error) {
-        res.json({message : 'error removing the product', error: error})
+        res.json({ message: "error removing the product", error: error });
     }
-}
+};
 
-const getCount = async (req,res) => {
-    const count = await countProducts() 
-    res.status(200).json({count})
-}
+const getCount = async (req, res) => {
+    const count = await countProducts();
+    res.status(200).json({ count });
+};
 
-const getStock = async (req,res) => {
+const getStock = async (req, res) => {
     try {
-        const id = req.params.id
-        const {color , size} = req.query
-        const stock = await findStock(id, color, size)
-        res.status(200).json({stock})
-        
-    } catch (error) {  
+        const id = req.params.id;
+        const { color, size } = req.query;
+        const stock = await findStock(id, color, size);
+        res.status(200).json({ stock });
+    } catch (error) {
         console.log(error);
-        res.json({message : 'error fetching the stock', error: error})
+        res.json({ message: "error fetching the stock", error: error });
     }
+};
 
-}
-
-module.exports = { AddProduct, getAllProducts, editProduct, getProductById, removeProduct, getCount, getStock}
-  
+module.exports = {
+    AddProduct,
+    getAllProducts,
+    editProduct,
+    getProductById,
+    removeProduct,
+    getCount,
+    getStock,
+};
