@@ -125,7 +125,7 @@ const OrderDetails = () => {
                 </Alert>
                 <div className="mt-4">
                     <Button variant="outline" asChild>
-                        <Link to="/orders">
+                        <Link to="?tab=orders">
                             <ArrowLeft className="mr-2 h-4 w-4" />
                             Back to Orders
                         </Link>
@@ -139,7 +139,7 @@ const OrderDetails = () => {
         return (
             <div className="container mx-auto px-4 py-8 max-w-5xl">
                 <Button variant="outline" className="mb-6" asChild>
-                    <Link to="/orders">
+                    <Link to="?tab=orders">
                         <ArrowLeft className="mr-2 h-4 w-4" />
                         Back to Orders
                     </Link>
@@ -164,7 +164,7 @@ const OrderDetails = () => {
         return (
             <div className="container mx-auto px-4 py-8 max-w-5xl">
                 <Button variant="outline" className="mb-6" asChild>
-                    <Link to="/orders">
+                    <Link to="?tab=orders">
                         <ArrowLeft className="mr-2 h-4 w-4" />
                         Back to Orders
                     </Link>
@@ -183,7 +183,7 @@ const OrderDetails = () => {
     return (
         <div className="container mx-auto px-4 py-8 max-w-5xl">
             <Button variant="outline" className="mb-6" asChild>
-                <Link to="/orders">
+                <Link to="?tab=orders">
                     <ArrowLeft className="mr-2 h-4 w-4" />
                     Back to Orders
                 </Link>

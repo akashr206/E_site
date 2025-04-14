@@ -104,3 +104,7 @@ body {
 no-scroll::-webkit-scrollbar{
   display: none;
 }
+
+input {
+  z-index: 50;
+}

@@ -220,7 +220,7 @@ export default function Cart() {
             if(response.ok){
                 toast.success("Order placed successfully!")
             } else {
-                toast.error("There qas an error placing your order")
+                toast.error("There as an error placing your order")
             }
             const orderData = await response.json();
             await Promise.all([fetchCart(), fetchTotal()]);

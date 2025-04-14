@@ -31,16 +31,17 @@ import {
     ChevronRight,
     Edit,
     MoreHorizontal,
-    Plus,
     Search,
-    Trash2,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { API_URL } from "../../config/api";
+import DeleteProduct from "../../components/Admin/DeleteProduct";
+import { Skeleton } from "../../components/ui/skeleton";
 
 export default function ProductsPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [categoryFilter, setCategoryFilter] = useState("all");
+    const [gettingProducts, setGettingProducts] = useState(false);
     const [products, setProducts] = useState([
         {
             id: "",
@@ -55,6 +56,7 @@ export default function ProductsPage() {
             ],
         },
     ]);
+    const [editProduct, setEditProduct] = useState({});
 
     const filteredProducts = products.filter((product) => {
         const matchesSearch =
@@ -71,7 +73,7 @@ export default function ProductsPage() {
     });
 
     const getTotalStock = (variants) => {
-        return variants.reduce((total, variant) => total + variant.stock, 0);
+        return variants.reduce((total, variant) => Number(total) + Number(variant.stock), 0);
     };
 
     const getUniqueCategories = () => {
@@ -83,9 +85,11 @@ export default function ProductsPage() {
     };
 
     async function fetchProducts() {
+        setGettingProducts(true);
         const res = await fetch(`${API_URL}/api/products/all`);
         const data = await res.json();
         setProducts(data);
+        setGettingProducts(false);
     }
 
     useEffect(() => {
@@ -94,6 +98,15 @@ export default function ProductsPage() {
 
     return (
         <div className="flex flex-col gap-6">
+            {editProduct && (
+                <AddProduct
+                    getUniqueCategories={getUniqueCategories}
+                    tab={{ type: "edit", data: editProduct }}
+                    fetchProducts={fetchProducts}
+                    EditOpen={editProduct.name}
+                    setEditOpen={setEditProduct}
+                />
+            )}
             <div className="flex flex-col gap-2">
                 <h1 className="text-3xl font-bold tracking-tight">Products</h1>
                 <p className="text-muted-foreground">
@@ -139,6 +152,7 @@ export default function ProductsPage() {
                     </div>
                     <AddProduct
                         getUniqueCategories={getUniqueCategories}
+                        fetchProducts={fetchProducts}
                     ></AddProduct>
                 </div>
 
@@ -161,71 +175,132 @@ export default function ProductsPage() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {filteredProducts.map((product) => (
-                                    <TableRow key={product.id}>
-                                        <TableCell className="font-medium">
-                                            {product.id.substring(0, 8)}
-                                        </TableCell>
-                                        <TableCell>{product.name}</TableCell>
-                                        <TableCell>
-                                            {formatCurrency(product.price)}
-                                        </TableCell>
-                                        <TableCell>
-                                            {formatCurrency(product.mrp)}
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex flex-wrap gap-1">
-                                                {product.category.map(
-                                                    (cat, index) => (
-                                                        <Badge
-                                                            key={index}
-                                                            variant="outline"
-                                                        >
-                                                            {cat}
-                                                        </Badge>
-                                                    )
-                                                )}
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            {product.material}
-                                        </TableCell>
-                                        <TableCell>
-                                            {getTotalStock(product.variants)}
-                                        </TableCell>
-                                        <TableCell>
-                                            {product.variants.length}
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                    >
-                                                        <MoreHorizontal className="h-4 w-4" />
-                                                        <span className="sr-only">
-                                                            Open menu
-                                                        </span>
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end">
-                                                    <DropdownMenuLabel>
-                                                        Actions
-                                                    </DropdownMenuLabel>
-                                                    <DropdownMenuItem>
-                                                        <Edit className="mr-2 h-4 w-4" />
-                                                        Edit
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem>
-                                                        <Trash2 className="mr-2 h-4 w-4" />
-                                                        Delete
-                                                    </DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
+                                {gettingProducts
+                                    ? Array.from({ length: 10 }).map(
+                                          (_, idx) => (
+                                              <TableRow key={idx}>
+                                                  <TableCell>
+                                                      <Skeleton className="h-4 w-16" />
+                                                  </TableCell>
+                                                  <TableCell>
+                                                      <Skeleton className="h-4 w-32" />
+                                                  </TableCell>
+                                                  <TableCell>
+                                                      <Skeleton className="h-4 w-10" />
+                                                  </TableCell>
+                                                  <TableCell>
+                                                      <Skeleton className="h-4 w-10" />
+                                                  </TableCell>
+                                                  <TableCell>
+                                                      <div className="inline-flex px-2 py-1 text-xs font-medium rounded-full">
+                                                          <Skeleton className="h-4 w-12 rounded-full" />
+                                                      </div>
+                                                  </TableCell>
+                                                  <TableCell>
+                                                      <Skeleton className="h-4 w-20" />
+                                                  </TableCell>
+                                                  <TableCell>
+                                                      <Skeleton className="h-4 w-12" />
+                                                  </TableCell>
+                                                  <TableCell>
+                                                      <Skeleton className="h-4 w-24" />
+                                                  </TableCell>
+                                                  <TableCell className="text-right">
+                                                      <Skeleton className="h-4 w-16 ml-auto" />
+                                                  </TableCell>
+                                              </TableRow>
+                                          )
+                                      )
+                                    : filteredProducts.map((product) => (
+                                          <TableRow key={product.id}>
+                                              <TableCell className="font-medium">
+                                                  {product.id.substring(0, 8)}
+                                              </TableCell>
+                                              <TableCell>
+                                                  {product.name}
+                                              </TableCell>
+                                              <TableCell>
+                                                  {formatCurrency(
+                                                      product.price
+                                                  )}
+                                              </TableCell>
+                                              <TableCell>
+                                                  {formatCurrency(product.mrp)}
+                                              </TableCell>
+                                              <TableCell>
+                                                  <div className="flex flex-wrap gap-1">
+                                                      {product.category.map(
+                                                          (cat, index) => (
+                                                              <Badge
+                                                                  key={index}
+                                                                  variant="outline"
+                                                              >
+                                                                  {cat}
+                                                              </Badge>
+                                                          )
+                                                      )}
+                                                  </div>
+                                              </TableCell>
+                                              <TableCell>
+                                                  {product.material}
+                                              </TableCell>
+                                              <TableCell>
+                                                  {getTotalStock(
+                                                      product.variants
+                                                  )}
+                                              </TableCell>
+                                              <TableCell>
+                                                  {product.variants.length}
+                                              </TableCell>
+                                              <TableCell className="text-right">
+                                                  <DropdownMenu>
+                                                      <DropdownMenuTrigger
+                                                          asChild
+                                                      >
+                                                          <Button
+                                                              variant="ghost"
+                                                              size="icon"
+                                                          >
+                                                              <MoreHorizontal className="h-4 w-4" />
+                                                              <span className="sr-only">
+                                                                  Open menu
+                                                              </span>
+                                                          </Button>
+                                                      </DropdownMenuTrigger>
+                                                      <DropdownMenuContent align="end">
+                                                          <DropdownMenuLabel>
+                                                              Actions
+                                                          </DropdownMenuLabel>
+                                                          <DropdownMenuItem
+                                                              onClick={() =>
+                                                                  setEditProduct(
+                                                                      product
+                                                                  )
+                                                              }
+                                                          >
+                                                              <Edit className="h-4 w-4" />
+                                                              Edit
+                                                          </DropdownMenuItem>
+                                                          <DropdownMenuItem
+                                                              asChild
+                                                          >
+                                                              <DeleteProduct
+                                                                  id={
+                                                                      product.id
+                                                                  }
+                                                                  publicIds={
+                                                                      product.imageIds
+                                                                  }
+                                                                  fetchProducts={
+                                                                      fetchProducts
+                                                                  }
+                                                              ></DeleteProduct>
+                                                          </DropdownMenuItem>
+                                                      </DropdownMenuContent>
+                                                  </DropdownMenu>
+                                              </TableCell>
+                                          </TableRow>
+                                      ))}
                             </TableBody>
                         </Table>
                     </CardContent>

@@ -35,6 +35,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { API_URL } from "../../config/api";
+import clsx from "clsx";
 
 const CLOUDINARY_API = import.meta.env.VITE_CLOUDINARY_URL;
 const CLOUDINARY_CLOUD = import.meta.env.VITE_CLOUDINARY_CLOUD;
@@ -47,28 +48,39 @@ const SIZE_OPTIONS = ["XS", "S", "M", "L", "XL", "XXL", "Free Size"];
 const variantSchema = z.object({
     color: z.string().min(1, { message: "Color is required" }),
     size: z.string().min(1, { message: "Size is required" }),
-    stock: z
-        .string()
-        .min(1, { message: "Stock is required" })
-        .refine((val) => !isNaN(parseInt(val)) && parseInt(val) >= 0, {
+    stock: z.union([z.string(), z.number()]).refine(
+        (val) => {
+            const num = typeof val === "string" ? parseFloat(val) : val;
+            return !isNaN(num) && num > 0;
+        },
+        {
             message: "Stock must be a non-negative number",
-        }),
+        }
+    ),
 });
 
 const productSchema = z.object({
     name: z.string().min(1, { message: "Product name is required" }),
-    price: z
-        .string()
-        .min(1, { message: "Price is required" })
-        .refine((val) => !isNaN(parseFloat(val)) && parseFloat(val) > 0, {
+    price: z.union([z.string(), z.number()]).refine(
+        (val) => {
+            const num = typeof val === "string" ? parseFloat(val) : val;
+            return !isNaN(num) && num > 0;
+        },
+        {
             message: "Price must be a positive number",
-        }),
+        }
+    ),
     mrp: z
-        .string()
-        .min(1, { message: "MRP is required" })
-        .refine((val) => !isNaN(parseFloat(val)) && parseFloat(val) > 0, {
-            message: "MRP must be a positive number",
-        }),
+        .union([z.string().min(1, { message: "MRP is required" }), z.number()])
+        .refine(
+            (val) => {
+                const num = typeof val === "string" ? parseFloat(val) : val;
+                return !isNaN(num) && num > 0;
+            },
+            {
+                message: "MRP must be a positive number",
+            }
+        ),
     material: z.string().min(1, { message: "Material is required" }),
     description: z.string().min(1, { message: "Description is required" }),
     categories: z
@@ -80,7 +92,13 @@ const productSchema = z.object({
         .min(1, { message: "Add at least one variant" }),
 });
 
-const AddProduct = ({ getUniqueCategories, data }) => {
+const AddProduct = ({
+    getUniqueCategories,
+    tab,
+    fetchProducts,
+    EditOpen,
+    setEditOpen,
+}) => {
     const [open, setOpen] = useState(false);
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [customCategory, setCustomCategory] = useState("");
@@ -123,9 +141,15 @@ const AddProduct = ({ getUniqueCategories, data }) => {
 
     useEffect(() => {
         setValue("variants", variants);
+    }, [variants, setValue]);
+
+    useEffect(() => {
         setValue("categories", selectedCategories);
+    }, [selectedCategories, setValue]);
+
+    useEffect(() => {
         setValue("tags", tags);
-    }, [setValue]);
+    }, [tags, setValue]);
 
     const handleImageUpload = (files) => {
         if (imageFiles.length + files.length > MAX_IMAGES) {
@@ -326,10 +350,68 @@ const AddProduct = ({ getUniqueCategories, data }) => {
         return 0;
     }
 
+    async function updateProduct(p) {
+        const res = await fetch(
+            `${API_URL}/api/products/update/${tab?.data.id}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(p),
+            }
+        );
+        if (res.ok) {
+            return 1;
+        }
+        return 0;
+    }
+
     const handleScrollToTop = () => {
         if (contentRef.current) {
             contentRef.current.scrollTop = 0;
             contentRef.current.scrollLeft = 0;
+        }
+    };
+
+    const onUpdate = async (data) => {
+        try {
+            setSubmitting(true);
+            const variantsValid = validateVariants();
+            if (!variantsValid) {
+                return;
+            }
+
+            handleScrollToTop();
+            const payload = {
+                name: data.name,
+                id: data.id,
+                price: data.price,
+                mrp: data.mrp,
+                material: data.material,
+                description: data.description,
+                category: data.categories,
+                tags: data.tags,
+                variants: data.variants,
+            };
+            const res = await updateProduct(payload);
+
+            if (res) {
+                setUploading(false);
+                setSubmitting(false);
+                toast.success("The product has been updated successfully.");
+                setOpen(false);
+                fetchProducts();
+                resetForm();
+            } else {
+                setUploading(false);
+                setSubmitting(false);
+                toast.error(
+                    "There was an error while updating the product, try again later."
+                );
+            }
+        } catch (error) {
+            console.error("Error submitting product:", error);
         }
     };
 
@@ -387,6 +469,7 @@ const AddProduct = ({ getUniqueCategories, data }) => {
                 setSubmitting(false);
                 toast.success("The product has been added successfully.");
                 setOpen(false);
+                fetchProducts();
                 resetForm();
             } else {
                 setUploading(false);
@@ -431,11 +514,19 @@ const AddProduct = ({ getUniqueCategories, data }) => {
     };
 
     useEffect(() => {
-      if(data){
-        setpro
-      }
-    }, [])
-    
+        if (tab?.type === "edit" && tab.data) {
+            reset({ ...tab.data });
+            setSelectedCategories(tab.data.category || []);
+            setVariants(
+                tab.data.variants || [{ color: "", size: "", stock: "" }]
+            );
+            setTags(tab.data.tags || []);
+        }
+    }, [tab, reset]);
+
+    useEffect(() => {
+        EditOpen && setOpen(true);
+    }, [EditOpen]);
 
     return (
         <Dialog
@@ -444,14 +535,20 @@ const AddProduct = ({ getUniqueCategories, data }) => {
                 setOpen(newOpen);
                 if (!newOpen) {
                     resetForm();
+                    setEditOpen({});
+                    fetchProducts();
                 }
             }}
         >
             <DialogTrigger asChild>
-                <Button className="flex items-center gap-1">
-                    <Plus className="h-4 w-4" />
-                    Add Product
-                </Button>
+                {tab?.type === "edit" ? (
+                    ""
+                ) : (
+                    <Button className="flex items-center">
+                        <Plus className="h-4 w-4" />
+                        Add Product
+                    </Button>
+                )}
             </DialogTrigger>
             <DialogContent
                 ref={contentRef}
@@ -475,14 +572,24 @@ const AddProduct = ({ getUniqueCategories, data }) => {
                     </DialogDescription>
                 </DialogHeader>
                 <form
-                    onSubmit={handleSubmit(onSubmit, (errors) => {
-                        toast.error(
-                            "Please fill all the fields. Make sure that you have entered the details in right format."
-                        );
-                    })}
+                    onSubmit={handleSubmit(
+                        tab?.type ? onUpdate : onSubmit,
+                        (errors) => {
+                            console.log(errors);
+
+                            toast.error(
+                                "Please fill all the fields. Make sure that you have entered the details in right format."
+                            );
+                        }
+                    )}
                 >
                     <div className="grid gap-4 py-4">
-                        <div className="flex flex-col gap-2">
+                        <div
+                            className={clsx(
+                                "flex flex-col gap-2",
+                                tab?.type && "hidden"
+                            )}
+                        >
                             <div className="flex justify-between items-center">
                                 <Label htmlFor="images">Product Images</Label>
                                 <span className="text-xs text-gray-500">
@@ -949,7 +1056,7 @@ const AddProduct = ({ getUniqueCategories, data }) => {
                             variant="outline"
                             onClick={resetForm}
                             className="mr-2"
-                            disabled={submitting}
+                            disabled={submitting || tab?.type === "edit"}
                         >
                             Reset
                         </Button>
@@ -960,6 +1067,8 @@ const AddProduct = ({ getUniqueCategories, data }) => {
                         >
                             {submitting ? (
                                 <Loader className="animate-spin "></Loader>
+                            ) : tab?.type === "edit" ? (
+                                "Edit Product"
                             ) : (
                                 "Add Product"
                             )}

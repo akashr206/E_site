@@ -8,11 +8,11 @@ const {
     findStock,
 } = require("../services/products");
 async function generateId(size) {
-    const { nanoid } = await import('nanoid');
+    const { nanoid } = await import("nanoid");
     const id = nanoid(size);
-    return id
-  }
-  
+    return id;
+}
+
 const AddProduct = async (req, res) => {
     try {
         console.log(req.body.images.length);
@@ -29,7 +29,7 @@ const AddProduct = async (req, res) => {
             images,
         } = req.body;
 
-        const id = generateId(10);
+        const id = await generateId(10);
 
         const product = {
             id,
@@ -45,10 +45,10 @@ const AddProduct = async (req, res) => {
             imageIds: images.map((e) => e.public_id),
         };
 
-        const addedProduct = await createProduct(product);
-        res.json({ message: "Succesfully added the product",  });
+        await createProduct(product);
+        res.json({ message: "Succesfully added the product" });
     } catch (err) {
-        res.json({ error: `Error adding Product ${err}` });
+        res.status(500).json({ error: `Error adding Product ${err}` });
     }
 };
 
@@ -68,7 +68,7 @@ const editProduct = async (req, res) => {
         await updateProduct(id, updateItem);
         res.json({ message: "Item Updated successfully" });
     } catch (err) {
-        res.json({ error: `Error Updating product ${err}` });
+        res.status(500).json({ error: `Error Updating product ${err}` });
     }
 };
 
@@ -95,7 +95,11 @@ const getProductById = async (req, res) => {
 const removeProduct = async (req, res) => {
     try {
         const productId = req.params.id;
-        await deleteProduct(productId);
+        const { publicIds } = req.body;
+        if (!publicIds) {
+            res.status(400).json({ message: "Image IDs are required." });
+        }
+        await deleteProduct(productId, publicIds);
         res.status(200).json({ message: "Successfully Removed the product" });
     } catch (error) {
         res.json({ message: "error removing the product", error: error });
@@ -115,7 +119,7 @@ const getStock = async (req, res) => {
         res.status(200).json({ stock });
     } catch (error) {
         console.log(error);
-        res.json({ message: "error fetching the stock", error: error });
+        res.status(500).json({ message: "error fetching the stock", error: error });
     }
 };
 

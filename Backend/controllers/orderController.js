@@ -1,6 +1,7 @@
 const Order = require("../models/Order");
 const { clearUserCart } = require("../services/cart");
 const { getAddress } = require("../services/address");
+const { reduceStock } = require("../services/products");
 
 const addOrder = async (req, res) => {
     try {
@@ -47,7 +48,11 @@ const addOrder = async (req, res) => {
             status: "confirmed",
         });
         await clearUserCart(userId);
-
+        await Promise.all(
+            items.map((item) => {
+                reduceStock(item.productId, item.quantity, item.variant.color, item.variant.size);
+            })
+        );
         return res.status(201).json({
             message: "Order created successfully",
             orderId: order._id,
@@ -83,12 +88,10 @@ const getOrder = async (req, res) => {
                 .json({ error: "Not authorized to view this order" });
         }
         const shippingAddress = await getAddress(order.shippingAddress);
-        if (shippingAddress != -1) 
-            orderData.shippingAddress = shippingAddress
-            
+        if (shippingAddress != -1) orderData.shippingAddress = shippingAddress;
 
         return res.status(200).json({
-           order : orderData,
+            order: orderData,
         });
     } catch (error) {
         console.error("Error fetching order:", error);

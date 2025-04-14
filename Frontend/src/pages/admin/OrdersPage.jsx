@@ -481,7 +481,15 @@ export default function OrdersPage() {
             </div>
 
             {isDetailsOpen && (
-                <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+                <Dialog
+                    open={isDetailsOpen}
+                    onOpenChange={(newOpen) => {
+                        setIsDetailsOpen(newOpen);
+                        if (!newOpen) {
+                            setSelectedOrder(null);
+                        }
+                    }}
+                >
                     <DialogContent className="sm:max-w-[600px]">
                         <DialogHeader>
                             <DialogTitle>
