@@ -8,6 +8,14 @@ const OrderSchema = new Schema(
             ref: "User",
             required: true,
         },
+        id: {
+            type: String,
+            required: true,
+        },
+        customerName: {
+            type: String,
+            required: true,
+        },
         orderDate: {
             type: Date,
             default: Date.now,
@@ -15,7 +23,7 @@ const OrderSchema = new Schema(
         items: [
             {
                 productId: {
-                    type: String, 
+                    type: String,
                     ref: "Product",
                     required: true,
                 },
@@ -52,7 +60,7 @@ const OrderSchema = new Schema(
                 enum: ["upi", "card", "cod", "wallet", "netbanking"],
             },
             status: {
-                type: String, 
+                type: String,
                 required: true,
                 enum: ["pending", "paid", "failed", "refunded"],
             },
@@ -106,7 +114,7 @@ const OrderSchema = new Schema(
                 min: [0, "Total amount cannot be negative"],
             },
         },
-        
+
         status: {
             type: String,
             required: true,

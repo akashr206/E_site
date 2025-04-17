@@ -12,7 +12,7 @@ import {
 import { Button } from "../ui/button";
 import { TrashIcon } from "lucide-react";
 
-const AddressDelete = ({ id, onDelete }) => {
+const AddressDelete = ({  onDelete }) => {
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>

@@ -8,7 +8,7 @@ const Info = (props) => {
     const handleLogout = () => {
         logout();
         navigate('/')
-        // setMobileMenuOpen(false);
+        // setMobileMenuOpen(false)
       }
 
     return (

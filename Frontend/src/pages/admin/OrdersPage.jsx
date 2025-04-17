@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
     Table,
@@ -42,195 +42,9 @@ import {
     Search,
 } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
-
-const orders = [
-    {
-        id: "ORD-001",
-        userId: "USR-001",
-        customerName: "John Doe",
-        orderDate: new Date("2023-04-10"),
-        items: [
-            {
-                productId: "PRD-001",
-                productName: "Cotton T-Shirt",
-                variant: { color: "Black", size: "M" },
-                quantity: 2,
-                price: 599,
-            },
-            {
-                productId: "PRD-007",
-                productName: "Leather Wallet",
-                variant: { color: "Brown", size: "Free Size" },
-                quantity: 1,
-                price: 799,
-            },
-        ],
-        payment: {
-            method: "card",
-            status: "paid",
-            transactionId: "TXN-001",
-        },
-        shipping: {
-            method: "standard",
-            status: "delivered",
-            estimatedDeliveryDate: new Date("2023-04-15"),
-        },
-        summary: {
-            subTotal: 1997,
-            tax: 359.46,
-            shippingCost: 99,
-            discount: 200,
-            totalAmount: 2255.46,
-        },
-        status: "delivered",
-    },
-    {
-        id: "ORD-002",
-        userId: "USR-002",
-        customerName: "Jane Smith",
-        orderDate: new Date("2023-04-09"),
-        items: [
-            {
-                productId: "PRD-003",
-                productName: "Leather Jacket",
-                variant: { color: "Brown", size: "L" },
-                quantity: 1,
-                price: 2499,
-            },
-        ],
-        payment: {
-            method: "upi",
-            status: "paid",
-            transactionId: "TXN-002",
-        },
-        shipping: {
-            method: "express",
-            status: "shipped",
-            estimatedDeliveryDate: new Date("2023-04-12"),
-        },
-        summary: {
-            subTotal: 2499,
-            tax: 449.82,
-            shippingCost: 199,
-            discount: 0,
-            totalAmount: 3147.82,
-        },
-        status: "shipped",
-    },
-    {
-        id: "ORD-003",
-        userId: "USR-003",
-        customerName: "Robert Johnson",
-        orderDate: new Date("2023-04-09"),
-        items: [
-            {
-                productId: "PRD-005",
-                productName: "Wool Sweater",
-                variant: { color: "Grey", size: "M" },
-                quantity: 1,
-                price: 1499,
-            },
-            {
-                productId: "PRD-006",
-                productName: "Canvas Shoes",
-                variant: { color: "White", size: "8" },
-                quantity: 1,
-                price: 999,
-            },
-        ],
-        payment: {
-            method: "card",
-            status: "paid",
-            transactionId: "TXN-003",
-        },
-        shipping: {
-            method: "standard",
-            status: "confirmed",
-            estimatedDeliveryDate: new Date("2023-04-16"),
-        },
-        summary: {
-            subTotal: 2498,
-            tax: 449.64,
-            shippingCost: 99,
-            discount: 0,
-            totalAmount: 3046.64,
-        },
-        status: "confirmed",
-    },
-    {
-        id: "ORD-004",
-        userId: "USR-004",
-        customerName: "Emily Davis",
-        orderDate: new Date("2023-04-08"),
-        items: [
-            {
-                productId: "PRD-004",
-                productName: "Silk Scarf",
-                variant: { color: "Red", size: "Free Size" },
-                quantity: 1,
-                price: 899,
-            },
-        ],
-        payment: {
-            method: "cod",
-            status: "pending",
-            transactionId: "",
-        },
-        shipping: {
-            method: "standard",
-            status: "pending",
-            estimatedDeliveryDate: new Date("2023-04-15"),
-        },
-        summary: {
-            subTotal: 899,
-            tax: 161.82,
-            shippingCost: 99,
-            discount: 0,
-            totalAmount: 1159.82,
-        },
-        status: "pending",
-    },
-    {
-        id: "ORD-005",
-        userId: "USR-005",
-        customerName: "Michael Wilson",
-        orderDate: new Date("2023-04-07"),
-        items: [
-            {
-                productId: "PRD-002",
-                productName: "Denim Jeans",
-                variant: { color: "Blue", size: "M" },
-                quantity: 1,
-                price: 1299,
-            },
-            {
-                productId: "PRD-001",
-                productName: "Cotton T-Shirt",
-                variant: { color: "White", size: "M" },
-                quantity: 2,
-                price: 599,
-            },
-        ],
-        payment: {
-            method: "card",
-            status: "refunded",
-            transactionId: "TXN-005",
-        },
-        shipping: {
-            method: "express",
-            status: "cancelled",
-            estimatedDeliveryDate: new Date("2023-04-10"),
-        },
-        summary: {
-            subTotal: 2497,
-            tax: 449.46,
-            shippingCost: 199,
-            discount: 0,
-            totalAmount: 3145.46,
-        },
-        status: "cancelled",
-    },
-];
+import { API_URL } from "../../config/api";
+import { Skeleton } from "../../components/ui/skeleton";
+import { useSearchParams } from "react-router-dom";
 
 const getStatusBadge = (status) => {
     switch (status) {
@@ -297,22 +111,76 @@ export default function OrdersPage() {
     const [statusFilter, setStatusFilter] = useState("all");
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+    const [activeDropdownId, setActiveDropdownId] = useState(null);
+    const [filteredOrders, setFilteredOrders] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [max, setMax] = useState(1);
+    const page = searchParams.get("page") || 1;
+    const limit = 10;
 
-    const filteredOrders = orders.filter((order) => {
-        const matchesSearch =
-            order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            order.customerName.toLowerCase().includes(searchTerm.toLowerCase());
+    const filterOrders = (orders) => {
+        orders = orders?.filter((order) => {
+            const matchesSearch =
+                order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                order.customerName
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase());
 
-        const matchesStatus =
-            statusFilter === "all" || order.status === statusFilter;
+            const matchesStatus =
+                statusFilter === "all" || order.status === statusFilter;
 
-        return matchesSearch && matchesStatus;
-    });
+            return matchesSearch && matchesStatus;
+        });
+        return orders;
+    };
 
     const handleViewDetails = (order) => {
-        setSelectedOrder(order);
-        setIsDetailsOpen(true);
+        setActiveDropdownId(null);
+        setTimeout(() => {
+            setSelectedOrder(order);
+            setIsDetailsOpen(true);
+        }, 0);
     };
+
+    const fetchAllOrders = async (page, limit) => {
+        setLoading(true);
+        const res = await fetch(
+            `${API_URL}/api/orders/all?page=${page}&limit=${limit}`,
+            {
+                credentials: "include",
+            }
+        );
+        if (res.ok) {
+            const data = await res.json();
+            setMax(data.pagination.pages);
+            setFilteredOrders(filterOrders(data.allOrders));
+        }
+        setLoading(false);
+    };
+
+    const handleNext = () => {
+        const page = searchParams.get("page");
+        if (Number(page) + 1 <= max) {
+            searchParams.set("page", Number(page) + 1);
+            setSearchParams(searchParams);
+        }
+    };
+    const handlePrev = () => {
+        const page = searchParams.get("page");
+        if (Number(page)  - 1 > 0) {
+            searchParams.set("page", Number(page) - 1);
+            setSearchParams(searchParams);
+        }
+    };
+
+    useEffect(() => {
+        fetchAllOrders(page, limit);
+    }, []);
+
+    useEffect(() => {
+        fetchAllOrders(page, limit);
+    }, [page]);
 
     return (
         <div className="flex flex-col gap-6">
@@ -384,96 +252,157 @@ export default function OrdersPage() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {filteredOrders.map((order) => (
-                                    <TableRow key={order.id}>
-                                        <TableCell className="font-medium">
-                                            {order.id}
-                                        </TableCell>
-                                        <TableCell>
-                                            {order.customerName}
-                                        </TableCell>
-                                        <TableCell>
-                                            {formatDate(order.orderDate)}
-                                        </TableCell>
-                                        <TableCell>
-                                            {getStatusBadge(order.status)}
-                                        </TableCell>
-                                        <TableCell>
-                                            {getPaymentStatusBadge(
-                                                order.payment.status
-                                            )}
-                                        </TableCell>
-                                        <TableCell>
-                                            {order.items.length}
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            {formatCurrency(
-                                                order.summary.totalAmount
-                                            )}
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                    >
-                                                        <MoreHorizontal className="h-4 w-4" />
-                                                        <span className="sr-only">
-                                                            Open menu
-                                                        </span>
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end">
-                                                    <DropdownMenuLabel>
-                                                        Actions
-                                                    </DropdownMenuLabel>
-                                                    <DropdownMenuItem
-                                                        onClick={() =>
-                                                            handleViewDetails(
-                                                                order
-                                                            )
-                                                        }
-                                                    >
-                                                        <Eye className="mr-2 h-4 w-4" />
-                                                        View Details
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuSeparator />
-                                                    <DropdownMenuItem
-                                                        disabled={
-                                                            order.status ===
-                                                                "delivered" ||
-                                                            order.status ===
-                                                                "cancelled"
-                                                        }
-                                                    >
-                                                        Update Status
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem
-                                                        disabled={
-                                                            order.payment
-                                                                .status !==
-                                                            "paid"
-                                                        }
-                                                    >
-                                                        Process Refund
-                                                    </DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
+                                {loading
+                                    ? Array.from({ length: 10 }).map(
+                                          (e, index) => {
+                                              return (
+                                                  <TableRow key={index}>
+                                                      <TableCell>
+                                                          <Skeleton className="h-3 w-14"></Skeleton>
+                                                      </TableCell>
+                                                      <TableCell>
+                                                          <Skeleton className="h-3 w-16"></Skeleton>
+                                                      </TableCell>
+                                                      <TableCell>
+                                                          <Skeleton className="h-3 w-12"></Skeleton>
+                                                      </TableCell>
+                                                      <TableCell>
+                                                          <Skeleton className="h-3 w-12"></Skeleton>
+                                                      </TableCell>
+                                                      <TableCell>
+                                                          <Skeleton className="h-3 w-8"></Skeleton>
+                                                      </TableCell>
+                                                      <TableCell>
+                                                          <Skeleton className="h-3 w-8"></Skeleton>
+                                                      </TableCell>
+                                                      <TableCell>
+                                                          <Skeleton className="h-3 w-8"></Skeleton>
+                                                      </TableCell>
+                                                      <TableCell>
+                                                          <Skeleton className="h-3 w-8"></Skeleton>
+                                                      </TableCell>
+                                                  </TableRow>
+                                              );
+                                          }
+                                      )
+                                    : filteredOrders?.map((order) => (
+                                          <TableRow key={order.id}>
+                                              <TableCell className="font-medium">
+                                                  {order.id}
+                                              </TableCell>
+                                              <TableCell>
+                                                  {order.customerName}
+                                              </TableCell>
+                                              <TableCell>
+                                                  {formatDate(order.orderDate)}
+                                              </TableCell>
+                                              <TableCell>
+                                                  {getStatusBadge(order.status)}
+                                              </TableCell>
+                                              <TableCell>
+                                                  {getPaymentStatusBadge(
+                                                      order.payment.status
+                                                  )}
+                                              </TableCell>
+                                              <TableCell>
+                                                  {order.items.length}
+                                              </TableCell>
+                                              <TableCell className="text-right">
+                                                  {formatCurrency(
+                                                      order.summary.totalAmount
+                                                  )}
+                                              </TableCell>
+                                              <TableCell className="text-right">
+                                                  <DropdownMenu
+                                                      key={order.id}
+                                                      open={
+                                                          activeDropdownId ===
+                                                          order.id
+                                                      }
+                                                      onOpenChange={(
+                                                          isOpen
+                                                      ) => {
+                                                          setActiveDropdownId(
+                                                              isOpen
+                                                                  ? order.id
+                                                                  : null
+                                                          );
+                                                      }}
+                                                  >
+                                                      <DropdownMenuTrigger
+                                                          asChild
+                                                      >
+                                                          <Button
+                                                              variant="ghost"
+                                                              size="icon"
+                                                          >
+                                                              <MoreHorizontal className="h-4 w-4" />
+                                                              <span className="sr-only">
+                                                                  Open menu
+                                                              </span>
+                                                          </Button>
+                                                      </DropdownMenuTrigger>
+
+                                                      <DropdownMenuContent align="end">
+                                                          <DropdownMenuLabel>
+                                                              Actions
+                                                          </DropdownMenuLabel>
+                                                          <DropdownMenuItem
+                                                              onClick={() =>
+                                                                  handleViewDetails(
+                                                                      order
+                                                                  )
+                                                              }
+                                                          >
+                                                              <Eye className="mr-2 h-4 w-4" />
+                                                              View Details
+                                                          </DropdownMenuItem>
+                                                          <DropdownMenuSeparator />
+                                                          <DropdownMenuItem
+                                                              disabled={
+                                                                  order?.status ===
+                                                                      "delivered" ||
+                                                                  order?.status ===
+                                                                      "cancelled"
+                                                              }
+                                                          >
+                                                              Update Status
+                                                          </DropdownMenuItem>
+                                                          <DropdownMenuItem
+                                                              disabled={
+                                                                  order.payment
+                                                                      .status !==
+                                                                  "paid"
+                                                              }
+                                                          >
+                                                              Process Refund
+                                                          </DropdownMenuItem>
+                                                      </DropdownMenuContent>
+                                                  </DropdownMenu>
+                                              </TableCell>
+                                          </TableRow>
+                                      ))}
                             </TableBody>
                         </Table>
                     </CardContent>
                 </Card>
 
                 <div className="flex items-center justify-end space-x-2">
-                    <Button variant="outline" size="sm">
+                    <Button
+                        onClick={handlePrev}
+                        disabled={page == 1}
+                        variant="outline"
+                        size="sm"
+                    >
                         <ChevronLeft className="h-4 w-4" />
                         Previous
                     </Button>
-                    <Button variant="outline" size="sm">
+                    <Button
+                        onClick={handleNext}
+                        disabled={page == max}
+                        variant="outline"
+                        size="sm"
+                    >
                         Next
                         <ChevronRight className="h-4 w-4" />
                     </Button>

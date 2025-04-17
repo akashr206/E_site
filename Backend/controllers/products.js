@@ -7,11 +7,7 @@ const {
     countProducts,
     findStock,
 } = require("../services/products");
-async function generateId(size) {
-    const { nanoid } = await import("nanoid");
-    const id = nanoid(size);
-    return id;
-}
+const { generateId } = require("../utils/generateId");
 
 const AddProduct = async (req, res) => {
     try {
@@ -119,7 +115,10 @@ const getStock = async (req, res) => {
         res.status(200).json({ stock });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: "error fetching the stock", error: error });
+        res.status(500).json({
+            message: "error fetching the stock",
+            error: error,
+        });
     }
 };
 

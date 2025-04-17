@@ -11,7 +11,7 @@ const Home = () => {
         throw new Error("Failed to fetch products");
       }
       const products = await response.json();
-      setProducts(products);
+      setProducts(products.slice(0,14));
     } catch (error) {
       console.error("Error fetching products:", error);
       setProducts([]);

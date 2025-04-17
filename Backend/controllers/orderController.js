@@ -2,10 +2,12 @@ const Order = require("../models/Order");
 const { clearUserCart } = require("../services/cart");
 const { getAddress } = require("../services/address");
 const { reduceStock } = require("../services/products");
+const { generateId } = require("../utils/generateId");
 
 const addOrder = async (req, res) => {
     try {
         const user = req.user;
+        const orderId = await generateId(10);
         if (!user || !user.id) {
             return res.status(401).json({ error: "User not authenticated" });
         }
@@ -29,6 +31,8 @@ const addOrder = async (req, res) => {
         }
         const order = await Order.create({
             userId,
+            id: orderId,
+            customerName: user.name,
             items,
             shippingAddress: addressId,
             summary,
@@ -50,7 +54,12 @@ const addOrder = async (req, res) => {
         await clearUserCart(userId);
         await Promise.all(
             items.map((item) => {
-                reduceStock(item.productId, item.quantity, item.variant.color, item.variant.size);
+                reduceStock(
+                    item.productId,
+                    item.quantity,
+                    item.variant.color,
+                    item.variant.size
+                );
             })
         );
         return res.status(201).json({
@@ -139,4 +148,33 @@ const getUserOrders = async (req, res) => {
     }
 };
 
-module.exports = { addOrder, getOrder, getUserOrders };
+const getAllOrders = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+        const allOrders = await Order.find()
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
+        const totalOrders = await Order.countDocuments();
+        return res.status(200).json({
+            allOrders,
+            pagination: {
+                total: totalOrders,
+                page,
+                limit,
+                pages: Math.ceil(totalOrders / limit),
+            },
+        });
+    } catch (error) {
+        console.error("Error fetching user orders:", error);
+        return res.status(500).json({ error: "Failed to fetch orders" });
+    }
+};
+const deleteAll = async (req, res) => {
+    await Order.deleteMany({});
+    return res.json({ message: "deleted successfully" });
+};
+
+module.exports = { addOrder, getOrder, getUserOrders, getAllOrders, deleteAll };

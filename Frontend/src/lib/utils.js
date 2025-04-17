@@ -13,14 +13,14 @@ export function formatCurrency(amount) {
     }).format(amount);
 }
 
-export function formatDate(date) {
+export function formatDate(dateString) {
+    const date = new Date(dateString);
     return new Intl.DateTimeFormat("en-US", {
         year: "numeric",
         month: "short",
         day: "numeric",
     }).format(date);
 }
-
 export const formDataToJson = (formData) => {
     const jsonObject = {};
 
