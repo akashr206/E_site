@@ -6,54 +6,42 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from "../../components/ui/alert-dialog";
 import { Button } from "../ui/button";
-import { Trash2, Loader } from "lucide-react";
-import { API_URL } from "../../config/api";
+import { Loader } from "lucide-react";
 import { useState } from "react";
+import { API_URL } from "../../config/api";
 import { toast } from "sonner";
+const MakeAdmin = ({ open, setOpen, id, fetchUsers }) => {
+    const [loading, setLoading] = useState(false);
 
-const DeleteProduct = ({ id, publicIds, fetchProducts }) => {
-    const [open, setOpen] = useState(false);
-    const [deleting, setDeleting] = useState(false);
-
-    async function handleDelete(id, publicIds) {
-        setDeleting(true);
-        const res = await fetch(`${API_URL}/api/products/delete/${id}`, {
-            method: "DELETE",
+    async function handleMakeAdmin(id) {
+        setLoading(true);
+        const res = await fetch(`${API_URL}/api/users/make-admin`, {
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ publicIds }),
+            body: JSON.stringify({ userId: id }),
             credentials: "include",
         });
 
         if (res.ok) {
             setOpen(false);
-            toast.success("Successfully deleted the product.");
-            fetchProducts();
+            toast.success("Successfully made the user as admin.");
+            fetchUsers();
         } else {
-            toast.error("Failed to delete product");
+            toast.error("Failed to make the user as admin");
         }
-        setDeleting(false);
+        setLoading(false);
     }
-
     return (
         <AlertDialog open={open} onOpenChange={setOpen}>
-            <Button
-                variant={"ghost"}
-                className="p-0 w-full justify-start px-2 font-normal"
-                onClick={() => setOpen(true)}
-            >
-                <Trash2 className="mr-1 h-4 w-4" />
-                Delete
-            </Button>
-
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                     <AlertDialogDescription>
-                        This action will permanently delete this product.
+                        This action will make the selected user as admin.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -61,15 +49,14 @@ const DeleteProduct = ({ id, publicIds, fetchProducts }) => {
                         Cancel
                     </AlertDialogCancel>
                     <Button
-                        disabled={deleting}
-                        variant={"destructive"}
+                        disabled={loading}
                         className="w-20"
-                        onClick={() => handleDelete(id, publicIds)}
+                        onClick={() => handleMakeAdmin(id)}
                     >
-                        {deleting ? (
+                        {loading ? (
                             <Loader className="animate-spin"></Loader>
                         ) : (
-                            "Delete"
+                            "Continue"
                         )}
                     </Button>
                 </AlertDialogFooter>
@@ -78,4 +65,4 @@ const DeleteProduct = ({ id, publicIds, fetchProducts }) => {
     );
 };
 
-export default DeleteProduct;
+export default MakeAdmin;

@@ -2,19 +2,20 @@ const Address = require("../models/Adress");
 
 const getAddress = async (req, res) => {
     try {
-        if (!req.user || !req.user.id) {
+        if (!req.user || !req.user.uId) {
             return res
                 .status(401)
                 .json({ message: "Unauthorized: User not authenticated" });
         }
 
-        const userId = req.user.id;
+        const userId = req.user.uId;
 
         if (typeof userId !== "string" || userId.trim() === "") {
             return res.status(400).json({ message: "Invalid user ID" });
         }
 
         const addresses = await Address.find({ userId });
+        
         res.json(addresses);
     } catch (error) {
         console.error("Error fetching addresses:", error);
@@ -50,13 +51,13 @@ const deleteAddress = async (req, res) => {
 
 const addAddress = async (req, res) => {
     try {
-        if (!req.user || !req.user.id) {
+        if (!req.user || !req.user.uId) {
             return res
                 .status(401)
                 .json({ message: "Unauthorized: User not authenticated" });
         }
 
-        const userId = req.user.id;
+        const userId = req.user.uId;
         const { address } = req.body;
 
         if (!address || typeof address !== "object") {

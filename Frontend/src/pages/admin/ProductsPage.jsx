@@ -37,11 +37,14 @@ import { formatCurrency } from "@/lib/utils";
 import { API_URL } from "../../config/api";
 import DeleteProduct from "../../components/Admin/DeleteProduct";
 import { Skeleton } from "../../components/ui/skeleton";
+import { useSearchParams } from "react-router-dom";
 
 export default function ProductsPage() {
     const [searchTerm, setSearchTerm] = useState("");
+    const [searchParams, setSearchParams] = useSearchParams();
     const [categoryFilter, setCategoryFilter] = useState("all");
     const [gettingProducts, setGettingProducts] = useState(false);
+    const [max, setMax] = useState(1);
     const [products, setProducts] = useState([
         {
             id: "",
@@ -57,6 +60,8 @@ export default function ProductsPage() {
         },
     ]);
     const [editProduct, setEditProduct] = useState({});
+    const page = searchParams.get("page");
+    const limit = 10;
 
     const filteredProducts = products.filter((product) => {
         const matchesSearch =
@@ -73,7 +78,10 @@ export default function ProductsPage() {
     });
 
     const getTotalStock = (variants) => {
-        return variants.reduce((total, variant) => Number(total) + Number(variant.stock), 0);
+        return variants.reduce(
+            (total, variant) => Number(total) + Number(variant.stock),
+            0
+        );
     };
 
     const getUniqueCategories = () => {
@@ -84,17 +92,34 @@ export default function ProductsPage() {
         return Array.from(categories);
     };
 
-    async function fetchProducts() {
+    async function fetchProducts(page, limit) {
         setGettingProducts(true);
-        const res = await fetch(`${API_URL}/api/products/all`);
+        const res = await fetch(
+            `${API_URL}/api/products/all?page=${page}&limit=${limit}`
+        );
         const data = await res.json();
-        setProducts(data);
+        setProducts(data.products);
+        setMax(data.pagination.totalPages);
         setGettingProducts(false);
     }
+    const handleNext = () => {
+        const page = searchParams.get("page");
+        if (Number(page) + 1 <= max) {
+            searchParams.set("page", Number(page) + 1);
+            setSearchParams(searchParams);
+        }
+    };
+    const handlePrev = () => {
+        const page = searchParams.get("page");
+        if (Number(page) - 1 > 0) {
+            searchParams.set("page", Number(page) - 1);
+            setSearchParams(searchParams);
+        }
+    };
 
     useEffect(() => {
-        fetchProducts();
-    }, []);
+        fetchProducts(page, limit);
+    }, [page]);
 
     return (
         <div className="flex flex-col gap-6">
@@ -307,11 +332,21 @@ export default function ProductsPage() {
                 </Card>
 
                 <div className="flex items-center justify-end space-x-2">
-                    <Button variant="outline" size="sm">
+                    <Button
+                        onClick={handlePrev}
+                        disabled={page == 1}
+                        variant="outline"
+                        size="sm"
+                    >
                         <ChevronLeft className="h-4 w-4" />
                         Previous
                     </Button>
-                    <Button variant="outline" size="sm">
+                    <Button
+                        onClick={handleNext}
+                        disabled={page == max}
+                        variant="outline"
+                        size="sm"
+                    >
                         Next
                         <ChevronRight className="h-4 w-4" />
                     </Button>

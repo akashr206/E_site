@@ -7,8 +7,11 @@ const createProduct = async (product) => {
     return newProduct;
 };
 
-const findAllProducts = async () => {
-    const products = await Products.find({});
+const findAllProducts = async (page, limit) => {
+    const products = await Products.find({})
+        .sort({ createdAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit);
     return products;
 };
 

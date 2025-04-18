@@ -15,7 +15,7 @@ const {
 // Add a product to the cart
 const addToCart = async (req, res) => {
     const { productId, name, images, price, color, size, quantity } = req.body;
-    const userId = req.user.id;
+    const userId = req.user.uId;
     
     try {
         // Validate stock
@@ -43,7 +43,8 @@ const addToCart = async (req, res) => {
 
 // Get the user's cart
 const getCart = async (req, res) => {
-    const userId = req.user.id;
+    const userId = req.user.uId;
+    console.log(req.user.uId);
     
     try {
         const cartItems = await getUserCartItems(userId);
@@ -84,7 +85,7 @@ const removeFromCart = async (req, res) => {
 
 // Clear all items from the cart
 const clearCart = async (req, res) => {
-    const userId = req.user.id;
+    const userId = req.user.uId;
 
     try {
         await clearUserCart(userId);
@@ -96,7 +97,7 @@ const clearCart = async (req, res) => {
 
 // Get the total price of items in the cart
 const getCartTotalPrice = async (req, res) => {
-    const userId = req.user.id;
+    const userId = req.user.uId;
 
     try {
         const totalPrice = await getCartTotal(userId);
@@ -108,7 +109,7 @@ const getCartTotalPrice = async (req, res) => {
 
 // Get the total item count in the cart
 const getCartCount = async (req, res) => {
-    const userId = req.user.id;
+    const userId = req.user.uId;
     try {
         const itemCount = await getCartItemCount(userId);
         res.status(200).json({ itemCount });

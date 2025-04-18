@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
     Table,
@@ -27,7 +27,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-    DialogClose
+    DialogClose,
 } from "@/components/ui/dialog";
 import {
     Select,
@@ -39,9 +39,7 @@ import {
 import {
     ChevronLeft,
     ChevronRight,
-    Edit,
     Eye,
-    Lock,
     MoreHorizontal,
     Plus,
     Search,
@@ -52,75 +50,26 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-
-const users = [
-    {
-        uId: "USR-001",
-        name: "John Doe",
-        image: "/placeholder-user.jpg",
-        email: "john.doe@example.com",
-        isAdmin: false,
-        orders: 5,
-        addresses: 2,
-        lastActive: new Date("2023-04-10"),
-    },
-    {
-        uId: "USR-002",
-        name: "Jane Smith",
-        image: "/placeholder-user.jpg",
-        email: "jane.smith@example.com",
-        isAdmin: false,
-        orders: 3,
-        addresses: 1,
-        lastActive: new Date("2023-04-09"),
-    },
-    {
-        uId: "USR-003",
-        name: "Robert Johnson",
-        image: "/placeholder-user.jpg",
-        email: "robert.johnson@example.com",
-        isAdmin: false,
-        orders: 2,
-        addresses: 1,
-        lastActive: new Date("2023-04-08"),
-    },
-    {
-        uId: "USR-004",
-        name: "Emily Davis",
-        image: "/placeholder-user.jpg",
-        email: "emily.davis@example.com",
-        isAdmin: false,
-        orders: 1,
-        addresses: 1,
-        lastActive: new Date("2023-04-07"),
-    },
-    {
-        uId: "USR-005",
-        name: "Michael Wilson",
-        image: "/placeholder-user.jpg",
-        email: "michael.wilson@example.com",
-        isAdmin: false,
-        orders: 4,
-        addresses: 2,
-        lastActive: new Date("2023-04-06"),
-    },
-    {
-        uId: "ADM-001",
-        name: "Admin User",
-        image: "/placeholder-user.jpg",
-        email: "admin@example.com",
-        isAdmin: true,
-        orders: 0,
-        addresses: 1,
-        lastActive: new Date("2023-04-10"),
-    },
-];
+import { useSearchParams } from "react-router-dom";
+import { API_URL } from "../../config/api";
+import { Skeleton } from "../../components/ui/skeleton";
+import { formatDate } from "../../lib/utils";
+import MakeAdmin from "../../components/Admin/MakeAdmin";
 
 export default function UsersPage() {
     const [searchTerm, setSearchTerm] = useState("");
+    const [searchParams, setSearchParams] = useSearchParams();
     const [roleFilter, setRoleFilter] = useState("all");
     const [selectedUser, setSelectedUser] = useState(null);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+    const [activeDropdownId, setActiveDropdownId] = useState(null);
+    const [openAdminAlert, setOpenAdminAlert] = useState(false);
+    const [adminAlertId, setAdminAlertId] = useState(null);
+    const [max, setMax] = useState(1);
+    const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const page = searchParams.get("page");
+    const limit = 10;
 
     const filteredUsers = users.filter((user) => {
         const matchesSearch =
@@ -136,18 +85,48 @@ export default function UsersPage() {
         return matchesSearch && matchesRole;
     });
 
-    const handleViewDetails = (user) => {
-        setSelectedUser(user);
-        setIsDetailsOpen(true);
+    const handleNext = () => {
+        const page = searchParams.get("page");
+        if (Number(page) + 1 <= max) {
+            searchParams.set("page", Number(page) + 1);
+            setSearchParams(searchParams);
+        }
+    };
+    const handlePrev = () => {
+        const page = searchParams.get("page");
+        if (Number(page) - 1 > 0) {
+            searchParams.set("page", Number(page) - 1);
+            setSearchParams(searchParams);
+        }
     };
 
-    const formatDate = (date) => {
-        return new Intl.DateTimeFormat("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-        }).format(date);
+    const handleViewDetails = (user) => {
+        setActiveDropdownId(null);
+        setTimeout(() => {
+            setSelectedUser(user);
+            setIsDetailsOpen(true);
+        }, 0);
     };
+
+    const fetchUsers = async (page = 1, limit = 10) => {
+        setLoading(true);
+        const res = await fetch(
+            `${API_URL}/api/users/all?page=${page}&limit=${limit}`,
+            {
+                credentials: "include",
+            }
+        );
+        if (res.ok) {
+            const data = await res.json();
+            setUsers(data.allUsers);
+            setMax(data.pagination.pages);
+        }
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        fetchUsers(page, limit);
+    }, [page]);
 
     return (
         <div className="flex flex-col gap-6">
@@ -190,7 +169,10 @@ export default function UsersPage() {
                     </div>
                     <Dialog>
                         <DialogTrigger asChild>
-                            <Button className="flex items-center gap-1">
+                            <Button
+                                disabled={true}
+                                className="flex items-center gap-1"
+                            >
                                 <Plus className="h-4 w-4" />
                                 Add User
                             </Button>
@@ -250,102 +232,172 @@ export default function UsersPage() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {filteredUsers.map((user) => (
-                                    <TableRow key={user.uId}>
-                                        <TableCell>
-                                            <div className="flex items-center gap-3">
-                                                <Avatar>
-                                                    <AvatarImage
-                                                        src={user.image}
-                                                        alt={user.name}
-                                                    />
-                                                    <AvatarFallback>
-                                                        {user.name.charAt(0)}
-                                                        {user.name
-                                                            .split(" ")[1]
-                                                            ?.charAt(0)}
-                                                    </AvatarFallback>
-                                                </Avatar>
-                                                <span className="font-medium">
-                                                    {user.name}
-                                                </span>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>{user.uId}</TableCell>
-                                        <TableCell>{user.email}</TableCell>
-                                        <TableCell>
-                                            {user.isAdmin ? (
-                                                <Badge className="bg-purple-500">
-                                                    Admin
-                                                </Badge>
-                                            ) : (
-                                                <Badge variant="outline">
-                                                    Customer
-                                                </Badge>
-                                            )}
-                                        </TableCell>
-                                        <TableCell>{user.orders}</TableCell>
-                                        <TableCell>
-                                            {formatDate(user.lastActive)}
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                    >
-                                                        <MoreHorizontal className="h-4 w-4" />
-                                                        <span className="sr-only">
-                                                            Open menu
-                                                        </span>
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end">
-                                                    <DropdownMenuLabel>
-                                                        Actions
-                                                    </DropdownMenuLabel>
-                                                    <DropdownMenuItem
-                                                        onClick={() =>
-                                                            handleViewDetails(
-                                                                user
-                                                            )
-                                                        }
-                                                    >
-                                                        <Eye className="mr-2 h-4 w-4" />
-                                                        View Details
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem>
-                                                        <Edit className="mr-2 h-4 w-4" />
-                                                        Edit User
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuSeparator />
-                                                    <DropdownMenuItem>
-                                                        <Lock className="mr-2 h-4 w-4" />
-                                                        Reset Password
-                                                    </DropdownMenuItem>
-                                                    {!user.isAdmin && (
-                                                        <DropdownMenuItem>
-                                                            <ShieldCheck className="mr-2 h-4 w-4" />
-                                                            Make Admin
-                                                        </DropdownMenuItem>
-                                                    )}
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
+                                {loading
+                                    ? Array.from({ length: 10 }).map(
+                                          (e, index) => {
+                                              return (
+                                                  <TableRow key={index}>
+                                                      <TableCell>
+                                                          <Skeleton className="h-3 my-2.5 w-14"></Skeleton>
+                                                      </TableCell>
+                                                      <TableCell>
+                                                          <Skeleton className="h-3 w-16"></Skeleton>
+                                                      </TableCell>
+                                                      <TableCell>
+                                                          <Skeleton className="h-3 w-12"></Skeleton>
+                                                      </TableCell>
+                                                      <TableCell>
+                                                          <Skeleton className="h-3 w-12"></Skeleton>
+                                                      </TableCell>
+                                                      <TableCell>
+                                                          <Skeleton className="h-3 w-8"></Skeleton>
+                                                      </TableCell>
+                                                      <TableCell>
+                                                          <Skeleton className="h-3 w-8"></Skeleton>
+                                                      </TableCell>
+                                                      <TableCell>
+                                                          <Skeleton className="h-3 w-8"></Skeleton>
+                                                      </TableCell>
+                                                      <TableCell className="justify-end flex">
+                                                          <Skeleton className="h-3 w-8"></Skeleton>
+                                                      </TableCell>
+                                                  </TableRow>
+                                              );
+                                          }
+                                      )
+                                    : filteredUsers.map((user) => (
+                                          <TableRow key={user.uId}>
+                                              <TableCell>
+                                                  <div className="flex items-center gap-3">
+                                                      <Avatar>
+                                                          <AvatarImage
+                                                              src={user.image}
+                                                              alt={user.name}
+                                                          />
+                                                          <AvatarFallback>
+                                                              {user.name.charAt(
+                                                                  0
+                                                              )}
+                                                              {user.name
+                                                                  .split(" ")[1]
+                                                                  ?.charAt(0)}
+                                                          </AvatarFallback>
+                                                      </Avatar>
+                                                      <span className="font-medium">
+                                                          {user.name}
+                                                      </span>
+                                                  </div>
+                                              </TableCell>
+                                              <TableCell>{user.uId}</TableCell>
+                                              <TableCell>
+                                                  {user.email}
+                                              </TableCell>
+                                              <TableCell>
+                                                  {user.isAdmin ? (
+                                                      <Badge className="bg-purple-500">
+                                                          Admin
+                                                      </Badge>
+                                                  ) : (
+                                                      <Badge variant="outline">
+                                                          Customer
+                                                      </Badge>
+                                                  )}
+                                              </TableCell>
+                                              <TableCell>
+                                                  {user.orders}
+                                              </TableCell>
+                                              <TableCell>
+                                                  {formatDate(user.lastActive)}
+                                              </TableCell>
+                                              <TableCell className="text-right">
+                                                  <DropdownMenu
+                                                      key={user.uId}
+                                                      open={
+                                                          activeDropdownId ===
+                                                          user.uId
+                                                      }
+                                                      onOpenChange={(
+                                                          isOpen
+                                                      ) => {
+                                                          setActiveDropdownId(
+                                                              isOpen
+                                                                  ? user.uId
+                                                                  : null
+                                                          );
+                                                      }}
+                                                  >
+                                                      <DropdownMenuTrigger
+                                                          asChild
+                                                      >
+                                                          <Button
+                                                              variant="ghost"
+                                                              size="icon"
+                                                          >
+                                                              <MoreHorizontal className="h-4 w-4" />
+                                                              <span className="sr-only">
+                                                                  Open menu
+                                                              </span>
+                                                          </Button>
+                                                      </DropdownMenuTrigger>
+                                                      <DropdownMenuContent align="end">
+                                                          <DropdownMenuLabel>
+                                                              Actions
+                                                          </DropdownMenuLabel>
+                                                          <DropdownMenuItem
+                                                              onClick={() =>
+                                                                  handleViewDetails(
+                                                                      user
+                                                                  )
+                                                              }
+                                                          >
+                                                              <Eye className="mr-2 h-4 w-4" />
+                                                              View Details
+                                                          </DropdownMenuItem>
+                                                          <DropdownMenuSeparator />
+                                                          {!user.isAdmin && (
+                                                              <DropdownMenuItem
+                                                                  onClick={() => {
+                                                                      setActiveDropdownId(
+                                                                          null
+                                                                      );
+                                                                      setAdminAlertId(
+                                                                          user.uId
+                                                                      );
+                                                                      setOpenAdminAlert(
+                                                                          true
+                                                                      );
+                                                                  }}
+                                                              >
+                                                                  <ShieldCheck className="mr-2 h-4 w-4" />
+                                                                  Make Admin
+                                                              </DropdownMenuItem>
+                                                          )}
+                                                      </DropdownMenuContent>
+                                                  </DropdownMenu>
+                                              </TableCell>
+                                          </TableRow>
+                                      ))}
                             </TableBody>
                         </Table>
                     </CardContent>
                 </Card>
 
                 <div className="flex items-center justify-end space-x-2">
-                    <Button variant="outline" size="sm">
+                    <Button
+                        onClick={handlePrev}
+                        disabled={page == 1}
+                        variant="outline"
+                        size="sm"
+                    >
                         <ChevronLeft className="h-4 w-4" />
                         Previous
                     </Button>
-                    <Button variant="outline" size="sm">
+                    <Button
+                        onClick={handleNext}
+                        disabled={page == max}
+                        variant="outline"
+                        size="sm"
+                    >
                         Next
                         <ChevronRight className="h-4 w-4" />
                     </Button>
@@ -453,6 +505,12 @@ export default function UsersPage() {
                     </DialogContent>
                 </Dialog>
             )}
+            <MakeAdmin
+                open={openAdminAlert}
+                setOpen={setOpenAdminAlert}
+                id={adminAlertId}
+                fetchUsers={fetchUsers}
+            ></MakeAdmin>
         </div>
     );
 }

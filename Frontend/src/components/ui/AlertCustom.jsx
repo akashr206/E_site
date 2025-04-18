@@ -33,13 +33,6 @@ const Alert = ({ title, text, close}) => {
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.2 }}
             >
-                {/* <button
-                    className="absolute top-2 font-semibold right-3 text-gray-500 hover:text-gray-700"
-                    onClick={close}
-                    aria-label="Close"
-                >
-                    ✕
-                </button> */}
 
                 <h2 className="text-center text-xl font-bold mb-4">{title}</h2>
 

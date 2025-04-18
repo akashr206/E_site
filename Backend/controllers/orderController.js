@@ -8,11 +8,11 @@ const addOrder = async (req, res) => {
     try {
         const user = req.user;
         const orderId = await generateId(10);
-        if (!user || !user.id) {
+        if (!user || !user.uId) {
             return res.status(401).json({ error: "User not authenticated" });
         }
 
-        const userId = user.id;
+        const userId = user.uId;
 
         const { items, addressId, summary } = req.body;
 
@@ -81,7 +81,7 @@ const getOrder = async (req, res) => {
         }
 
         const user = req.user;
-        if (!user || !user.id) {
+        if (!user || !user.uId) {
             return res.status(401).json({ error: "User not authenticated" });
         }
 
@@ -91,7 +91,7 @@ const getOrder = async (req, res) => {
             return res.status(404).json({ error: "Order not found" });
         }
 
-        if (order.userId.toString() !== user.id && user.role !== "admin") {
+        if (order.userId.toString() !== user.uId && user.role !== "admin") {
             return res
                 .status(403)
                 .json({ error: "Not authorized to view this order" });
@@ -116,11 +116,11 @@ const getOrder = async (req, res) => {
 const getUserOrders = async (req, res) => {
     try {
         const user = req.user;
-        if (!user || !user.id) {
+        if (!user || !user.uId) {
             return res.status(401).json({ error: "User not authenticated" });
         }
 
-        const userId = user.id;
+        const userId = user.uId;
 
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;

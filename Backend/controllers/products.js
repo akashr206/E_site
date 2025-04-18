@@ -11,8 +11,6 @@ const { generateId } = require("../utils/generateId");
 
 const AddProduct = async (req, res) => {
     try {
-        console.log(req.body.images.length);
-
         let {
             name,
             price,
@@ -50,8 +48,20 @@ const AddProduct = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
     try {
-        const products = await findAllProducts();
-        res.json(products);
+        const page = req.query.page || 1;
+        const limit = req.query.limit || 10;
+
+        const products = await findAllProducts(page, limit);
+        const totalProducts = await countProducts();
+        res.json({
+            products,
+            pagination: {
+                totalProducts,
+                limit: limit,
+                page: page,
+                totalPages: Math.ceil(totalProducts / limit),
+            },
+        });
     } catch (error) {
         res.status(400).json({ message: "Error Fetching Products", error });
     }

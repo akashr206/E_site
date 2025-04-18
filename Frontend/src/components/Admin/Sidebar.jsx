@@ -58,7 +58,7 @@ const AdminSidebar = ({ renderPage, setActivePage, activePage }) => {
                                         isActive={activePage === "products"}
                                         onClick={() => {
                                             setActivePage("products");
-                                            navigate("/admin/products");
+                                            navigate("/admin/products?page=1");
                                         }}
                                     >
                                         <Package className="h-4 w-4" />
@@ -70,7 +70,7 @@ const AdminSidebar = ({ renderPage, setActivePage, activePage }) => {
                                         isActive={activePage === "orders"}
                                         onClick={() => {
                                             setActivePage("orders");
-                                            navigate("/admin/orders");
+                                            navigate("/admin/orders?page=1");
                                         }}
                                     >
                                         <ShoppingCart className="h-4 w-4" />
@@ -82,7 +82,7 @@ const AdminSidebar = ({ renderPage, setActivePage, activePage }) => {
                                         isActive={activePage === "users"}
                                         onClick={() => {
                                             setActivePage("users");
-                                            navigate("/admin/users");
+                                            navigate("/admin/users?page=1");
                                         }}
                                     >
                                         <Users className="h-4 w-4" />

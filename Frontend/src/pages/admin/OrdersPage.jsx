@@ -168,15 +168,15 @@ export default function OrdersPage() {
     };
     const handlePrev = () => {
         const page = searchParams.get("page");
-        if (Number(page)  - 1 > 0) {
+        if (Number(page) - 1 > 0) {
             searchParams.set("page", Number(page) - 1);
             setSearchParams(searchParams);
         }
     };
 
     useEffect(() => {
-        fetchAllOrders(page, limit);
-    }, []);
+        setFilteredOrders(filterOrders(filteredOrders));
+    }, [statusFilter]);
 
     useEffect(() => {
         fetchAllOrders(page, limit);
@@ -258,7 +258,7 @@ export default function OrdersPage() {
                                               return (
                                                   <TableRow key={index}>
                                                       <TableCell>
-                                                          <Skeleton className="h-3 w-14"></Skeleton>
+                                                          <Skeleton className="h-3 my-2.5 w-14"></Skeleton>
                                                       </TableCell>
                                                       <TableCell>
                                                           <Skeleton className="h-3 w-16"></Skeleton>
@@ -278,7 +278,7 @@ export default function OrdersPage() {
                                                       <TableCell>
                                                           <Skeleton className="h-3 w-8"></Skeleton>
                                                       </TableCell>
-                                                      <TableCell>
+                                                      <TableCell className="justify-end flex">
                                                           <Skeleton className="h-3 w-8"></Skeleton>
                                                       </TableCell>
                                                   </TableRow>

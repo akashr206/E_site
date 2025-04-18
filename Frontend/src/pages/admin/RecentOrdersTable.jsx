@@ -1,44 +1,11 @@
-import { Badge } from "@/components/ui/badge"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { formatDate, formatCurrency } from "@/lib/utils"
-
-const recentOrders = [
-  {
-    id: "ORD-001",
-    customer: "John Doe",
-    date: new Date("2023-04-10"),
-    total: 2500,
-    status: "delivered",
-  },
-  {
-    id: "ORD-002",
-    customer: "Jane Smith",
-    date: new Date("2023-04-09"),
-    total: 1800,
-    status: "shipped",
-  },
-  {
-    id: "ORD-003",
-    customer: "Robert Johnson",
-    date: new Date("2023-04-09"),
-    total: 3200,
-    status: "confirmed",
-  },
-  {
-    id: "ORD-004",
-    customer: "Emily Davis",
-    date: new Date("2023-04-08"),
-    total: 950,
-    status: "pending",
-  },
-  {
-    id: "ORD-005",
-    customer: "Michael Wilson",
-    date: new Date("2023-04-07"),
-    total: 1650,
-    status: "cancelled",
-  },
-]
+import { useState, useEffect } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton";
+import { formatDate, formatCurrency } from "@/lib/utils";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { API_URL } from "../../config/api";
 
 const getStatusBadge = (status) => {
   switch (status) {
@@ -58,6 +25,47 @@ const getStatusBadge = (status) => {
 }
 
 export function RecentOrdersTable() {
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`${API_URL}/api/orders/all?page=1&limit=10`,{
+          credentials : "include"
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch orders');
+        }
+        
+        const data = await response.json();
+        console.log(data);
+        
+        setOrders(data.allOrders || []);
+      } catch (err) {
+        console.error('Error fetching orders:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchOrders();
+  }, []);
+  
+  if (error) {
+    return (
+      <Alert variant="destructive" className="mt-4">
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Error</AlertTitle>
+        <AlertDescription>Failed to load orders. Please try again later.</AlertDescription>
+      </Alert>
+    );
+  }
+  
   return (
     <div className="rounded-md border">
       <Table>
@@ -71,17 +79,35 @@ export function RecentOrdersTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {recentOrders.map((order) => (
-            <TableRow key={order.id}>
-              <TableCell className="font-medium">{order.id}</TableCell>
-              <TableCell>{order.customer}</TableCell>
-              <TableCell>{formatDate(order.date)}</TableCell>
-              <TableCell>{getStatusBadge(order.status)}</TableCell>
-              <TableCell className="text-right">{formatCurrency(order.total)}</TableCell>
+          {loading ? (
+            Array(5).fill(0).map((_, index) => (
+              <TableRow key={`skeleton-${index}`}>
+                <TableCell><Skeleton className="h-4 w-16" /></TableCell>
+                <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+                <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                <TableCell><Skeleton className="h-6 w-20" /></TableCell>
+                <TableCell className="text-right"><Skeleton className="h-4 w-16 ml-auto" /></TableCell>
+              </TableRow>
+            ))
+          ) : orders.length > 0 ? (
+            orders.map((order) => (
+              <TableRow key={order.id}>
+                <TableCell className="font-medium">{order.id}</TableCell>
+                <TableCell>{order.customerName}</TableCell>
+                <TableCell>{formatDate(order.orderDate)}</TableCell>
+                <TableCell>{getStatusBadge(order.status)}</TableCell>
+                <TableCell className="text-right">{formatCurrency(order.summary.totalAmount)}</TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={5} className="text-center py-6 text-gray-500">
+                No recent orders found
+              </TableCell>
             </TableRow>
-          ))}
+          )}
         </TableBody>
       </Table>
     </div>
-  )
+  );
 }

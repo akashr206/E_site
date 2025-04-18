@@ -13,6 +13,7 @@ const cartRoutes = require("./routes/cartRoutes");
 const addressRoutes = require("./routes/addressRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const cloudinary = require("cloudinary").v2;
+const userRoutes = require("./routes/userRoutes");
 
 const app = express();
 dotenv.config();
@@ -59,6 +60,8 @@ app.use("/search", searchRoutes);
 app.use("/api/cart", isAuthenticated, cartRoutes);
 app.use("/api/address", isAuthenticated, addressRoutes);
 app.use("/api/orders", isAuthenticated, orderRoutes);
+
+app.use("/api/users", isAuthenticated, userRoutes);
 
 // Authentication routes (Login, Logout)
 app.use("/auth/google", googleAuth);
