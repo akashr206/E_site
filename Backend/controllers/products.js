@@ -6,6 +6,7 @@ const {
     deleteProduct,
     countProducts,
     findStock,
+    findLowStock,
 } = require("../services/products");
 const { generateId } = require("../utils/generateId");
 
@@ -132,6 +133,15 @@ const getStock = async (req, res) => {
     }
 };
 
+const getLowStock = async (req, res) => {
+    try {
+        const products = await findLowStock();
+        return res.json({ products });
+    } catch (error) {
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
 module.exports = {
     AddProduct,
     getAllProducts,
@@ -140,4 +150,5 @@ module.exports = {
     removeProduct,
     getCount,
     getStock,
+    getLowStock
 };

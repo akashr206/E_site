@@ -1,4 +1,5 @@
 const { find } = require("../models/CartItem");
+const Product = require("../models/Product");
 const Products = require("../models/Product");
 const cloudinary = require("cloudinary").v2;
 
@@ -78,8 +79,30 @@ const reduceStock = async (productId, reduceNumber, color, size) => {
 
         return { success: true, message: "Stock reduced", product };
     } catch (error) {
-        console.log(error);
+        console.error("Error reducing stock:", error.message);
+        return { success: false, message: error.message };
+    }
+};
 
+const findLowStock = async () => {
+    try {
+        let products = await Product.find({ "variants.stock": { $lte: 5 } });
+        let newProducts = [];
+        products.forEach((product) => {
+            product.variants.forEach((variant) => {
+                if (variant.stock <= 5) {
+                    newProducts.push({
+                        name: product.name,
+                        id: product.id,
+                        price: product.price,
+                        variant,
+                    });
+                }
+            });
+        });
+        newProducts.sort((a,b)=>a.variant.stock - b.variant.stock)
+        return newProducts;
+    } catch (error) {
         console.error("Error reducing stock:", error.message);
         return { success: false, message: error.message };
     }
@@ -94,4 +117,5 @@ module.exports = {
     countProducts,
     findStock,
     reduceStock,
+    findLowStock,
 };

@@ -21,18 +21,45 @@ import {
     SidebarGroupLabel,
     SidebarGroupContent,
     SidebarInset,
+    SidebarTrigger
 } from "@/components/ui/sidebar";
 import { Button } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../Contexts/AuthContext";
 
 const AdminSidebar = ({ renderPage, setActivePage, activePage }) => {
     const navigate = useNavigate();
+    const { user } = useAuth();
     return (
         <SidebarProvider>
-            <Sidebar>
-                <SidebarHeader >
+            <SidebarTrigger >
+                        <Button className="bg-white p-2 rounded-md shadow-md">
+                            <span className="sr-only">Toggle Menu</span>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <line x1="4" x2="20" y1="12" y2="12" />
+                                <line x1="4" x2="20" y1="6" y2="6" />
+                                <line x1="4" x2="20" y1="18" y2="18" />
+                            </svg>
+                        </Button>
+                    </SidebarTrigger>
+            <Sidebar collapsible={"icon"}>
+                <SidebarHeader>
                     <div className="flex items-center justify-start gap-2">
-                        <img src="/logo.jpg" alt="logo" className="w-12 h-12 rounded-full" />
+                        <img
+                            src="/logo.jpg"
+                            alt="logo"
+                            className="w-12 h-12 rounded-full"
+                        />
                         <span className="text-lg font-bold">Admin </span>
                     </div>
                 </SidebarHeader>
@@ -134,15 +161,15 @@ const AdminSidebar = ({ renderPage, setActivePage, activePage }) => {
                         <div className="flex items-center gap-3">
                             <div className="relative h-8 w-8 rounded-full bg-primary/10">
                                 <span className="absolute inset-0 flex items-center justify-center text-xs font-medium text-primary">
-                                    AD
+                                    <img className="rounded-full" src={user?.image} alt="user-image" />
                                 </span>
                             </div>
                             <div className="flex flex-col">
                                 <span className="text-sm font-medium">
-                                    Admin User
+                                    {user?.name}
                                 </span>
                                 <span className="text-xs text-muted-foreground">
-                                    admin@example.com
+                                    {user?.email}
                                 </span>
                             </div>
                         </div>
