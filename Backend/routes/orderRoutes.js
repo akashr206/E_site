@@ -5,13 +5,16 @@ const {
     getOrder,
     getUserOrders,
     getAllOrders,
-    deleteAll
+    deleteAll,
+    getMonthlyRevenue
 } = require("../controllers/orderController");
 
 //admin
 router.get("/all", getAllOrders);
+router.get("/revenue", getMonthlyRevenue);
 router.get("/deleteall", deleteAll);
 
+//user
 router.post("/", addOrder);
 router.get("/:orderId", getOrder);
 router.get("/", getUserOrders);

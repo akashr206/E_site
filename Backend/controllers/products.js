@@ -142,6 +142,31 @@ const getLowStock = async (req, res) => {
     }
 };
 
+const getTotalProducts = async (req, res) => {
+    try {
+        const monthlyProducts = await Products.aggregate([
+            { 
+                $group: {
+                    _id: {
+                        year: { $year: "$createdAt" },
+                        month: { $month: "$createdAt" }
+                    },
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { "_id.year": -1, "_id.month": -1 }
+            }
+        ]);
+
+        const totalProducts = await countProducts();
+        return res.status(200).json({ totalProducts, monthlyProducts });
+    } catch (error) {
+        console.error("Error getting total products:", error);
+        return res.status(500).json({ error: "Failed to get total products" });
+    }
+};
+
 module.exports = {
     AddProduct,
     getAllProducts,
@@ -150,5 +175,6 @@ module.exports = {
     removeProduct,
     getCount,
     getStock,
-    getLowStock
+    getLowStock,
+    getTotalProducts
 };

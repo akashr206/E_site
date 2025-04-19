@@ -116,7 +116,6 @@ const updateAddress = async (req, res) => {
         res.status(200).json({ message: "Address updated successfully" });
     } catch (error) {
         console.error("Error updating address:", error);
-        
         res.status(500).json({ message: "Internal server error" });
     }
 };
