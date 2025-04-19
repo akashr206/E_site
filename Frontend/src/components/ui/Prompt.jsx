@@ -46,7 +46,7 @@ const Prompt = ({ title, text, to, toValue, close }) => {
 
         <h2 className="text-center text-xl font-bold mb-4">{title}</h2>
 
-        <p className="text-gray-600 mb-6">{text}.</p>
+        <p className="text-gray-500 mb-6">{text}.</p>
 
         <div className="flex justify-center space-x-3">
           <button
@@ -57,7 +57,7 @@ const Prompt = ({ title, text, to, toValue, close }) => {
           </button>
           <button
             onClick={() => navigate(`/${to}`)}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+            className="px-4 py-2 bg-pink-500 text-white rounded-md hover:bg-pink-700"
           >
             {toValue}
           </button>

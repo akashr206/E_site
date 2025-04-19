@@ -44,7 +44,7 @@ const SortDown = ({ onSortChange }) => {
                   onClick={() => handleSortSelection(option, close)}
                 >
                   <span className="flex-grow">{option}</span>
-                  {sortby === option && <Check className="h-4 w-4 text-indigo-600" />}
+                  {sortby === option && <Check className="h-4 w-4 text-pink-500" />}
                 </div>
               ))}
             </div>
@@ -116,7 +116,7 @@ const Filter = ({ onFilterChange }) => {
                           value={minPrice}
                           onChange={handleInputChange}
                           onKeyDown={(e) => handleKeyDown(e, close)}
-                          className="w-full p-2 bg-transparent border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-600 focus:outline-none"
+                          className="w-full p-2 bg-transparent border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:outline-none"
                         />
                       </div>
                       <div className="grid gap-1">
@@ -131,7 +131,7 @@ const Filter = ({ onFilterChange }) => {
                           value={maxPrice}
                           onChange={handleInputChange}
                           onKeyDown={(e) => handleKeyDown(e, close)}
-                          className="w-full p-2 bg-transparent border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-600 focus:outline-none"
+                          className="w-full p-2 bg-transparent border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:outline-none"
                         />
                       </div>
                     </div>

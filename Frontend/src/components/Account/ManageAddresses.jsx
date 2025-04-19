@@ -86,7 +86,7 @@ const ManageAddresses = () => {
                 <CardTitle>My Addresses</CardTitle>
                 <Button
                     onClick={handleAddNew}
-                    className="flex items-center max-sm:text-[12px] gap-2 bg-indigo-500 hover:bg-indigo-600"
+                    className="flex items-center max-sm:text-[12px] gap-2 bg-pink-500 hover:bg-pink-600"
                 >
                     <PlusIcon size={16} />
                     Add New Address

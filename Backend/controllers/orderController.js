@@ -172,6 +172,11 @@ const getAllOrders = async (req, res) => {
         return res.status(500).json({ error: "Failed to fetch orders" });
     }
 };
+
+
+
+
+//temporary
 const deleteAll = async (req, res) => {
     await Order.deleteMany({});
     return res.json({ message: "deleted successfully" });

@@ -21,7 +21,7 @@ import {
     SidebarGroupLabel,
     SidebarGroupContent,
     SidebarInset,
-    SidebarTrigger
+    SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Button } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
@@ -32,26 +32,18 @@ const AdminSidebar = ({ renderPage, setActivePage, activePage }) => {
     const { user } = useAuth();
     return (
         <SidebarProvider>
-            <SidebarTrigger >
-                        <Button className="bg-white p-2 rounded-md shadow-md">
-                            <span className="sr-only">Toggle Menu</span>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            >
-                                <line x1="4" x2="20" y1="12" y2="12" />
-                                <line x1="4" x2="20" y1="6" y2="6" />
-                                <line x1="4" x2="20" y1="18" y2="18" />
-                            </svg>
-                        </Button>
-                    </SidebarTrigger>
+            <nav className="fixed md:hidden z-10 bg-background border-border border flex-row-reverse flex items-center justify-between px-4 top-0 left-0 w-full h-16 ">
+                <SidebarTrigger className="justify-self-start"/>
+                <div className="flex items-center justify-start gap-2">
+                    <img
+                        src="/logo.jpg"
+                        alt="logo"
+                        className="w-8 h-8 rounded-full"
+                    />
+                    <span className="text-lg font-bold">Admin </span>
+                </div>
+            </nav>
+
             <Sidebar collapsible={"icon"}>
                 <SidebarHeader>
                     <div className="flex items-center justify-start gap-2">
@@ -161,7 +153,11 @@ const AdminSidebar = ({ renderPage, setActivePage, activePage }) => {
                         <div className="flex items-center gap-3">
                             <div className="relative h-8 w-8 rounded-full bg-primary/10">
                                 <span className="absolute inset-0 flex items-center justify-center text-xs font-medium text-primary">
-                                    <img className="rounded-full" src={user?.image} alt="user-image" />
+                                    <img
+                                        className="rounded-full"
+                                        src={user?.image}
+                                        alt="user-image"
+                                    />
                                 </span>
                             </div>
                             <div className="flex flex-col">
@@ -177,7 +173,10 @@ const AdminSidebar = ({ renderPage, setActivePage, activePage }) => {
                 </SidebarFooter>
             </Sidebar>
             <SidebarInset className="flex-1 overflow-auto p-6">
-                {renderPage()}
+                <div className="max-md:py-16">
+                   {renderPage()} 
+                </div>
+                
             </SidebarInset>
         </SidebarProvider>
     );

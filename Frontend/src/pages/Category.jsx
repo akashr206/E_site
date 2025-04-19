@@ -80,7 +80,7 @@ const Category = () => {
     if (!products || products.length === 0) {
         return (
             <div className="text-center flex flex-col justify-center items-center">
-                <p className="text-gray-600 py-6 text-lg">
+                <p className="text-gray-500 py-6 text-lg">
                     No products found for "{query}"
                 </p>
             </div>

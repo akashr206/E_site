@@ -133,8 +133,8 @@ const AddressUpdate = () => {
                             onChange={handleChange}
                             className={
                                 errors.street
-                                    ? "ring-1 ring-red-500 focus-visible:ring-indigo-500"
-                                    : "focus-visible:ring-indigo-500"
+                                    ? "ring-1 ring-red-500 focus-visible:ring-pink-500"
+                                    : "focus-visible:ring-pink-500"
                             }
                         />
                         {errors.street && (
@@ -153,8 +153,8 @@ const AddressUpdate = () => {
                                 onChange={handleChange}
                                 className={
                                     errors.city
-                                        ? "ring-1 ring-red-500 focus-visible:ring-indigo-500"
-                                        : "focus-visible:ring-indigo-500"
+                                        ? "ring-1 ring-red-500 focus-visible:ring-pink-500"
+                                        : "focus-visible:ring-pink-500"
                                 }
                             />
                             {errors.city && (
@@ -172,8 +172,8 @@ const AddressUpdate = () => {
                                 onChange={handleChange}
                                 className={
                                     errors.state
-                                        ? "ring-1 ring-red-500 focus-visible:ring-indigo-500"
-                                        : "focus-visible:ring-indigo-500"
+                                        ? "ring-1 ring-red-500 focus-visible:ring-pink-500"
+                                        : "focus-visible:ring-pink-500"
                                 }
                             />
                             {errors.state && (
@@ -193,8 +193,8 @@ const AddressUpdate = () => {
                                 onChange={handleChange}
                                 className={
                                     errors.postalCode
-                                        ? "ring-1 ring-red-500 focus-visible:ring-indigo-500"
-                                        : "focus-visible:ring-indigo-500"
+                                        ? "ring-1 ring-red-500 focus-visible:ring-pink-500"
+                                        : "focus-visible:ring-pink-500"
                                 }
                             />
                             {errors.postalCode && (
@@ -221,7 +221,7 @@ const AddressUpdate = () => {
                             name="landmark"
                             value={address.landmark}
                             onChange={handleChange}
-                            className="focus-visible:ring-indigo-500"
+                            className="focus-visible:ring-pink-500"
                             placeholder="Optional"
                         />
                     </div>
@@ -233,7 +233,7 @@ const AddressUpdate = () => {
                                 handleSelectChange("tag", value)
                             }
                         >
-                            <SelectTrigger className="focus:ring-indigo-500 focus:ring-1">
+                            <SelectTrigger className="focus:ring-pink-500 focus:ring-1">
                                 <SelectValue placeholder="Select a tag" />
                             </SelectTrigger>
                             <SelectContent>
@@ -246,7 +246,7 @@ const AddressUpdate = () => {
                     <div className="pt-4">
                         <Button
                             type="submit"
-                            className="w-full bg-indigo-500 hover:bg-indigo-600"
+                            className="w-full bg-pink-500 hover:bg-pink-600"
                         >
                             Update Address
                         </Button>

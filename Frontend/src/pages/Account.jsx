@@ -12,6 +12,7 @@ import ManageAddresses from "../components/Account/ManageAddresses";
 import { useSearchParams } from "react-router-dom";
 import AddressForm from "../components/Account/AddressForm";
 import AddressUpdate from "../components/Account/AddressUpdate";
+import { ShoppingBag, User, MapPin } from "lucide-react";
 
 const Account = () => {
     const navigate = useNavigate();
@@ -78,7 +79,7 @@ const Account = () => {
                         <li
                             className={`font-semibold  rounded-full px-3 flex gap-2 items-center py-3 cursor-pointer ${
                                 activeTab === "info"
-                                    ? "text-indigo-600 bg-indigo-100"
+                                    ? "text-pink-500 bg-pink-100"
                                     : "opacity-75"
                             }`}
                             onClick={() => searchParams.set("tab", "info")}
@@ -88,7 +89,7 @@ const Account = () => {
                         <li
                             className={`font-semibold  px-3 rounded-full flex gap-2 items-center py-3 cursor-pointer ${
                                 activeTab === "orders"
-                                    ? "text-indigo-600 bg-indigo-100 opacity-100"
+                                    ? "text-pink-500 bg-pink-100 opacity-100"
                                     : "opacity-75"
                             }`}
                             onClick={() => {
@@ -96,14 +97,14 @@ const Account = () => {
                                 setSearchParams(searchParams);
                             }}
                         >
-                            <img src={orderImg} alt="My Orders" />
+                            <ShoppingBag></ShoppingBag>
                         </li>
                         <li
                             className={`font-semibold  px-3 rounded-full flex gap-2 items-center py-3 cursor-pointer ${
                                 activeTab === "addresses" ||
                                 activeTab === "add" ||
                                 activeTab === "edit"
-                                    ? "text-indigo-600 bg-indigo-100 opacity-100"
+                                    ? "text-pink-500 bg-pink-100 opacity-100"
                                     : "opacity-75"
                             }`}
                             onClick={() => {
@@ -111,7 +112,7 @@ const Account = () => {
                                 setSearchParams(searchParams);
                             }}
                         >
-                            <img src={pinImg} alt="Manage Addresses" />
+                            <MapPin></MapPin>
                         </li>
                     </ul>
                 </div>
@@ -144,7 +145,7 @@ const Account = () => {
                     <li
                         className={`font-semibold px-4 flex gap-2 items-center py-3 cursor-pointer ${
                             activeTab === "info"
-                                ? "text-indigo-600 bg-indigo-100"
+                                ? "text-pink-500 bg-pink-100"
                                 : ""
                         }`}
                         onClick={() => {
@@ -152,14 +153,13 @@ const Account = () => {
                             setSearchParams(searchParams);
                         }}
                     >
-                        <img src={accountImg} alt="Profile Information" />
+                        <User size={18}></User>
                         Profile Information
                     </li>
                     <li
-                        className={`font-semibold px-4 flex gap-2 py-3 cursor-pointer ${
-                            activeTab === "orders"||
-                            activeTab === "details"
-                                ? "text-indigo-600 bg-indigo-100"
+                        className={`font-semibold px-4 flex gap-2 py-3 cursor-pointer items-center ${
+                            activeTab === "orders" || activeTab === "details"
+                                ? "text-pink-500 bg-pink-100"
                                 : ""
                         }`}
                         onClick={() => {
@@ -167,7 +167,7 @@ const Account = () => {
                             setSearchParams(searchParams);
                         }}
                     >
-                        <img src={orderImg} alt="My Orders" />
+                        <ShoppingBag size={18}></ShoppingBag>
                         My Orders
                     </li>
                     <li
@@ -175,7 +175,7 @@ const Account = () => {
                             activeTab === "addresses" ||
                             activeTab === "add" ||
                             activeTab === "edit"
-                                ? "text-indigo-600 bg-indigo-100"
+                                ? "text-pink-500 bg-pink-100"
                                 : ""
                         }`}
                         onClick={() => {
@@ -183,7 +183,7 @@ const Account = () => {
                             setSearchParams(searchParams);
                         }}
                     >
-                        <img src={pinImg} alt="Manage Addresses" />
+                        <MapPin size={18}></MapPin>
                         Manage Addresses
                     </li>
                 </ul>

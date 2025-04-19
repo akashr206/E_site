@@ -58,7 +58,7 @@ const Navbar = () => {
                         <ShoppingCart></ShoppingCart>
 
                         {cartLen > 0 && (
-                            <span className="w-3.5 h-3.5 rounded-full bg-indigo-500 top-1 right-1 absolute flex items-center justify-center text-[10px] text-white">
+                            <span className="w-3.5 h-3.5 rounded-full bg-pink-500 top-1 right-1 absolute flex items-center justify-center text-[10px] text-white">
                                 {cartLen}
                             </span>
                         )}
@@ -93,9 +93,9 @@ const Navbar = () => {
     }
 
     return (
-        <header className="bg-white z-15 shadow-sm">
+        <header className="bg-background fixed top-0 left-0 w-full z-[15] shadow-sm">
             <nav
-                className="mx-auto flex max-w-7xl items-center justify-between p-3 md:p-4"
+                className="mx-auto flex max-w-7xl items-center justify-between p-3"
                 aria-label="Global"
             >
                 <div className="flex lg:flex-1">
@@ -133,7 +133,7 @@ const Navbar = () => {
                             onChange={(e) => setSearch(e.target.value)}
                             onKeyDown={handleKeyDown}
                             placeholder="Search"
-                            className="relative border mx-4 p-1 w-[250px] focus:ring-2 focus:ring-indigo-500 focus:border-none outline-none bg-transparent border-border rounded px-2 py-1.5 text-sm"
+                            className="relative border mx-4 p-1 w-[250px] focus:ring-2 focus:ring-pink-500 focus:border-none outline-none bg-transparent border-border rounded px-2 py-1.5 text-sm"
                         />
                         <button type="submit" className="hidden" />
                         <Search
@@ -171,7 +171,7 @@ const Navbar = () => {
                             <ShoppingCart></ShoppingCart>
 
                             {cartLen > 0 && (
-                                <span className="w-3.5 h-3.5 rounded-full bg-indigo-500 top-1 right-1 absolute flex items-center justify-center text-[10px] text-white">
+                                <span className="w-3.5 h-3.5 rounded-full bg-pink-500 top-1 right-1 absolute flex items-center justify-center text-[10px] text-white">
                                     {cartLen}
                                 </span>
                             )}

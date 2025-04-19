@@ -98,14 +98,14 @@ export default function ShippingAddressSelector({ onAddressSelect, onRender }) {
                                         </span>
                                         {address.tag}
                                     </p>
-                                    <p className="text-sm text-gray-600">
+                                    <p className="text-sm text-gray-500">
                                         {address.street}
                                     </p>
-                                    <p className="text-sm text-gray-600">
+                                    <p className="text-sm text-gray-500">
                                         {address.city}, {address.state}{" "}
                                         {address.postalCode}
                                     </p>
-                                    <p className="text-sm text-gray-600">
+                                    <p className="text-sm text-gray-500">
                                         {address.phone}
                                     </p>
                                 </div>

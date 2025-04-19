@@ -12,6 +12,7 @@ import { useState, useEffect } from "react";
 import { API_URL } from "../../config/api";
 import { Button } from "../../components/ui/button";
 import { ChevronRight, ChevronLeft } from "lucide-react";
+import { Skeleton } from "../../components/ui/skeleton";
 
 const getStockBadge = (stock) => {
     if (stock <= 1) {
@@ -26,18 +27,21 @@ const getStockBadge = (stock) => {
 export function LowStockTable() {
     const [allLowStock, setAllLowStock] = useState([]);
     const [lowStockProducts, setLowStockProducts] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
     const limit = 6;
     const [max, setMax] = useState(1);
 
     const fetchLowStock = async () => {
+        setLoading(true);
         const res = await fetch(`${API_URL}/api/products/low`);
         const data = await res.json();
         setAllLowStock(data.products);
         setMax(Math.ceil(data.products.length / limit));
         setLowStockProducts(
-            data.poducts.slice((page - 1) * limit, page * limit)
+            data.products.slice((page - 1) * limit, page * limit)
         );
+        setLoading(false);
     };
 
     const handleNext = () => {
@@ -47,9 +51,9 @@ export function LowStockTable() {
     };
 
     const handlePrev = () => {
-      if (page - 1 > 0) {
-        setPage((prev) => prev - 1);
-    }
+        if (page - 1 > 0) {
+            setPage((prev) => prev - 1);
+        }
     };
 
     useEffect(() => {
@@ -75,21 +79,41 @@ export function LowStockTable() {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {lowStockProducts.map((product, index) => (
-                        <TableRow key={product.id + index}>
-                            <TableCell className="font-medium">
-                                {product.name}
-                            </TableCell>
-                            <TableCell>{`${product.variant?.color} / ${product.variant?.size}`}</TableCell>
-                            <TableCell>{product.variant.stock}</TableCell>
-                            <TableCell>
-                                {getStockBadge(product.variant.stock)}
-                            </TableCell>
-                            <TableCell className="text-right">
-                                {formatCurrency(product.price)}
-                            </TableCell>
-                        </TableRow>
-                    ))}
+                    {loading
+                        ? Array.from({ length: 6 }).map((e, index) => (
+                              <TableRow key={index}>
+                                  <TableCell className="py-4">
+                                      <Skeleton className="w-16 h-3 " />
+                                  </TableCell>
+                                  <TableCell >
+                                      <Skeleton className="w-12 h-3 " />
+                                  </TableCell>
+                                  <TableCell>
+                                      <Skeleton className="w-12 h-3 " />
+                                  </TableCell>
+                                  <TableCell >
+                                      <Skeleton className="w-12 h-3 " />
+                                  </TableCell>
+                                  <TableCell>
+                                      <Skeleton className="w-8 h-3 " />
+                                  </TableCell>
+                              </TableRow>
+                          ))
+                        : lowStockProducts.map((product, index) => (
+                              <TableRow key={product.id + index}>
+                                  <TableCell className="font-medium">
+                                      {product.name}
+                                  </TableCell>
+                                  <TableCell>{`${product.variant?.color} / ${product.variant?.size}`}</TableCell>
+                                  <TableCell>{product.variant.stock}</TableCell>
+                                  <TableCell>
+                                      {getStockBadge(product.variant.stock)}
+                                  </TableCell>
+                                  <TableCell className="text-right">
+                                      {formatCurrency(product.price)}
+                                  </TableCell>
+                              </TableRow>
+                          ))}
                 </TableBody>
             </Table>
             <div className="flex justify-between p-4">

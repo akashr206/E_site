@@ -24,7 +24,7 @@ const Product = (props) => {
         <p className="text-sm font-medium text-gray-900">₹{props.product.price}.00</p>
       </div>
       <div className="py-2">
-        <button className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+        <button className="flex w-full justify-center rounded-md bg-pink-500 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-pink-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-500">
           View Details
         </button>
       </div>

@@ -13,12 +13,15 @@ import {
     ShoppingCart,
     Users,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { RecentOrdersTable } from "./RecentOrdersTable";
 import { SalesChart } from "./SalesChart";
 import { LowStockTable } from "./LowStockTable";
+import OrderStatus from "../../components/Admin/OrderStatus";
+import { useState, useEffect } from "react";
 
 export default function DashboardOverview() {
+    const [totalRevenue, setTotalRevenue] = useState(0)
+
     return (
         <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-2">
@@ -138,7 +141,7 @@ export default function DashboardOverview() {
                         <LowStockTable />
                     </CardContent>
                 </Card>
-                <Card className="w-1/2 max-lg:w-full">
+                <Card className="w-1/2 h-max max-lg:w-full">
                     <CardHeader>
                         <CardTitle>Order Status</CardTitle>
                         <CardDescription>
@@ -146,63 +149,7 @@ export default function DashboardOverview() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="space-y-4">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <Badge className="bg-yellow-500">
-                                        Pending
-                                    </Badge>
-                                    <span className="text-sm">
-                                        Pending Orders
-                                    </span>
-                                </div>
-                                <span className="text-sm font-medium">24</span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <Badge className="bg-blue-500">
-                                        Confirmed
-                                    </Badge>
-                                    <span className="text-sm">
-                                        Confirmed Orders
-                                    </span>
-                                </div>
-                                <span className="text-sm font-medium">42</span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <Badge className="bg-purple-500">
-                                        Shipped
-                                    </Badge>
-                                    <span className="text-sm">
-                                        Shipped Orders
-                                    </span>
-                                </div>
-                                <span className="text-sm font-medium">56</span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <Badge className="bg-green-500">
-                                        Delivered
-                                    </Badge>
-                                    <span className="text-sm">
-                                        Delivered Orders
-                                    </span>
-                                </div>
-                                <span className="text-sm font-medium">128</span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <Badge className="bg-red-500">
-                                        Cancelled
-                                    </Badge>
-                                    <span className="text-sm">
-                                        Cancelled Orders
-                                    </span>
-                                </div>
-                                <span className="text-sm font-medium">8</span>
-                            </div>
-                        </div>
+                        <OrderStatus></OrderStatus>
                     </CardContent>
                 </Card>
             </div>

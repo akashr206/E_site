@@ -4,7 +4,7 @@ const ProductsGrid = ({products}) => {
   if (!products || products.length === 0) {
     return (
       <div className="text-center py-10">
-        <p className="text-gray-600 text-lg">No products available</p>
+        <p className="text-gray-500 text-lg">No products available</p>
       </div>
     );
   }

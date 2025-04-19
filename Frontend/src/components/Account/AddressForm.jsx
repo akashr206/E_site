@@ -107,8 +107,8 @@ const AddressForm = () => {
               onChange={handleChange}
               className={
                 errors.street
-                  ? "ring-1 ring-red-500 focus-visible:ring-indigo-500"
-                  : "focus-visible:ring-indigo-500"
+                  ? "ring-1 ring-red-500 focus-visible:ring-pink-500"
+                  : "focus-visible:ring-pink-500"
               }
             />
             {errors.street && <p className="text-sm text-red-500">{errors.street}</p>}
@@ -123,8 +123,8 @@ const AddressForm = () => {
                 onChange={handleChange}
                 className={
                   errors.city
-                    ? "ring-1 ring-red-500 focus-visible:ring-indigo-500"
-                    : "focus-visible:ring-indigo-500"
+                    ? "ring-1 ring-red-500 focus-visible:ring-pink-500"
+                    : "focus-visible:ring-pink-500"
                 }
               />
               {errors.city && <p className="text-sm text-red-500">{errors.city}</p>}
@@ -138,8 +138,8 @@ const AddressForm = () => {
                 onChange={handleChange}
                 className={
                   errors.state
-                    ? "ring-1 ring-red-500 focus-visible:ring-indigo-500"
-                    : "focus-visible:ring-indigo-500"
+                    ? "ring-1 ring-red-500 focus-visible:ring-pink-500"
+                    : "focus-visible:ring-pink-500"
                 }
               />
               {errors.state && <p className="text-sm text-red-500">{errors.state}</p>}
@@ -155,8 +155,8 @@ const AddressForm = () => {
                 onChange={handleChange}
                 className={
                   errors.postalCode
-                    ? "ring-1 ring-red-500 focus-visible:ring-indigo-500"
-                    : "focus-visible:ring-indigo-500"
+                    ? "ring-1 ring-red-500 focus-visible:ring-pink-500"
+                    : "focus-visible:ring-pink-500"
                 }
               />
               {errors.postalCode && (
@@ -181,7 +181,7 @@ const AddressForm = () => {
               name="landmark"
               value={address.landmark}
               onChange={handleChange}
-              className="focus-visible:ring-indigo-500"
+              className="focus-visible:ring-pink-500"
               placeholder="Optional"
             />
           </div>
@@ -191,7 +191,7 @@ const AddressForm = () => {
               value={address.tag}
               onValueChange={(value) => handleSelectChange("tag", value)}
             >
-              <SelectTrigger className="focus:ring-indigo-500 focus:ring-1">
+              <SelectTrigger className="focus:ring-pink-500 focus:ring-1">
                 <SelectValue placeholder="Select a tag" />
               </SelectTrigger>
               <SelectContent>
@@ -202,7 +202,7 @@ const AddressForm = () => {
             </Select>
           </div>
           <div className="pt-4">
-            <Button type="submit" className="w-full bg-indigo-500 hover:bg-indigo-600">
+            <Button type="submit" className="w-full bg-pink-500 hover:bg-pink-600">
               Save Address
             </Button>
           </div>

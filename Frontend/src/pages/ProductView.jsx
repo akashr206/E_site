@@ -180,7 +180,7 @@ const ProductView = () => {
                                             }
                                             className={`shrink-0 flex items-center justify-center p-1 border ${
                                                 selectedImage === url
-                                                    ? "border-indigo-500"
+                                                    ? "border-pink-500"
                                                     : "border-gray-300"
                                             } rounded-sm w-16 h-16 sm:w-20 sm:h-20`}
                                         >
@@ -212,7 +212,7 @@ const ProductView = () => {
                                     Material: {product.material}
                                 </motion.p>
                                 <motion.p
-                                    className="text-xl font-semibold text-indigo-600 mt-4"
+                                    className="text-xl font-semibold text-pink-500 mt-4"
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     transition={{ duration: 0.4, delay: 0.3 }}
@@ -241,7 +241,7 @@ const ProductView = () => {
                                                 className={`p-2 rounded-lg border ${
                                                     selectedColor ===
                                                     Object.keys(color)[0]
-                                                        ? "bg-indigo-500 hover:bg-indigo-600 text-white"
+                                                        ? "bg-pink-500 hover:bg-pink-500 text-white"
                                                         : "hover:bg-accent border-border"
                                                 } mr-2`}
                                             >
@@ -261,7 +261,7 @@ const ProductView = () => {
                                                 }
                                                 className={`p-2 min-w-11 border border-border hover:bg-accent ${
                                                     selectedSize === size
-                                                        ? "bg-indigo-500 hover:bg-indigo-600 text-white"
+                                                        ? "bg-pink-500 hover:bg-pink-500 text-white"
                                                         : "hover:bg-accent border-border"
                                                 } rounded-lg mr-2`}
                                             >
@@ -278,7 +278,7 @@ const ProductView = () => {
                                             ? "bg-gray-400 cursor-not-allowed"
                                             : added || isUpdated
                                             ? "bg-green-500"
-                                            : "bg-indigo-600 hover:bg-indigo-700"
+                                            : "bg-pink-500 hover:bg-pink-700"
                                     }`}
                                     disabled={isAdding}
                                     whileHover={
@@ -317,7 +317,7 @@ const ProductView = () => {
                             <h3 className="text-lg font-medium text-gray-900">
                                 Description
                             </h3>
-                            <p className="mt-2 text-gray-600">
+                            <p className="mt-2 text-gray-500">
                                 {product.description}
                             </p>
                         </motion.div>

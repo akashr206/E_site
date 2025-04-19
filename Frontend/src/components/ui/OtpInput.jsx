@@ -46,7 +46,7 @@ const OtpInput = ({ length = 6, otp, setOtp }) => {
                     onChange={(e) => handleChange(e, index)}
                     onKeyDown={(e) => handleKeyDown(e, index)}
                     ref={(el) => (inputs.current[index] = el)}
-                    className="w-10 h-10 text-center bg-transparent text-lg border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600"
+                    className="w-10 h-10 text-center bg-transparent text-lg border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
                 />
             ))}
         </div>

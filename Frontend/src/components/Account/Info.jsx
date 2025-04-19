@@ -32,7 +32,7 @@ const Info = (props) => {
                             type="text"
                             placeholder="Last Name"
                             value={props.user.name.split(" ")[1]}
-                            className="p-3 border border-gray-300 bg-transparent outline-indigo-600 active:border-indigo-600 rounded-md w-full"
+                            className="p-3 border border-gray-300 bg-transparent outline-pink-500 active:border-pink-600 rounded-md w-full"
                         />
                     </div>
 

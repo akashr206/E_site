@@ -10,13 +10,14 @@ import Account from "./pages/Account";
 import Search from "./pages/Search";
 import Category from "./pages/Category";
 import Dashboard from "./pages/admin/Dashboard";
+import { cn } from "./lib/utils";
 
 function App() {
-
+    const pathName = window.location.pathname;
     return (
         <Router>
             <Navbar className="fixed"></Navbar>
-            <main className="pb-9">
+            <main className={cn("pb-9", !pathName.includes("admin") && "pt-[64px]")}>
                 <Routes>
                     <Route path="/" element={<Home />}></Route>
                     <Route path="/account" element={<Account />}></Route>
@@ -26,10 +27,7 @@ function App() {
                     ></Route>
                     <Route path="/cart" element={<Cart />}></Route>
                     <Route path="/search" element={<Search />}></Route>
-                    <Route
-                        path="/admin/:page"
-                        element={<Dashboard />}
-                    ></Route>
+                    <Route path="/admin/:page" element={<Dashboard />}></Route>
                     <Route
                         path="/category/:query"
                         element={<Category />}
