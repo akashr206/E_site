@@ -63,19 +63,20 @@ export default function ProductsPage() {
     const page = searchParams.get("page");
     const limit = 10;
 
-    const filteredProducts = products.filter((product) => {
-        const matchesSearch =
-            product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            product.id.toLowerCase().includes(searchTerm.toLowerCase());
+    const filteredProducts =
+        products?.filter((product) => {
+            const matchesSearch =
+                product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                product.id.toLowerCase().includes(searchTerm.toLowerCase());
 
-        const matchesCategory =
-            categoryFilter === "all" ||
-            product.category.some(
-                (cat) => cat.toLowerCase() === categoryFilter.toLowerCase()
-            );
+            const matchesCategory =
+                categoryFilter === "all" ||
+                product.category.some(
+                    (cat) => cat.toLowerCase() === categoryFilter.toLowerCase()
+                );
 
-        return matchesSearch && matchesCategory;
-    });
+            return matchesSearch && matchesCategory;
+        }) || [];
 
     const getTotalStock = (variants) => {
         return variants.reduce(
@@ -86,21 +87,23 @@ export default function ProductsPage() {
 
     const getUniqueCategories = () => {
         const categories = new Set();
-        products.forEach((product) => {
+        products?.forEach((product) => {
             product.category.forEach((cat) => categories.add(cat));
         });
         return Array.from(categories);
     };
 
-    async function fetchProducts(page, limit) {
+    async function fetchProducts(page = page, limit = limit) {
         setGettingProducts(true);
         const res = await fetch(
             `${API_URL}/api/products/all?page=${page}&limit=${limit}`
         );
         const data = await res.json();
-        setProducts(data.products);
-        setMax(data.pagination.totalPages);
-        setGettingProducts(false);
+        if (res.ok) {
+            setProducts(data.products);
+            setMax(data.pagination.totalPages);
+            setGettingProducts(false);
+        }
     }
     const handleNext = () => {
         const page = searchParams.get("page");

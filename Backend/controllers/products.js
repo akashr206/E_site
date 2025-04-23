@@ -9,6 +9,7 @@ const {
     findLowStock,
 } = require("../services/products");
 const { generateId } = require("../utils/generateId");
+const Product = require("../models/Product");
 
 const AddProduct = async (req, res) => {
     try {
@@ -144,7 +145,7 @@ const getLowStock = async (req, res) => {
 
 const getTotalProducts = async (req, res) => {
     try {
-        const monthlyProducts = await Products.aggregate([
+        const monthlyProducts = await Product.aggregate([
             { 
                 $group: {
                     _id: {

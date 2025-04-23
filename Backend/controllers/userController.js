@@ -46,7 +46,7 @@ const makeAdmin = async (req, res) => {
     try {
         const userId = req.body.userId;
         console.log(userId);
-        
+
         await User.updateOne({ uId: userId }, { isAdmin: true });
         return res.status(201).json({ message: "Successfully made admin" });
     } catch (error) {
@@ -58,37 +58,60 @@ const makeAdmin = async (req, res) => {
 const getActiveUsers = async (req, res) => {
     try {
         const now = new Date();
-        const oneDayAgo = new Date(now - 24 * 60 * 60 * 1000);
-        const sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
-        const thirtyDaysAgo = new Date(now - 30 * 24 * 60 * 60 * 1000);
+
+        const startOfCurrentMonth = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            1
+        );
+
+        const startOfNextMonth = new Date(
+            now.getFullYear(),
+            now.getMonth() + 1,
+            1
+        );
+
+        const startOfPreviousMonth = new Date(
+            now.getFullYear(),
+            now.getMonth() - 1,
+            1
+        );
+
+        const endOfPreviousMonth = new Date(startOfCurrentMonth);
 
         const activeUsers = await User.aggregate([
             {
                 $facet: {
-                    last24Hours: [
-                        { $match: { lastActive: { $gte: oneDayAgo } } },
-                        { $count: "count" }
+                    currentMonth: [
+                        {
+                            $match: {
+                                lastActive: {
+                                    $gte: startOfCurrentMonth,
+                                    $lt: startOfNextMonth,
+                                },
+                            },
+                        },
+                        { $count: "count" },
                     ],
-                    last7Days: [
-                        { $match: { lastActive: { $gte: sevenDaysAgo } } },
-                        { $count: "count" }
+                    previousMonth: [
+                        {
+                            $match: {
+                                lastActive: {
+                                    $gte: startOfPreviousMonth,
+                                    $lt: endOfPreviousMonth,
+                                },
+                            },
+                        },
+                        { $count: "count" },
                     ],
-                    last30Days: [
-                        { $match: { lastActive: { $gte: thirtyDaysAgo } } },
-                        { $count: "count" }
-                    ],
-                }
-            }
+                },
+            },
         ]);
 
         const result = activeUsers[0];
         return res.json({
-            statistics: {
-                last24Hours: result.last24Hours[0]?.count || 0,
-                last7Days: result.last7Days[0]?.count || 0,
-                last30Days: result.last30Days[0]?.count || 0
-            },
-            recentActiveUsers: result.recentUsers
+            thisMonth: result.currentMonth[0]?.count || 0,
+            lastMonth: result.previousMonth[0]?.count || 0,
         });
     } catch (error) {
         console.error("Error fetching active users:", error);

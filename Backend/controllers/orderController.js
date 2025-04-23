@@ -183,38 +183,50 @@ const getMonthlyRevenue = async (req, res) => {
     try {
         const now = new Date();
         const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-        const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        const lastDayOfMonth = new Date(
+            now.getFullYear(),
+            now.getMonth() + 1,
+            0
+        );
 
         const monthlyRevenue = await Order.aggregate([
             {
                 $match: {
-                    orderDate: {
-                        $gte: firstDayOfMonth,
-                        $lte: lastDayOfMonth
-                    },
-                    "payment.status": "paid"
-                }
+                    "payment.status": "paid",
+                },
             },
             {
                 $group: {
-                    _id: null,
+                    _id: {
+                        year: { $year: "$orderDate" },
+                        month: { $month: "$orderDate" },
+                    },
                     totalRevenue: { $sum: "$summary.totalAmount" },
-                    orderCount: { $sum: 1 }
-                }
-            }
+                    orderCount: { $sum: 1 },
+                },
+            },
+            {
+                $sort: {
+                    "_id.year": 1,
+                    "_id.month": 1,
+                },
+            },
         ]);
 
-        return res.status(200).json({
-            revenue: monthlyRevenue[0]?.totalRevenue || 0,
-            orderCount: monthlyRevenue[0]?.orderCount || 0,
-            month: now.toLocaleString('default', { month: 'long' }),
-            year: now.getFullYear()
-        });
+        return res.status(200).json({ monthlyRevenue });
     } catch (error) {
         console.error("Error calculating monthly revenue:", error);
-        return res.status(500).json({ error: "Failed to calculate monthly revenue" });
+        return res
+            .status(500)
+            .json({ error: "Failed to calculate monthly revenue" });
     }
 };
 
-module.exports = { addOrder, getOrder, getUserOrders, getAllOrders,  deleteAll, getMonthlyRevenue };
- 
+module.exports = {
+    addOrder,
+    getOrder,
+    getUserOrders,
+    getAllOrders,
+    deleteAll,
+    getMonthlyRevenue,
+};

@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
-import ProductsGrid from "./ProductsGrid";
+import { Link } from "react-router-dom";
 import Loading from "./Loading";
 import {
-  ChevronRight,
-  Heart,
-  Truck,
-  RefreshCw,
-  ShieldCheck,
-  CreditCard,
-} from "lucide-react"
+    ChevronRight,
+    Heart,
+    Truck,
+    RefreshCw,
+    ShieldCheck,
+    CreditCard,
+} from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { Button } from "./ui/button";
 
 const Home = () => {
@@ -25,7 +26,6 @@ const Home = () => {
             const data = await response.json();
             setProducts(data.products);
             console.log(data.products);
-            
         } catch (error) {
             console.error("Error fetching products:", error);
             setProducts([]);
@@ -55,17 +55,17 @@ const Home = () => {
                     />
                     <div className="absolute lg:ml-32 inset-0 bg-gradient-to-r from-white to-black/20 flex items-center">
                         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                            <div className="max-w-lg max-md:max-w-52">
-                                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-pink-500 leading-tight mb-4">
-                                    Elegance for Your Special Day
+                            <div className="max-w-lg max-md:max-w-56">
+                                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-pink-600 leading-tight mb-4">
+                                    Elegance That Speaks for Itself
                                 </h1>
                                 <p className="text-lg text-gray-700 mb-8">
-                                    Discover our new bridal collection designed
-                                    to make your wedding day unforgettable.
+                                    Show your shine with a collection full of
+                                    beauty, feeling, and a touch of magic.
                                 </p>
                                 <div className="flex  gap-4">
                                     <Button className="px-6 py-3 font-medium rounded-md transition-colors">
-                                        Shop Bridal
+                                        Shop now <ArrowUpRight />
                                     </Button>
                                     <Button className="px-6 py-3 bg-white text-gray-900 font-medium rounded-md border border-gray-300 hover:bg-gray-50 transition-colors">
                                         Explore Collection
@@ -164,9 +164,7 @@ const Home = () => {
             <section className="py-16 bg-gray-50">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center mb-12">
-                        <h2 className="text-3xl  font-bold">
-                            New Arrivals
-                        </h2>
+                        <h2 className="text-3xl  font-bold">New Arrivals</h2>
                         <a
                             href="#"
                             className="text-sm font-medium text-gray-900 hover:text-pink-500 inline-flex items-center"
@@ -175,109 +173,37 @@ const Home = () => {
                         </a>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                        <div className="group">
-                            <div className="relative overflow-hidden rounded-lg mb-4 bg-gray-100">
-                                <img
-                                    src={products ? products[0].images[0] : ""}
-                                    alt="Elegant Dress"
-                                    className="w-full h-[350px] object-cover object-top"
-                                />
-                                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button className="p-2 bg-white rounded-full text-gray-900 hover:text-pink-500">
-                                        <Heart size={20} />
-                                    </button>
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+                        {products.slice(0, 4).map((product) => (
+                            <Link
+                                key={product.id}
+                                to={`/products/${product.id}`}
+                            >
+                                <div className="group">
+                                    <div className="relative overflow-hidden rounded-lg mb-4 bg-gray-100">
+                                        <img
+                                            src={product.images[0]}
+                                            alt="Elegant Dress"
+                                            className="w-full h-[350px] hover:scale-105 transition-transform object-cover object-top"
+                                        />
+                                        <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button className="p-2 bg-white rounded-full text-gray-900 hover:text-pink-500">
+                                                <Heart size={20} />
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <h3 className="text-lg font-medium text-gray-900">
+                                        {product.name}
+                                    </h3>
+                                    <p className="text-gray-500 mb-2">
+                                        {product.name}
+                                    </p>
+                                    <p className="font-medium text-gray-900">
+                                        {product.price}.00
+                                    </p>
                                 </div>
-                                <div className="absolute inset-x-0 bottom-0 bg-white py-4 px-4 translate-y-full group-hover:translate-y-0 transition-transform">
-                                    <button className="w-full py-2 bg-gray-900 text-white font-medium rounded-md hover:bg-gray-800 transition-colors">
-                                        Add to Cart
-                                    </button>
-                                </div>
-                            </div>
-                            <h3 className="text-lg font-medium text-gray-900">
-                                { products && products[0].name}
-                            </h3>
-                            <p className="text-gray-500 mb-2">
-                            { products && products[0].name}
-                            </p>
-                            <p className="font-medium text-gray-900">{ products && products[0].price}.00</p>
-                        </div>
-
-                        <div className="group">
-                            <div className="relative overflow-hidden rounded-lg mb-4 bg-gray-100">
-                                <img
-                                    src="/placeholder.svg?height=400&width=300"
-                                    alt="Bridal Gown"
-                                    className="w-full h-[350px] object-cover object-center"
-                                />
-                                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button className="p-2 bg-white rounded-full text-gray-900 hover:text-pink-500">
-                                        <Heart size={20} />
-                                    </button>
-                                </div>
-                            </div>
-                            <h3 className="text-lg font-medium text-gray-900">
-                                Classic Bridal Gown
-                            </h3>
-                            <p className="text-gray-500 mb-2">
-                                Bridal Collection
-                            </p>
-                            <p className="font-medium text-gray-900">$899.00</p>
-                        </div>
-
-                        <div className="group">
-                            <div className="relative overflow-hidden rounded-lg mb-4 bg-gray-100">
-                                <img
-                                    src="/placeholder.svg?height=400&width=300"
-                                    alt="Summer Dress"
-                                    className="w-full h-[350px] object-cover object-center"
-                                />
-                                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button className="p-2 bg-white rounded-full text-gray-900 hover:text-pink-500">
-                                        <Heart size={20} />
-                                    </button>
-                                </div>
-                                <div className="absolute inset-x-0 bottom-0 bg-white py-4 px-4 translate-y-full group-hover:translate-y-0 transition-transform">
-                                    <button className="w-full py-2 bg-gray-900 text-white font-medium rounded-md hover:bg-gray-800 transition-colors">
-                                        Add to Cart
-                                    </button>
-                                </div>
-                            </div>
-                            <h3 className="text-lg font-medium text-gray-900">
-                                Floral Summer Dress
-                            </h3>
-                            <p className="text-gray-500 mb-2">
-                                Summer Collection
-                            </p>
-                            <p className="font-medium text-gray-900">$129.00</p>
-                        </div>
-
-                        <div className="group">
-                            <div className="relative overflow-hidden rounded-lg mb-4 bg-gray-100">
-                                <img
-                                    src="/placeholder.svg?height=400&width=300"
-                                    alt="Bridesmaid Dress"
-                                    className="w-full h-[350px] object-cover object-center"
-                                />
-                                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button className="p-2 bg-white rounded-full text-gray-900 hover:text-pink-500">
-                                        <Heart size={20} />
-                                    </button>
-                                </div>
-                                <div className="absolute inset-x-0 bottom-0 bg-white py-4 px-4 translate-y-full group-hover:translate-y-0 transition-transform">
-                                    <button className="w-full py-2 bg-gray-900 text-white font-medium rounded-md hover:bg-gray-800 transition-colors">
-                                        Add to Cart
-                                    </button>
-                                </div>
-                            </div>
-                            <h3 className="text-lg font-medium text-gray-900">
-                                Bridesmaid Dress
-                            </h3>
-                            <p className="text-gray-500 mb-2">
-                                Bridal Collection
-                            </p>
-                            <p className="font-medium text-gray-900">$249.00</p>
-                        </div>
+                            </Link>
+                        ))}
                     </div>
                 </div>
             </section>
@@ -380,9 +306,7 @@ const Home = () => {
             <section className="py-16 bg-gray-50">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center mb-12">
-                        <h2 className="text-3xl  font-bold">
-                            Best Sellers
-                        </h2>
+                        <h2 className="text-3xl  font-bold">Best Sellers</h2>
                         <a
                             href="#"
                             className="text-sm font-medium text-gray-900 hover:text-pink-500 inline-flex items-center"
