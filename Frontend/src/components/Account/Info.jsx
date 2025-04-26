@@ -1,63 +1,118 @@
-import React from 'react'
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import InputDisable from '../../components/ui/InputDisable';
 import { useAuth } from '../../Contexts/AuthContext';
-const Info = (props) => {
+import { LogOut, User, Mail, Edit, Shield } from 'lucide-react';
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+
+const Info = ({ user, isMobile }) => {
     const navigate = useNavigate();
     const { logout } = useAuth();
+    
     const handleLogout = () => {
         logout();
-        navigate('/')
-        // setMobileMenuOpen(false)
-      }
+        navigate('/');
+    };
+
+    const getInitials = (name) => {
+        if (!name) return "U";
+        return name.split(" ").map(part => part[0]).join("").toUpperCase();
+    };
+
+    const nameParts = user?.name?.split(" ") || ["", ""];
+    const firstName = nameParts[0] || "";
+    const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
 
     return (
-        <div className={`${props.isMobile ? "p-5" : "shadow-md p-6"} `}>
-            <h2 className="text-xl font-semibold mb-4">
-                Personal Information{" "}
-            </h2>
-            <form className="space-y-6">
-                <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <label >First Name </label>
-                        <InputDisable
-                            type="text"
-                            value={props.user.name.split(" ")[0]}
-                            placeholder="First Name"
-                        />
-                    </div>
-                    <div>
-                        <label >Second Name </label>
-                        <InputDisable
-                            type="text"
-                            placeholder="Last Name"
-                            value={props.user.name.split(" ")[1]}
-                            className="p-3 border border-gray-300 bg-transparent outline-pink-500 active:border-pink-600 rounded-md w-full"
-                        />
-                    </div>
-
-
-                </div>
-
+        <div className="space-y-6">
+            <div className="flex items-center gap-4 mb-6">
+                <Avatar className="h-16 w-16">
+                    <AvatarImage src={user?.image} alt={user?.name} />
+                    <AvatarFallback className="bg-primary text-primary-foreground text-lg">
+                        {getInitials(user?.name)}
+                    </AvatarFallback>
+                </Avatar>
                 <div>
-                    <label className="block text-gray-600 mb-2">
-                        Email Address{" "}
-                    </label>
-                    <InputDisable
-                        type="email"
-                        value={props.user && props.user.email}
-                        placeholder="Email Address"
-                        disabled
-                        className="p-3 border border-gray-300 rounded-md bg-transparent w-full"
-                    />
+                    <h3 className="text-lg font-medium">{user?.name}</h3>
+                    <p className="text-sm text-muted-foreground">{user?.email}</p>
                 </div>
+            </div>
 
-            </form>
-            <p className="text-lg cursor-pointer text-red-500 my-3 font-semibold flex justify-center" onClick={handleLogout}>
-                Logout
-              </p>
+            <Separator />
+            <div>
+                <h2 className="text-lg font-medium mb-4 flex items-center">
+                    <User className="h-4 w-4 mr-2" />
+                    Personal Information
+                </h2>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <Label htmlFor="firstName">First Name</Label>
+                        <div className="relative">
+                            <Input
+                                id="firstName"
+                                value={firstName}
+                                className="pr-10"
+                                readOnly
+                            />
+                        </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                        <Label htmlFor="lastName">Last Name</Label>
+                        <div className="relative">
+                            <Input
+                                id="lastName"
+                                value={lastName}
+                                className="pr-10"
+                                readOnly
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h2 className="text-lg font-medium mb-4 flex items-center">
+                    <Mail className="h-4 w-4 mr-2" />
+                    Contact Information
+                </h2>
+                
+                <div className="space-y-2">
+                    <Label htmlFor="email">Email Address</Label>
+                    <div className="relative">
+                        <Input
+                            id="email"
+                            type="email"
+                            value={user?.email}
+                            className="pr-10"
+                            readOnly
+                        />
+                        <div className="absolute right-3 top-2 px-1.5 py-0.5 rounded text-xs bg-gray-100 text-gray-500">
+                            Verified
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <Separator />
+
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-between sm:items-center gap-4">
+                <Button 
+                    variant="destructive" 
+                    onClick={handleLogout}
+                    className="flex items-center gap-2"
+                >
+                    <LogOut className="h-4 w-4" />
+                    Logout
+                </Button>
+            </div>
         </div>
-    )
-}
+    );
+};
 
-export default Info
+export default Info;

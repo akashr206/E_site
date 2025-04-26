@@ -52,10 +52,10 @@ const Home = () => {
                         alt="Elegant woman in bridal wear"
                         className="md:w-full overflow-hidden absolute h-full object-cover md:object-contain md:object-right"
                     />
-                    <div className="absolute lg:ml-32 inset-0 bg-gradient-to-r from-white to-black/20 flex items-center">
+                    <div className="absolute lg:ml-32 inset-0 bg-gradient-to-r from-white/60 to-black/30 flex items-center">
                         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                             <div className="max-w-lg max-md:max-w-56">
-                                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-pink-600 leading-tight mb-4">
+                                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-pink-600/80 leading-tight mb-4">
                                     Elegance That Speaks for Itself
                                 </h1>
                                 <p className="text-lg text-gray-700 mb-8">

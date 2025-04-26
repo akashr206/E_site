@@ -60,70 +60,10 @@ const Account = () => {
     };
 
     if (loadingUser) return <Loading />;
-
-    if (isMobile)
-        return (
-            <div className="flex min-h-screen  max-w-5xl mx-auto bg-border/15">
-                <div className="w-max hidden  flex-col gap-3 p-3">
-                    <img
-                        src={
-                            user
-                                ? `${user.image}`
-                                : "https://tse2.mm.bing.net/th?id=OIP.x7X2oAehk5M9IvGwO_K0PgHaHa&pid=Api&P=0&h=180"
-                        }
-                        alt="User"
-                        className="w-12 h-12 rounded-full"
-                    />
-
-                    <ul className="text-center w-max gap-3 py-2 flex flex-col rounded-sm">
-                        <li
-                            className={`font-semibold  rounded-full px-3 flex gap-2 items-center py-3 cursor-pointer ${
-                                activeTab === "info"
-                                    ? "text-pink-500 bg-pink-100"
-                                    : "opacity-75"
-                            }`}
-                            onClick={() => searchParams.set("tab", "info")}
-                        >
-                            <img src={accountImg} alt="Profile Information" />
-                        </li>
-                        <li
-                            className={`font-semibold  px-3 rounded-full flex gap-2 items-center py-3 cursor-pointer ${
-                                activeTab === "orders"
-                                    ? "text-pink-500 bg-pink-100 opacity-100"
-                                    : "opacity-75"
-                            }`}
-                            onClick={() => {
-                                searchParams.set("tab", "orders");
-                                setSearchParams(searchParams);
-                            }}
-                        >
-                            <ShoppingBag></ShoppingBag>
-                        </li>
-                        <li
-                            className={`font-semibold  px-3 rounded-full flex gap-2 items-center py-3 cursor-pointer ${
-                                activeTab === "addresses" ||
-                                activeTab === "add" ||
-                                activeTab === "edit"
-                                    ? "text-pink-500 bg-pink-100 opacity-100"
-                                    : "opacity-75"
-                            }`}
-                            onClick={() => {
-                                searchParams.set("tab", "addresses");
-                                setSearchParams(searchParams);
-                            }}
-                        >
-                            <MapPin></MapPin>
-                        </li>
-                    </ul>
-                </div>
-                <div className="flex-1 bg-white">{renderTabContent()}</div>
-            </div>
-        );
-
     return (
         <div className="flex min-h-screen max-w-5xl mx-auto bg-border">
-            <div className="w-1/3 bg-white flex flex-col gap-5 p-5">
-                <div className="text-center rounded-sm min-w-[192px] shadow px-4 py-2 flex items-center">
+            <div className="md:w-1/3 max-md:fixed w-full max-md:h-16 top-16 left-0 bg-white flex md:flex-col md:gap-5 md:p-5">
+                <div className="text-center max-md:hidden rounded-sm md:shadow px-4 py-2 flex items-center">
                     <img
                         src={
                             user
@@ -131,7 +71,7 @@ const Account = () => {
                                 : "https://tse2.mm.bing.net/th?id=OIP.x7X2oAehk5M9IvGwO_K0PgHaHa&pid=Api&P=0&h=180"
                         }
                         alt="User"
-                        className="w-12 h-12 rounded-full"
+                        className="w-12 h-12 aspect-square rounded-full"
                     />
                     <div className="flex flex-col ml-3 items-start">
                         <p className="text-sm">Hello</p>
@@ -141,9 +81,9 @@ const Account = () => {
                     </div>
                 </div>
 
-                <ul className="text-center min-w-[192px] shadow py-2 flex flex-col rounded-sm">
+                <ul className="text-center max-md:w-full md:shadow py-2 flex md:flex-col rounded-sm">
                     <li
-                        className={`font-semibold px-4 flex gap-2 items-center py-3 cursor-pointer ${
+                        className={`font-semibold px-4 max-md:justify-center flex-1 flex gap-2 items-center py-3 cursor-pointer ${
                             activeTab === "info"
                                 ? "text-pink-500 bg-pink-100"
                                 : ""
@@ -154,10 +94,10 @@ const Account = () => {
                         }}
                     >
                         <User size={18}></User>
-                        Profile Information
+                        <p className="max-md:hidden">Profile Information</p>
                     </li>
                     <li
-                        className={`font-semibold px-4 flex gap-2 py-3 cursor-pointer items-center ${
+                        className={`font-semibold px-4 flex-1 max-md:justify-center flex gap-2 py-3 cursor-pointer items-center ${
                             activeTab === "orders" || activeTab === "details"
                                 ? "text-pink-500 bg-pink-100"
                                 : ""
@@ -168,10 +108,10 @@ const Account = () => {
                         }}
                     >
                         <ShoppingBag size={18}></ShoppingBag>
-                        My Orders
+                        <p className="max-md:hidden">My Orders</p>
                     </li>
                     <li
-                        className={`font-semibold  px-4 flex gap-2 items-center py-3 cursor-pointer ${
+                        className={`font-semibold flex-1 max-md:justify-center px-4 flex gap-2 items-center py-3 cursor-pointer ${
                             activeTab === "addresses" ||
                             activeTab === "add" ||
                             activeTab === "edit"
@@ -184,12 +124,12 @@ const Account = () => {
                         }}
                     >
                         <MapPin size={18}></MapPin>
-                        Manage Addresses
+                        <p className="max-md:hidden">Manage Addresses</p>
                     </li>
                 </ul>
             </div>
 
-            <div className="flex-1 bg-white p-5">{renderTabContent()}</div>
+            <div className="md:flex-1 w-full max-md:mt-16 bg-white p-5">{renderTabContent()}</div>
         </div>
     );
 };
