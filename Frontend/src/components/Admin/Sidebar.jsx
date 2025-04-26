@@ -23,13 +23,14 @@ import {
     SidebarInset,
     SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Button } from "@headlessui/react";
+import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../Contexts/AuthContext";
 
+
 const AdminSidebar = ({ renderPage, setActivePage, activePage }) => {
     const navigate = useNavigate();
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
     return (
         <SidebarProvider>
             <nav className="fixed md:hidden z-10 bg-background border-border border flex-row-reverse flex items-center justify-between px-4 top-0 left-0 w-full h-16 ">
@@ -145,7 +146,7 @@ const AdminSidebar = ({ renderPage, setActivePage, activePage }) => {
                                 <Settings className="h-4 w-4" />
                                 <span className="sr-only">Settings</span>
                             </Button>
-                            <Button variant="ghost" size="icon">
+                            <Button onClick={logout} variant="ghost" size="icon">
                                 <LogOut className="h-4 w-4" />
                                 <span className="sr-only">Log out</span>
                             </Button>

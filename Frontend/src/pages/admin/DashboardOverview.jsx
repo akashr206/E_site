@@ -8,7 +8,6 @@ import {
 import {
     ArrowDownIcon,
     ArrowUpIcon,
-    DollarSign,
     Package,
     ShoppingCart,
     Users,
@@ -20,46 +19,41 @@ import OrderStatus from "../../components/Admin/OrderStatus";
 import { useState, useEffect } from "react";
 import { API_URL } from "../../config/api";
 import clsx from "clsx";
+import { Skeleton } from "../../components/ui/skeleton";
+import TotalRevenue from "../../components/Admin/TotalRevenue";
+import { formatIndianNumber as FIN } from "../../lib/utils";
 
 export default function DashboardOverview() {
-    const [totalRevenue, setTotalRevenue] = useState(0);
-    const [revenuePercentage, setRevenuePercentage] = useState(0);
-    const [totalOrders, setTotalOrders] = useState(0);
-    const [orderPercentage, setOrderPercentage] = useState(0);
-    const [totalProducts, setTotalProducts] = useState(0);
-    const [thisMonthProducts, setThisMonthProducts] = useState(0);
-    const [activeUsers, setActiveUsers] = useState(0);
-    const [activeUsersPercentage, setActiveUsersPercentage] = useState(0);
-
-    const fetchTotalRevenue = async () => {
-        const response = await fetch(`${API_URL}/api/orders/revenue`, {
-            credentials: "include",
-        });
-        const data = await response.json();
-        const thisMonth =
-            data.monthlyRevenue[data.monthlyRevenue.length - 1]?.totalRevenue ||
-            0;
-        const lastMonth =
-            data.monthlyRevenue[data.monthlyRevenue.length - 2]?.totalRevenue ||
-            0;
-        setRevenuePercentage(
-            lastMonth
-                ? ((thisMonth - lastMonth) / lastMonth) * 100
-                : thisMonth * 100
-        );
-        setTotalRevenue(thisMonth);
-    };
+    const [totalOrders, setTotalOrders] = useState(null);
+    const [orderPercentage, setOrderPercentage] = useState(null);
+    const [totalProducts, setTotalProducts] = useState(null);
+    const [thisMonthProducts, setThisMonthProducts] = useState(null);
+    const [activeUsers, setActiveUsers] = useState(null);
+    const [ordersData, setOrdersData] = useState([
+        { name: "Jan", revenue: 0, orders: 0 },
+        { name: "Feb", revenue: 0, orders: 0 },
+        { name: "Mar", revenue: 0, orders: 0 },
+        { name: "Apr", revenue: 0, orders: 0 },
+        { name: "May", revenue: 0, orders: 0 },
+        { name: "Jun", revenue: 0, orders: 0 },
+        { name: "Jul", revenue: 0, orders: 0 },
+        { name: "Aug", revenue: 0, orders: 0 },
+        { name: "Sep", revenue: 0, orders: 0 },
+        { name: "Oct", revenue: 0, orders: 0 },
+        { name: "Nov", revenue: 0, orders: 0 },
+        { name: "Dec", revenue: 0, orders: 0 },
+    ]);
 
     const fetchTotalProducts = async () => {
         const response = await fetch(`${API_URL}/api/products/total`, {
             credentials: "include",
         });
         const data = await response.json();
-        let totalProducts = 0;
-        data.monthlyProducts.forEach((item) => (totalProducts += item.count));
-        setTotalProducts(totalProducts);
+        let total = 0;
+        data.monthlyProducts.forEach((item) => (total += item.count));
+        setTotalProducts(total);
         setThisMonthProducts(
-            data.monthlyProducts[data.monthlyProducts.length - 1]?.count || 0
+            data.monthlyProducts[data.monthlyProducts.length - 1]?.count ?? 0
         );
     };
 
@@ -69,17 +63,23 @@ export default function DashboardOverview() {
         });
         const data = await response.json();
         const thisMonth =
-            data.monthlyRevenue[data.monthlyRevenue.length - 1]?.orderCount ||
-            0;
+            data.monthlyRevenue[data.monthlyRevenue.length - 1]?.orderCount ?? 0;
         const lastMonth =
-            data.monthlyRevenue[data.monthlyRevenue.length - 2]?.orderCount ||
-            0;
+            data.monthlyRevenue[data.monthlyRevenue.length - 2]?.orderCount ?? 0;
         setOrderPercentage(
             lastMonth
                 ? ((thisMonth - lastMonth) / lastMonth) * 100
                 : thisMonth * 100
         );
         setTotalOrders(thisMonth);
+        data.monthlyRevenue.forEach((item) => {
+            setOrdersData((prev) => {
+                const updated = [...prev];
+                updated[item._id.month - 1].revenue = item.totalRevenue;
+                updated[item._id.month - 1].orders = item.orderCount;
+                return updated;
+            });
+        });
     };
 
     const fetchActiveUsers = async () => {
@@ -87,20 +87,12 @@ export default function DashboardOverview() {
             credentials: "include",
         });
         const data = await response.json();
-        const thisMonth = data.thisMonth;
-        const lastMonth = data.lastMonth;
-        setActiveUsers(thisMonth);
-        setActiveUsersPercentage(
-            lastMonth
-                ? ((thisMonth - lastMonth) / lastMonth) * 100
-                : thisMonth * 100
-        );
+        setActiveUsers(data.thisMonth);
     };
 
     useEffect(() => {
         Promise.all([
             fetchTotalOrders(),
-            fetchTotalRevenue(),
             fetchTotalProducts(),
             fetchActiveUsers(),
         ]);
@@ -115,35 +107,7 @@ export default function DashboardOverview() {
                 </p>
             </div>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">
-                            Total Revenue
-                        </CardTitle>
-                        <DollarSign className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">
-                            ₹{totalRevenue}.00
-                        </div>
-                        <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-                            <span
-                                className={clsx(
-                                    "flex items-center text-emerald-500",
-                                    { "text-red-500": revenuePercentage < 0 }
-                                )}
-                            >
-                                {revenuePercentage < 0 ? (
-                                    <ArrowDownIcon className="mr-1 h-3 w-3" />
-                                ) : (
-                                    <ArrowUpIcon className="mr-1 h-3 w-3" />
-                                )}
-                                {revenuePercentage}%
-                            </span>
-                            <span>from last month</span>
-                        </div>
-                    </CardContent>
-                </Card>
+                <TotalRevenue />
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">
@@ -152,23 +116,35 @@ export default function DashboardOverview() {
                         <ShoppingCart className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">+{totalOrders}</div>
-                        <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-                            <span
-                                className={clsx(
-                                    "flex items-center text-emerald-500",
-                                    { "text-red-500": orderPercentage < 0 }
-                                )}
-                            >
-                                {orderPercentage < 0 ? (
-                                    <ArrowDownIcon className="mr-1 h-3 w-3" />
-                                ) : (
-                                    <ArrowUpIcon className="mr-1 h-3 w-3" />
-                                )}
-                                {orderPercentage}%
-                            </span>
-                            <span>from last month</span>
+                        <div className="text-2xl font-bold">
+                            {totalOrders !== null ? (
+                                `+${FIN(totalOrders)}`
+                            ) : (
+                                <Skeleton className="h-7 w-12" />
+                            )}
                         </div>
+                        {orderPercentage !== null ? (
+                            <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+                                <span
+                                    className={clsx(
+                                        "flex items-center",
+                                        orderPercentage < 0
+                                            ? "text-red-500"
+                                            : "text-emerald-500"
+                                    )}
+                                >
+                                    {orderPercentage < 0 ? (
+                                        <ArrowDownIcon className="mr-1 h-3 w-3" />
+                                    ) : (
+                                        <ArrowUpIcon className="mr-1 h-3 w-3" />
+                                    )}
+                                    {orderPercentage.toFixed(2)}%
+                                </span>
+                                <span>from last month</span>
+                            </div>
+                        ) : (
+                            <Skeleton className="w-24 mt-2 h-4" />
+                        )}
                     </CardContent>
                 </Card>
                 <Card>
@@ -180,19 +156,29 @@ export default function DashboardOverview() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">
-                            {totalProducts}
+                            {totalProducts !== null ? (
+                                FIN(totalProducts)
+                            ) : (
+                                <Skeleton className="h-7 w-12" />
+                            )}
                         </div>
-                        <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-                            <span
-                                className={clsx(
-                                    "flex items-center text-emerald-500",
-                                    { "text-red-500": orderPercentage < 0 }
-                                )}
-                            >
-                                + {thisMonthProducts}
-                            </span>
-                            <span>this month</span>
-                        </div>
+                        {thisMonthProducts !== null ? (
+                            <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+                                <span
+                                    className={clsx(
+                                        "flex items-center",
+                                        thisMonthProducts === 0
+                                            ? "text-muted-foreground"
+                                            : "text-emerald-500"
+                                    )}
+                                >
+                                    + {FIN(thisMonthProducts)}
+                                </span>
+                                <span>this month</span>
+                            </div>
+                        ) : (
+                            <Skeleton className="w-24 mt-2 h-4" />
+                        )}
                     </CardContent>
                 </Card>
                 <Card>
@@ -203,11 +189,20 @@ export default function DashboardOverview() {
                         <Users className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">+{activeUsers}</div>
-                        <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-                            
-                            <span>this month</span>
+                        <div className="text-2xl font-bold">
+                            {activeUsers !== null ? (
+                                `+${FIN(activeUsers)}`
+                            ) : (
+                                <Skeleton className="h-7 w-12" />
+                            )}
                         </div>
+                        {activeUsers !== null ? (
+                            <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+                                <span>this month</span>
+                            </div>
+                        ) : (
+                            <Skeleton className="w-24 mt-2 h-4" />
+                        )}
                     </CardContent>
                 </Card>
             </div>
@@ -221,7 +216,7 @@ export default function DashboardOverview() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="pl-2">
-                        <SalesChart />
+                        <SalesChart data={ordersData} />
                     </CardContent>
                 </Card>
                 <Card className="w-1/2 max-lg:w-full">
@@ -256,7 +251,7 @@ export default function DashboardOverview() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <OrderStatus></OrderStatus>
+                        <OrderStatus />
                     </CardContent>
                 </Card>
             </div>

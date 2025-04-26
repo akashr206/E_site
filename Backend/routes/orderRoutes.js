@@ -6,13 +6,14 @@ const {
     getUserOrders,
     getAllOrders,
     deleteAll,
-    getMonthlyRevenue
+    getMonthlyRevenue,
 } = require("../controllers/orderController");
+const  isAdmin  = require("../middlewares/isAdmin");
 
 //admin
-router.get("/all", getAllOrders);
-router.get("/revenue", getMonthlyRevenue);
-router.get("/deleteall", deleteAll);
+router.get("/all", isAdmin, getAllOrders);
+router.get("/revenue", isAdmin, getMonthlyRevenue);
+router.get("/deleteall", isAdmin, deleteAll);
 
 //user
 router.post("/", addOrder);

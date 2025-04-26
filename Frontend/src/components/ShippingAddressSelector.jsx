@@ -18,7 +18,6 @@ export default function ShippingAddressSelector({ onAddressSelect, onRender }) {
                     credentials: "include",
                 });
                 const data = await response.json();
-                console.log(data);
 
                 setAddresses(data);
                 if (data.length > 0) {

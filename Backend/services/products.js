@@ -70,11 +70,12 @@ const reduceStock = async (productId, reduceNumber, color, size) => {
         }
         const variant = product.variants.find(
             (vari) =>
-                vari.color.toLocaleLowerCase() === color.toLocaleLowerCase() ||
+                vari.color.toLocaleLowerCase() === color.toLocaleLowerCase() &&
                 vari.size.toLocaleLowerCase() === size.toLocaleLowerCase()
         );
         variant.stock = Math.max(parseInt(variant.stock, 10) - reduceNumber, 0);
         product.variants[variant] = variant;
+        
         await product.save();
 
         return { success: true, message: "Stock reduced", product };

@@ -93,7 +93,7 @@ export default function ProductsPage() {
         return Array.from(categories);
     };
 
-    async function fetchProducts(page = page, limit = limit) {
+    async function fetchProducts(page = 1, limit = 10) {
         setGettingProducts(true);
         const res = await fetch(
             `${API_URL}/api/products/all?page=${page}&limit=${limit}`

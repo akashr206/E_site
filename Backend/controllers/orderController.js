@@ -51,7 +51,6 @@ const addOrder = async (req, res) => {
             orderDate: new Date(),
             status: "confirmed",
         });
-        await clearUserCart(userId);
         await Promise.all(
             items.map((item) => {
                 reduceStock(
@@ -62,6 +61,7 @@ const addOrder = async (req, res) => {
                 );
             })
         );
+        await clearUserCart(userId);
         return res.status(201).json({
             message: "Order created successfully",
             orderId: order._id,

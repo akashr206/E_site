@@ -1,8 +1,15 @@
 const router = require("express").Router();
-const { getAllUsers, makeAdmin, getActiveUsers } = require("../controllers/userController");
+const {
+    getAllUsers,
+    makeAdmin,
+    getActiveUsers,
+    getUserCount,
+} = require("../controllers/userController");
+const isAdmin = require("../middlewares/isAdmin");
 
-router.get("/all", getAllUsers);
-router.post("/make-admin", makeAdmin);
-router.get("/active", getActiveUsers);
+router.get("/all", isAdmin, getAllUsers);
+router.get("/count", isAdmin, getUserCount);
+router.post("/make-admin", isAdmin, makeAdmin);
+router.get("/active", isAdmin, getActiveUsers);
 
 module.exports = router;

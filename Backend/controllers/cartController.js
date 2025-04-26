@@ -44,7 +44,6 @@ const addToCart = async (req, res) => {
 // Get the user's cart
 const getCart = async (req, res) => {
     const userId = req.user.uId;
-    console.log(req.user.uId);
     
     try {
         const cartItems = await getUserCartItems(userId);

@@ -42,10 +42,28 @@ const getAllUsers = async (req, res) => {
     }
 };
 
+const getUserCount = async (req, res) => {
+    try {
+        const totalUsers = await User.countDocuments();
+        const lastMonth = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+        const totalOrders = await Order.countDocuments();
+        const frequency = totalOrders / totalUsers;
+        const lastMonthUsers = await User.countDocuments({
+            createdAt: { $gte: lastMonth },
+        });
+        return res.json({
+            totalUsers,
+            lastMonthUsers,
+            frequency: frequency.toFixed(2),
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
 const makeAdmin = async (req, res) => {
     try {
         const userId = req.body.userId;
-        console.log(userId);
 
         await User.updateOne({ uId: userId }, { isAdmin: true });
         return res.status(201).json({ message: "Successfully made admin" });
@@ -119,4 +137,4 @@ const getActiveUsers = async (req, res) => {
     }
 };
 
-module.exports = { getAllUsers, makeAdmin, getActiveUsers };
+module.exports = { getAllUsers, makeAdmin, getActiveUsers, getUserCount };

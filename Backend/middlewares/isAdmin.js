@@ -1,5 +1,6 @@
 const isAdmin = async (req, res, next) => {
     try {
+        
         if (req.user && req.user.isAdmin) {
             return next();
         } else {
@@ -12,3 +13,5 @@ const isAdmin = async (req, res, next) => {
         res.status(400).send("Unauthenticated");
     }
 };
+
+module.exports = isAdmin

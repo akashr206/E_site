@@ -42,6 +42,7 @@ const CLOUDINARY_CLOUD = import.meta.env.VITE_CLOUDINARY_CLOUD;
 const PRESET = import.meta.env.VITE_PRESET;
 
 const MAX_IMAGES = 8;
+const MAX_FILE_SIZE = 1024 * 1024;
 
 const SIZE_OPTIONS = ["XS", "S", "M", "L", "XL", "XXL", "Free Size"];
 
@@ -51,7 +52,7 @@ const variantSchema = z.object({
     stock: z.union([z.string(), z.number()]).refine(
         (val) => {
             const num = typeof val === "string" ? parseFloat(val) : val;
-            return !isNaN(num) && num > 0;
+            return !isNaN(num) && num >= 0;
         },
         {
             message: "Stock must be a non-negative number",
@@ -170,18 +171,33 @@ const AddProduct = ({
         const newFiles = [...imageFiles];
         const newPreviews = [...imagePreviews];
 
-        Array.from(files).forEach((file) => {
-            if (file.type.startsWith("image/")) {
-                newFiles.push(file);
+        let sizeError = false;
 
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    newPreviews.push(e.target.result);
-                    setImagePreviews([...newPreviews]);
-                };
-                reader.readAsDataURL(file);
+        Array.from(files).forEach((file) => {
+            if (!file.type.startsWith("image/")) {
+                return;
             }
+
+            if (file.size > MAX_FILE_SIZE) {
+                sizeError = true;
+                return;
+            }
+
+            newFiles.push(file);
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                newPreviews.push(e.target.result);
+                setImagePreviews([...newPreviews]);
+            };
+            reader.readAsDataURL(file);
         });
+
+        if (sizeError) {
+            setImageError(
+                `File size exceeds the limit of 1MB. Please upload smaller images.`
+            );
+        }
 
         setImageFiles(newFiles);
     };
@@ -377,6 +393,7 @@ const AddProduct = ({
     const onUpdate = async (data) => {
         try {
             setSubmitting(true);
+
             const variantsValid = validateVariants();
             if (!variantsValid) {
                 return;
@@ -565,16 +582,20 @@ const AddProduct = ({
                     </div>
                 )}
                 <DialogHeader>
-                    <DialogTitle>Add New Product</DialogTitle>
+                    <DialogTitle>
+                        {tab?.type ? "Edit Product" : "Add New Product"}
+                    </DialogTitle>
                     <DialogDescription>
-                        Fill in the details to add a new product to your
-                        inventory.
+                        {tab?.type
+                            ? "Update the details to edit the existing product."
+                            : "Fill in the details to add a new product to your inventory."}
                     </DialogDescription>
                 </DialogHeader>
                 <form
                     onSubmit={handleSubmit(
                         tab?.type ? onUpdate : onSubmit,
                         (errors) => {
+                            c;
                             console.log(errors);
 
                             toast.error(
@@ -592,9 +613,14 @@ const AddProduct = ({
                         >
                             <div className="flex justify-between items-center">
                                 <Label htmlFor="images">Product Images</Label>
-                                <span className="text-xs text-gray-500">
-                                    {imageFiles.length}/{MAX_IMAGES} images
-                                </span>
+                                <div className="flex flex-col items-end">
+                                    <span className="text-xs text-gray-500">
+                                        {imageFiles.length}/{MAX_IMAGES} images
+                                    </span>
+                                    <span className="text-xs text-gray-500">
+                                        Max 1MB per image
+                                    </span>
+                                </div>
                             </div>
 
                             <div
@@ -649,9 +675,14 @@ const AddProduct = ({
                                             reached
                                         </p>
                                     ) : (
-                                        <p className="text-sm text-gray-600 mb-1">
-                                            Drag & drop images here, or
-                                        </p>
+                                        <>
+                                            <p className="text-sm text-gray-600 mb-1">
+                                                Drag & drop images here, or
+                                            </p>
+                                            <p className="text-xs text-gray-500 mb-1">
+                                                Maximum file size: 1MB per image
+                                            </p>
+                                        </>
                                     )}
                                     <Button
                                         type="button"

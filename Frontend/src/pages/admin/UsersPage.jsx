@@ -470,6 +470,16 @@ export default function UsersPage() {
                                 <div className="rounded-md border p-3 space-y-2">
                                     <div className="flex justify-between">
                                         <span className="text-sm text-muted-foreground">
+                                            Joined at
+                                        </span>
+                                        <span className="text-sm">
+                                            {formatDate(
+                                                selectedUser.createdAt
+                                            )}
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-sm text-muted-foreground">
                                             Last Active
                                         </span>
                                         <span className="text-sm">

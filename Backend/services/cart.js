@@ -79,7 +79,6 @@ const validateStock = async (productId, color, size, quantity) => {
 
         // Find the specific variant
         const variant = product.variants.find((v) => {
-
             return (
                 v.color.toLocaleLowerCase() === color.toLocaleLowerCase() &&
                 v.size.toLocaleLowerCase() === size.toLocaleLowerCase()
@@ -88,7 +87,7 @@ const validateStock = async (productId, color, size, quantity) => {
         if (!variant) {
             throw new Error("Variant not found");
         }
-
+        
         // Check if the stock is sufficient
         return variant.stock >= quantity;
     } catch (error) {

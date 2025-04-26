@@ -1,41 +1,59 @@
 import { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-// components
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Home from "./components/Home";
 import Navbar from "./components/Navbar";
-// pages
+import ProtectedRoute from "./components/ProtectedRoutes";
+import AdminUnauthorized from "./components/Admin/AdminUnauthorized";
 import ProductView from "./pages/ProductView";
 import Cart from "./pages/Cart";
 import Account from "./pages/Account";
 import Search from "./pages/Search";
 import Category from "./pages/Category";
 import Dashboard from "./pages/admin/Dashboard";
+import Login from "./pages/Login";
 import { cn } from "./lib/utils";
+import { AuthProvider } from "./Contexts/AuthContext";
 
 function App() {
-    const pathName = window.location.pathname;
-    return (
-        <Router>
-            <Navbar className="fixed"></Navbar>
-            <main className={cn("pb-9", !pathName.includes("admin") && "pt-[64px]")}>
-                <Routes>
-                    <Route path="/" element={<Home />}></Route>
-                    <Route path="/account" element={<Account />}></Route>
-                    <Route
-                        path="/products/:id"
-                        element={<ProductView />}
-                    ></Route>
-                    <Route path="/cart" element={<Cart />}></Route>
-                    <Route path="/search" element={<Search />}></Route>
-                    <Route path="/admin/:page" element={<Dashboard />}></Route>
-                    <Route
-                        path="/category/:query"
-                        element={<Category />}
-                    ></Route>
-                </Routes>
-            </main>
-        </Router>
-    );
+  return (
+    <AuthProvider>
+      <Router>
+        <AppRoutes />
+      </Router>
+    </AuthProvider>
+  );
+}
+
+function AppRoutes() {
+  const { pathname } = useLocation();
+
+  return (
+    <>
+      {!pathname.includes("admin") && <Navbar className="fixed" />}
+      <main className={cn("pb-9", !pathname.includes("admin") && "pt-[64px]")}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/products/:id" element={<ProductView />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/category/:query" element={<Category />} />
+          
+          <Route element={<ProtectedRoute />}>
+            <Route path="/account" element={<Account />} />
+            <Route path="/cart" element={<Cart />} />
+          </Route>
+          
+          <Route path="/admin" element={<ProtectedRoute requiredRole="admin" />}>
+            <Route path=":page" element={<Dashboard />} />
+          </Route>
+          
+          <Route path="/unauthorized" element={<AdminUnauthorized redirectPath="/" />} />
+          
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </main>
+    </>
+  );
 }
 
 export default App;

@@ -250,8 +250,7 @@ export default function Cart() {
         }
         loadData();
     }, []);
-
-    if (isLoading || loadingUser) return <Loading />;
+    if(isLoading || loadingUser) return <Loading />
     if (!user && !loadingUser) return <NonCart />;
     if (isEmpty) return <EmptyCart />;
 

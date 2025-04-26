@@ -28,6 +28,21 @@ export function RecentOrdersTable() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [page, setPage] = useState(1);
+  const limit = 6;
+  const [max, setMax] = useState(1);
+
+  const handleNext = () => {
+    if (page + 1 <= max) {
+        setPage((prev) => prev + 1);
+    }
+};
+
+const handlePrev = () => {
+    if (page - 1 > 0) {
+        setPage((prev) => prev - 1);
+    }
+};
   
   useEffect(() => {
     const fetchOrders = async () => {
@@ -42,9 +57,9 @@ export function RecentOrdersTable() {
         }
         
         const data = await response.json();
-        console.log(data);
-        
+        setMax(Math.ceil(data.allOrders.length / limit));
         setOrders(data.allOrders || []);
+        
       } catch (err) {
         console.error('Error fetching orders:', err);
         setError(err.message);

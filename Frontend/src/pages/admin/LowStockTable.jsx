@@ -34,7 +34,9 @@ export function LowStockTable() {
 
     const fetchLowStock = async () => {
         setLoading(true);
-        const res = await fetch(`${API_URL}/api/products/low`);
+        const res = await fetch(`${API_URL}/api/products/low`, {
+            credentials: "include",
+        });
         const data = await res.json();
         setAllLowStock(data.products);
         setMax(Math.ceil(data.products.length / limit));

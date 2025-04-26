@@ -65,7 +65,6 @@ const OrderDetails = () => {
                 if (!data || !data.order) {
                     throw new Error("Invalid response format");
                 }
-                console.log(data.order);
 
                 setOrder(data.order);
                 setLoading(false);

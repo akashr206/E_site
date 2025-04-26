@@ -419,7 +419,7 @@ export default function OrdersPage() {
                         }
                     }}
                 >
-                    <DialogContent className="sm:max-w-[600px]">
+                    <DialogContent className="sm:max-w-[600px] max-h-screen overflow-y-scroll">
                         <DialogHeader>
                             <DialogTitle>
                                 Order Details - {selectedOrder.id}
@@ -588,9 +588,10 @@ export default function OrdersPage() {
                                 </div>
                             </div>
                         </div>
-                        <DialogFooter>
+                        <DialogFooter className="flex gap-2 flex-row justify-end">
                             <Button
                                 variant="outline"
+                                className="w-full"
                                 onClick={() => {
                                     setIsDetailsOpen(false);
                                     setSelectedOrder(null);
@@ -600,7 +601,9 @@ export default function OrdersPage() {
                             </Button>
                             {selectedOrder.status !== "delivered" &&
                                 selectedOrder.status !== "cancelled" && (
-                                    <Button>Update Status</Button>
+                                    <Button className="w-full">
+                                        Update Status
+                                    </Button>
                                 )}
                         </DialogFooter>
                     </DialogContent>
