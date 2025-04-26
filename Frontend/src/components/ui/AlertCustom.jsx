@@ -40,12 +40,11 @@ const Alert = ({ title, text, close}) => {
 
                 <div className="flex justify-center space-x-3">
 
-                    <button
+                    <Button
                         onClick={close}
-                        className="px-4 py-2 bg-pink-500 text-white rounded-md hover:bg-pink-700"
                     >
                         OK
-                    </button>
+                    </Button>
                 </div>
             </motion.div>
         </div>

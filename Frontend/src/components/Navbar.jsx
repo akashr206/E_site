@@ -75,16 +75,12 @@ const Navbar = () => {
                 </Link>
             </div>
         ) : (
-            <Link
-                onClick={() => setMobileMenuOpen(false)}
-                to={`${API_URL}/auth/google`}
-                className="text-lg md:text-sm font-semibold text-gray-900 flex gap-2 items-center"
+            <Button 
+            className="h-8"
+                onClick={() => navigate("/login")}
             >
-                <span aria-hidden="true" className="ml-1">
-                    <img className="w-6 h-6" src={googleImg} alt="" />
-                </span>
-                Log in{" "}
-            </Link>
+                Log in
+            </Button>
         );
     };
 
