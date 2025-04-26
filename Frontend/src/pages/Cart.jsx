@@ -12,7 +12,9 @@ import { useAuth } from "../Contexts/AuthContext";
 import { API_URL } from "../config/api";
 import ShippingAddressSelector from "../components/ShippingAddressSelector";
 import { toast } from "sonner";
-import { Users } from "lucide-react";
+import { useContext } from "react";
+
+import { CartLength } from "../Contexts/CartContext";
 const NonCart = () => {
     return (
         <div className="flex items-center justify-center absolute w-full -z-10 top-0 h-screen px-4">
@@ -133,6 +135,7 @@ export default function Cart() {
     const tax = 10;
     const shippingCost = 100;
     const discount = 50;
+    const fetchCartLen = useContext(CartLength).fetchCart;
 
     async function fetchCart() {
         const response = await fetch(`${API_URL}/api/cart/user`, {
@@ -179,7 +182,7 @@ export default function Cart() {
         });
         const data = await response.json();
         setSubTotal(data.totalPrice);
-        setTotal(data.totalPrice + shippingCost + tax - discount)
+        setTotal(data.totalPrice + shippingCost + tax - discount);
         setIsLoading(false);
     }
 
@@ -211,16 +214,17 @@ export default function Cart() {
                         tax,
                         discount,
                         shippingCost,
-                        totalAmount : total,
-                        subTotal 
+                        totalAmount: total,
+                        subTotal,
                     },
                 }),
                 credentials: "include",
             });
-            if(response.ok){
-                toast.success("Order placed successfully!")
+            if (response.ok) {
+                toast.success("Order placed successfully!");
+                fetchCartLen();
             } else {
-                toast.error("There as an error placing your order")
+                toast.error("There as an error placing your order");
             }
             const orderData = await response.json();
             await Promise.all([fetchCart(), fetchTotal()]);
@@ -250,7 +254,7 @@ export default function Cart() {
         }
         loadData();
     }, []);
-    if(isLoading || loadingUser) return <Loading />
+    if (isLoading || loadingUser) return <Loading />;
     if (!user && !loadingUser) return <NonCart />;
     if (isEmpty) return <EmptyCart />;
 
