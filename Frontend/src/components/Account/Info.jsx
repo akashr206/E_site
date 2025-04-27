@@ -9,13 +9,11 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
-const Info = ({ user, isMobile }) => {
-    const navigate = useNavigate();
+const Info = ({ user }) => {
     const { logout } = useAuth();
     
     const handleLogout = () => {
         logout();
-        navigate('/');
     };
 
     const getInitials = (name) => {

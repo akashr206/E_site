@@ -37,6 +37,7 @@ export const AuthProvider = ({ children }) => {
             throw new Error("Logout failed");
         }
         setLoggingOut(false);
+        setOpen(false);
     };
 
     const checkAuth = async () => {
