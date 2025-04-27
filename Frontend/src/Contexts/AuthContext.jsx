@@ -12,6 +12,7 @@ import {
 const AuthContext = createContext();
 import { Button } from "../components/ui/button";
 import { Loader } from "lucide-react";
+import Cookies from "js-cookie"
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
@@ -32,6 +33,7 @@ export const AuthProvider = ({ children }) => {
 
         if (response.ok) {
             setUser(null);
+            Cookies.remove("token")
             window.location.href = "/";
         } else {
             throw new Error("Logout failed");
