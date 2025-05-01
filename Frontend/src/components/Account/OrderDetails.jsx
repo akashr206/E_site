@@ -193,7 +193,7 @@ const OrderDetails = () => {
                     <div className="flex flex-col sm:flex-row justify-between sm:items-center">
                         <div>
                             <CardTitle className="text-2xl">
-                                Order #{order._id && order._id.substring(0, 8)}
+                                Order #{order.id && order.id.substring(0, 8)}
                             </CardTitle>
                             <CardDescription className="flex items-center mt-1">
                                 <Calendar className="mr-1 h-3.5 w-3.5" />
@@ -521,11 +521,6 @@ const OrderDetails = () => {
                                                     <span className="text-sm text-muted-foreground">
                                                         Method
                                                     </span>
-                                                    <span className="uppercase">
-                                                        {order.payment &&
-                                                            order.payment
-                                                                .method}
-                                                    </span>
                                                 </div>
                                                 <div className="flex justify-between items-center">
                                                     <span className="text-sm text-muted-foreground">
@@ -551,7 +546,7 @@ const OrderDetails = () => {
                                                 </div>
                                                 {order.payment &&
                                                     order.payment
-                                                        .transactionId && (
+                                                        .paymentOrderId && (
                                                         <div className="flex justify-between items-center">
                                                             <span className="text-sm text-muted-foreground">
                                                                 Transaction ID
@@ -560,7 +555,7 @@ const OrderDetails = () => {
                                                                 {
                                                                     order
                                                                         .payment
-                                                                        .transactionId
+                                                                        .paymentOrderId
                                                                 }
                                                             </span>
                                                         </div>

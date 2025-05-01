@@ -101,7 +101,7 @@ body {
   }
 }
 
-no-scroll::-webkit-scrollbar{
+.no-scroll::-webkit-scrollbar{
   display: none;
 }
 

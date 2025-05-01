@@ -14,7 +14,7 @@ const addOrder = async (req, res) => {
 
         const userId = user.uId;
 
-        const { items, addressId, summary } = req.body;
+        const { items, addressId, summary, paymentId, payment } = req.body;
 
         if (!items || !Array.isArray(items) || items.length === 0) {
             return res.status(400).json({ error: "Order must contain items" });
@@ -36,11 +36,8 @@ const addOrder = async (req, res) => {
             items,
             shippingAddress: addressId,
             summary,
-            payment: {
-                method: "upi",
-                status: "paid",
-                transactionId: "1234",
-            },
+            paymentId,
+            payment,
             shipping: {
                 method: "domestic",
                 status: "pending",

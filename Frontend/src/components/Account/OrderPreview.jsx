@@ -125,7 +125,7 @@ const OrdersPreview = () => {
                       <div className="mb-2 sm:mb-0">
                         <div className="flex items-center gap-2 mb-1">
                           <span className="font-semibold">
-                            Order #{order._id.substring(0, 8)}
+                            Order #{order.id.substring(0, 8)}
                           </span>
                           <Badge className={getStatusStyle(order.status)}>
                             {order.status.charAt(0).toUpperCase() + order.status.slice(1)}

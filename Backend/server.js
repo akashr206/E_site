@@ -12,6 +12,7 @@ const searchRoutes = require("./routes/searchRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const addressRoutes = require("./routes/addressRoutes");
 const orderRoutes = require("./routes/orderRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 const cloudinary = require("cloudinary").v2;
 const userRoutes = require("./routes/userRoutes");
 
@@ -60,6 +61,7 @@ app.use("/search", searchRoutes);
 app.use("/api/cart", isAuthenticated, cartRoutes);
 app.use("/api/address", isAuthenticated, addressRoutes);
 app.use("/api/orders", isAuthenticated, orderRoutes);
+app.use("/api/payments", isAuthenticated, paymentRoutes);
 
 app.use("/api/users", isAuthenticated, userRoutes);
 

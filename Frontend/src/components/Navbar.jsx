@@ -89,7 +89,7 @@ const Navbar = () => {
     }
 
     return (
-        <header className="bg-background fixed top-0 left-0 w-full z-[15] shadow-sm">
+        <header className="bg-background fixed top-0 left-0 w-full z-[999] shadow-sm">
             <nav
                 className="mx-auto flex max-w-7xl items-center justify-between p-3"
                 aria-label="Global"

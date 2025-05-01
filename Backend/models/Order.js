@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { type } = require("os");
 const { Schema } = mongoose;
 
 const OrderSchema = new Schema(
@@ -53,18 +54,24 @@ const OrderSchema = new Schema(
             required: true,
         },
 
+        paymentId: {
+            type: String,
+            required: true,
+        },
+
         payment: {
-            method: {
-                type: String,
-                required: true,
-                enum: ["upi", "card", "cod", "wallet", "netbanking"],
-            },
             status: {
                 type: String,
                 required: true,
-                enum: ["pending", "paid", "failed", "refunded"],
             },
-            transactionId: String,
+            signature: {
+                type: String,
+                required: true,
+            },
+            paymentOrderId: {
+                type: String,
+                required: true,
+            },
         },
 
         shipping: {

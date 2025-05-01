@@ -3,7 +3,7 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { LockClosedIcon } from "@heroicons/react/24/outline";
 import { Button } from "../components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { useEffect, useState } from "react";
 import Loading from "../components/Loading";
@@ -12,9 +12,10 @@ import { useAuth } from "../Contexts/AuthContext";
 import { API_URL } from "../config/api";
 import ShippingAddressSelector from "../components/ShippingAddressSelector";
 import { toast } from "sonner";
-import { useContext } from "react";
+import { nanoid } from "nanoid";
+import logo from "../assets/logo.jpg";
+import { useOrder } from "../Contexts/orderDataContext";
 
-import { CartLength } from "../Contexts/CartContext";
 const NonCart = () => {
     return (
         <div className="flex items-center justify-center absolute w-full -z-10 top-0 h-screen px-4">
@@ -135,7 +136,8 @@ export default function Cart() {
     const tax = 10;
     const shippingCost = 100;
     const discount = 50;
-    const fetchCartLen = useContext(CartLength).fetchCart;
+    const { setOrderData } = useOrder();
+    const navigate = useNavigate();
 
     async function fetchCart() {
         const response = await fetch(`${API_URL}/api/cart/user`, {
@@ -186,48 +188,100 @@ export default function Cart() {
         setIsLoading(false);
     }
 
-    async function handleCheckout() {
+    async function openPaymentGateway(amount, order_id, e) {
+        var options = {
+            key: "rzp_test_KmfRUU7XEGMhMz",
+            amount,
+            currency: "INR",
+            name: "Mahira",
+            description: "Test Transaction",
+            image: logo,
+            order_id,
+            handler: async function (response) {
+                const {
+                    razorpay_payment_id,
+                    razorpay_order_id,
+                    razorpay_signature,
+                } = response;
+                
+                navigate(
+                    `/checkout/success?payment_id=${razorpay_payment_id}&order_id=${razorpay_order_id}&signature=${razorpay_signature}`
+                );
+            },
+            prefill: {
+                name: user.name,
+                email: user.email,
+                contact: "",
+            },
+            notes: {
+                address: "Razorpay Corporate Office",
+            },
+            theme: {
+                color: "#ec4899",
+            },
+        };
+        var rzp1 = new Razorpay(options);
+        rzp1.on("payment.failed", function (response) {
+            alert(response.error.code);
+            alert(response.error.description);
+            alert(response.error.source);
+            alert(response.error.step);
+            alert(response.error.reason);
+            alert(response.error.metadata.order_id);
+            alert(response.error.metadata.payment_id);
+        });
+        rzp1.open();
+        e.preventDefault();
+    }
+
+    async function handleCheckout(e) {
         if (!selectedAddress) {
             toast.warning("Please select a shipping address before checkout");
             return;
         }
 
         try {
-            const response = await fetch(`${API_URL}/api/orders`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    addressId: selectedAddress._id,
-                    items: products.map((p) => ({
-                        productId: p.productId,
-                        quantity: p.quantity,
-                        price: p.price,
-                        productName: p.name,
-                        variant: {
-                            color: p.color,
-                            size: p.size,
-                        },
-                    })),
-                    summary: {
-                        tax,
-                        discount,
-                        shippingCost,
-                        totalAmount: total,
-                        subTotal,
+            const orderPayload = {
+                addressId: selectedAddress._id,
+                items: products.map((p) => ({
+                    productId: p.productId,
+                    quantity: p.quantity,
+                    price: p.price,
+                    productName: p.name,
+                    variant: {
+                        color: p.color,
+                        size: p.size,
                     },
-                }),
-                credentials: "include",
-            });
-            if (response.ok) {
-                toast.success("Order placed successfully!");
-                fetchCartLen();
-            } else {
-                toast.error("There as an error placing your order");
-            }
-            const orderData = await response.json();
-            await Promise.all([fetchCart(), fetchTotal()]);
+                })),
+                summary: {
+                    tax,
+                    discount,
+                    shippingCost,
+                    totalAmount: total,
+                    subTotal,
+                },
+            };
+            localStorage.setItem("order", JSON.stringify(orderPayload));
+            setOrderData(orderPayload);
+            const orderResponse = await fetch(
+                `${API_URL}/api/payments/order/create`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        amount: total * 100,
+                        currency: "INR",
+                        receipt: nanoid(10),
+                    }),
+                    credentials: "include",
+                }
+            );
+            const paymentOrder = await orderResponse.json();
+            console.log(paymentOrder);
+
+            await openPaymentGateway(paymentOrder.amount, paymentOrder.id, e);
+
+            // await Promise.all([fetchCart(), fetchTotal()]);
 
             // Redirect to payment or confirmation page
             // window.location.href = `/payment/${orderData.orderId}`;
@@ -260,7 +314,7 @@ export default function Cart() {
 
     return (
         <>
-            <div className="max-w-7xl lg:mb-12 relative px-3 py-5 lg:px-8 mx-auto">
+            <div className="max-w-7xl lg:pb-12 relative px-3 py-5 lg:px-8 mx-auto">
                 <div>
                     <h1 className="text-2xl font-norm mb-5">Shopping Cart</h1>
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -285,7 +339,7 @@ export default function Cart() {
                                 );
                             })}
                         </div>
-                        <div>
+                        <div className="lg:sticky lg:self-start top-20">
                             <ShippingAddressSelector
                                 onAddressSelect={handleAddressSelect}
                             />

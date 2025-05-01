@@ -375,6 +375,7 @@ const AddProduct = ({
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(p),
+                credentials: "include"
             }
         );
         if (res.ok) {
@@ -595,7 +596,6 @@ const AddProduct = ({
                     onSubmit={handleSubmit(
                         tab?.type ? onUpdate : onSubmit,
                         (errors) => {
-                            c;
                             console.log(errors);
 
                             toast.error(
