@@ -1,5 +1,3 @@
-"use client";
-
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { LockClosedIcon } from "@heroicons/react/24/outline";
 import { Button } from "../components/ui/button";
