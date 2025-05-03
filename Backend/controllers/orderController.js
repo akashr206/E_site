@@ -3,6 +3,7 @@ const { clearUserCart } = require("../services/cart");
 const { getAddress } = require("../services/address");
 const { reduceStock } = require("../services/products");
 const { generateId } = require("../utils/generateId");
+const Review = require("../models/Review");
 
 const addOrder = async (req, res) => {
     try {
@@ -172,7 +173,7 @@ const getAllOrders = async (req, res) => {
 
 //temporary
 const deleteAll = async (req, res) => {
-    await Order.deleteMany({});
+    await Review.deleteMany({});
     return res.json({ message: "deleted successfully" });
 };
 

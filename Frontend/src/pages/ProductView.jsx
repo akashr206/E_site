@@ -1,12 +1,20 @@
-import React, { useState, useEffect, useContext } from "react";
+"use client";
+
+import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import Loading from "../components/Loading";
 import Prompt from "../components/ui/Prompt";
 import { API_URL } from "../config/api";
 import { useAuth } from "../Contexts/AuthContext";
-import { ShoppingCart } from "lucide-react";
 import { CartLength } from "../Contexts/CartContext";
+import ProductGallery from "@/components/Product/ProductGallery";
+import ProductInfo from "@/components/Product/ProductInfo";
+import ProductVariants from "@/components/Product/ProductVariants";
+import AddToCartButton from "@/components/Product/AddToCartButton";
+import ProductDescription from "@/components/Product/ProductDescription";
+import ReviewSection from "@/components/Product/ReviewSection";
+import { Separator } from "@/components/ui/separator";
 
 const ProductView = () => {
     const { id } = useParams();
@@ -24,6 +32,7 @@ const ProductView = () => {
     const { user } = useAuth();
     const [prompt, setPrompt] = useState(false);
     const { fetchCart } = useContext(CartLength);
+    const [ratings, setRatings] = useState(null);
 
     function handleSelectColor(color) {
         setSelectedColor(color);
@@ -31,7 +40,7 @@ const ProductView = () => {
 
     useEffect(() => {
         if (colors) {
-            let selected = colors.find(
+            const selected = colors.find(
                 (c) => Object.keys(c)[0] === selectedColor
             );
             setSizes(selected[selectedColor]);
@@ -65,6 +74,24 @@ const ProductView = () => {
         setSelectedColor(Object.keys(formattedColors[0])[0]);
     }
 
+    const fetchRatings = async () => {
+        try {
+            const response = await fetch(
+                `${API_URL}/api/reviews/ratings/${id}`
+            );
+            if (response.status === 200) {
+                const data = await response.json();
+                console.log(data);
+
+                setRatings(data);
+            } else {
+                setError(true);
+            }
+        } catch (error) {
+            console.error("Error fetching product:", error);
+        }
+    };
+
     useEffect(() => {
         async function fetchProduct() {
             try {
@@ -88,7 +115,7 @@ const ProductView = () => {
                 console.error("Error fetching product:", error);
             }
         }
-        fetchProduct();
+        Promise.all([fetchProduct(), fetchRatings()]);
     }, [id]);
 
     const handleAddToCart = async () => {
@@ -123,7 +150,7 @@ const ProductView = () => {
         if (response.status === 201) {
             setAdded(true);
             setTimeout(() => setAdded(false), 1000);
-            fetchCart()
+            fetchCart();
         }
         if (response.status === 200) {
             setIsUpdated(true);
@@ -132,199 +159,83 @@ const ProductView = () => {
     };
 
     if (error) {
-        return <h1>"There was an error Finding the Product"</h1>;
-    }
-
-    if (!product) {
-        return <Loading></Loading>;
-    }
-
-    if (!error)
         return (
-            <div className="bg-white">
-                {prompt && (
-                    <Prompt
-                        title="Login Required"
-                        text="You need to log in to add items to your cart"
-                        to="login"
-                        toValue="Login"
-                        close={() => setPrompt(false)}
-                    />
-                )}
-                <div className="pt-6">
-                    <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-                        <div className="lg:grid lg:grid-cols-2 lg:gap-x-8">
-                            <div>
-                                <div className="lg:col-span flex items-center justify-center h-[420px] p-1">
-                                    <AnimatePresence mode="wait">
-                                        <motion.img
-                                            key={selectedImage}
-                                            src={selectedImage}
-                                            alt={product.name}
-                                            className=" object-cover h-full"
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                            exit={{ opacity: 0 }}
-                                            transition={{ duration: 0.3 }}
-                                        />
-                                    </AnimatePresence>
-                                </div>
-                                <div className="flex p-1  sm:justify-center lg:justify-center overflow-x-scroll space-x-2">
-                                    {product.images.map((url, index) => (
-                                        <motion.button
-                                            key={index}
-                                            whileHover={{ scale: 1.05 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            onClick={() =>
-                                                setSelectedImage(url)
-                                            }
-                                            className={`shrink-0 flex items-center justify-center p-1 border ${
-                                                selectedImage === url
-                                                    ? "border-pink-500"
-                                                    : "border-gray-300"
-                                            } rounded-sm w-16 h-16 sm:w-20 sm:h-20`}
-                                        >
-                                            <img
-                                                className="h-full object-cover"
-                                                src={url}
-                                                alt=""
-                                            />
-                                        </motion.button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <div>
-                                <motion.h1
-                                    className="text-2xl font-bold tracking-tight text-gray-900"
-                                    initial={{ opacity: 0, y: -10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.4 }}
-                                >
-                                    {product.name}
-                                </motion.h1>
-                                <motion.p
-                                    className="text-gray-500 mt-2"
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ duration: 0.4, delay: 0.2 }}
-                                >
-                                    Material: {product.material}
-                                </motion.p>
-                                <motion.p
-                                    className="text-xl font-semibold text-pink-500 mt-4"
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ duration: 0.4, delay: 0.3 }}
-                                >
-                                    ₹{product.price}.00
-                                </motion.p>
-
-                                <div className="mt-4">
-                                    <h3 className="text-sm font-medium text-gray-900">
-                                        Variants
-                                    </h3>
-                                    <div className="mt-2">
-                                        <div className="font-medium my-3">
-                                            Color : {selectedColor}
-                                        </div>
-                                        {colors.map((color, index) => (
-                                            <motion.button
-                                                key={index}
-                                                whileHover={{ scale: 1.05 }}
-                                                whileTap={{ scale: 0.95 }}
-                                                onClick={() =>
-                                                    handleSelectColor(
-                                                        Object.keys(color)[0]
-                                                    )
-                                                }
-                                                className={`p-2 rounded-lg border ${
-                                                    selectedColor ===
-                                                    Object.keys(color)[0]
-                                                        ? "bg-pink-500 hover:bg-pink-500 text-white"
-                                                        : "hover:bg-accent border-border"
-                                                } mr-2`}
-                                            >
-                                                {Object.keys(color)[0]}
-                                            </motion.button>
-                                        ))}
-                                        <div className="font-medium my-3">
-                                            Size : {selectedSize}
-                                        </div>
-                                        {sizes.map((size, index) => (
-                                            <motion.button
-                                                key={index}
-                                                whileHover={{ scale: 1.05 }}
-                                                whileTap={{ scale: 0.95 }}
-                                                onClick={() =>
-                                                    setSelectedSize(size)
-                                                }
-                                                className={`p-2 min-w-11 border border-border hover:bg-accent ${
-                                                    selectedSize === size
-                                                        ? "bg-pink-500 hover:bg-pink-500 text-white"
-                                                        : "hover:bg-accent border-border"
-                                                } rounded-lg mr-2`}
-                                            >
-                                                {size}
-                                            </motion.button>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <motion.button
-                                    onClick={handleAddToCart}
-                                    className={`mt-6 w-full py-2 rounded-md text-white ${
-                                        isAdding
-                                            ? "bg-gray-400 cursor-not-allowed"
-                                            : added || isUpdated
-                                            ? "bg-green-500"
-                                            : "bg-pink-500 hover:bg-pink-700"
-                                    }`}
-                                    disabled={isAdding}
-                                    whileHover={
-                                        !isAdding && !added
-                                            ? { scale: 1.02 }
-                                            : undefined
-                                    }
-                                    whileTap={
-                                        !isAdding && !added
-                                            ? { scale: 0.98 }
-                                            : undefined
-                                    }
-                                >
-                                    {isAdding ? (
-                                        "Adding..."
-                                    ) : added ? (
-                                        "Added to Cart"
-                                    ) : isUpdated ? (
-                                        "Updated the Cart"
-                                    ) : (
-                                        <div className="flex justify-center gap-2">
-                                            <ShoppingCart className="w-5" />
-                                            Add to cart
-                                        </div>
-                                    )}
-                                </motion.button>
-                            </div>
-                        </div>
-
-                        <motion.div
-                            className="mt-8"
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4 }}
-                        >
-                            <h3 className="text-lg font-medium text-gray-900">
-                                Description
-                            </h3>
-                            <p className="mt-2 text-gray-500">
-                                {product.description}
-                            </p>
-                        </motion.div>
-                    </div>
+            <div className="flex items-center justify-center min-h-[60vh]">
+                <div className="text-center p-8 bg-red-50 rounded-lg shadow-md">
+                    <h1 className="text-2xl font-bold text-red-600">
+                        Product Not Found
+                    </h1>
+                    <p className="mt-2 text-gray-600">
+                        There was an error finding the product you're looking
+                        for.
+                    </p>
                 </div>
             </div>
         );
+    }
+
+    if (!product) {
+        return <Loading />;
+    }
+
+    return (
+        <div className="bg-background">
+            {prompt && (
+                <Prompt
+                    title="Login Required"
+                    text="You need to log in to add items to your cart"
+                    to="login"
+                    toValue="Login"
+                    close={() => setPrompt(false)}
+                />
+            )}
+
+            <motion.div
+                className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+            >
+                <div className="lg:grid lg:grid-cols-2 lg:gap-x-12 items-start">
+                    <ProductGallery
+                        images={product.images}
+                        selectedImage={selectedImage}
+                        setSelectedImage={setSelectedImage}
+                        productName={product.name}
+                    />
+
+                    <div className="mt-10 lg:mt-0 lg:pl-8">
+                        <ProductInfo
+                            product={product}
+                            material={product.material}
+                            ratings={ratings}
+                        />
+
+                        <Separator className="my-6" />
+
+                        <ProductVariants
+                            colors={colors || []}
+                            sizes={sizes}
+                            selectedColor={selectedColor}
+                            selectedSize={selectedSize}
+                            handleSelectColor={handleSelectColor}
+                            setSelectedSize={setSelectedSize}
+                        />
+
+                        <AddToCartButton
+                            handleAddToCart={handleAddToCart}
+                            isAdding={isAdding}
+                            added={added}
+                            isUpdated={isUpdated}
+                        />
+
+                        <ProductDescription description={product.description} />
+                        <ReviewSection productId={id} fetchRatings={fetchRatings} />
+                    </div>
+                </div>
+            </motion.div>
+        </div>
+    );
 };
 
 export default ProductView;
