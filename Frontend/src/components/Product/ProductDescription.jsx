@@ -1,6 +1,5 @@
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { ChevronDown, ChevronUp, Truck, Shield, RotateCcw } from 'lucide-react'
+
+import {Truck, Shield, RotateCcw } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Card, CardContent } from "@/components/ui/card"
 

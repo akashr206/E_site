@@ -1,4 +1,3 @@
-"use client"
 import { motion } from "framer-motion"
 import { Star } from 'lucide-react'
 import { Badge } from "@/components/ui/badge"

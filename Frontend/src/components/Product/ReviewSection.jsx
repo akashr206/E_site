@@ -1,12 +1,9 @@
-"use client";
 import { useState, useEffect } from "react";
-import { Star, ThumbsUp, MessageSquare } from "lucide-react";
+import { Star, MessageSquare } from "lucide-react";
 import { useAuth } from "../../Contexts/AuthContext";
 import {
-    Card,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
