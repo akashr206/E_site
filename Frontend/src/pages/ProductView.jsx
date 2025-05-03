@@ -9,7 +9,7 @@ import { CartLength } from "../Contexts/CartContext";
 import ProductGallery from "@/components/Product/ProductGallery";
 import ProductInfo from "@/components/Product/ProductInfo";
 import ProductVariants from "@/components/Product/ProductVariants";
-import AddToCartButton from "@/components/Product/AddToCartButton";
+import AddToCartButton from "@/components/Product/AddtoCartButton";
 import ProductDescription from "@/components/Product/ProductDescription";
 import ReviewSection from "@/components/Product/ReviewSection";
 import { Separator } from "@/components/ui/separator";
