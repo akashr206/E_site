@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Separator } from "../components/ui/Separator";
+import { Separator } from "../components/ui/separator";
 import Loading from "../components/Loading";
 import ProductsGrid from "../components/ProductsGrid";
 import FilterAndSort from "../components/FilterAndSort";
