@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-
+import { Separator } from "../components/ui/Separator";
 import Loading from "../components/Loading";
 import ProductsGrid from "../components/ProductsGrid";
 import FilterAndSort from "../components/FilterAndSort";
@@ -88,15 +88,23 @@ const Category = () => {
     }
 
     return (
-        <div className="p-2 flex flex-col justify-center items-center mx-auto max-w-6xl">
-            <div className="my-2 px-5 w-full flex flex-col sm:items-center sm:flex-row justify-between ">
-                <h1 className="text-3xl font-normal">{query.toUpperCase()}</h1>
+        <div className="p-2 flex flex-col justify-center py-4 items-center mx-auto max-w-7xl">
+            <div className="my-2 px-5 w-full flex p-6 flex-col sm:items-center sm:flex-row justify-between ">
+                <div className="flex flex-col">
+                    <h1 className="text-3xl font-normal">
+                        {query.toUpperCase()}
+                    </h1>
+                    <p className="text-accent-foreground/60 text-sm"> {products.length} {products.length === 1 ? "product" : "products"}</p>
+                </div>
                 <FilterAndSort
                     onSortChange={handleSortChange}
                     onFilterChange={handleFilterChange}
                 />
             </div>
-            <ProductsGrid products={filteredProducts} />
+            <Separator></Separator>
+            <div className="py-6">
+                <ProductsGrid products={filteredProducts} />
+            </div>
         </div>
     );
 };

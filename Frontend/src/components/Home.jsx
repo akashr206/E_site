@@ -648,10 +648,10 @@ const Home = () => {
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                         <div>
                             <h3 className="text-xl  font-bold mb-4">
-                                MR Fashions
+                                Mahira Fashions
                             </h3>
                             <p className="text-gray-400 mb-4">
-                                MR Fashions is a premium fashion brand specializing
+                                Mahira Fashions is a premium fashion brand specializing
                                 in women's fashion and bridal wear.
                             </p>
                             <div className="flex space-x-4">
@@ -853,7 +853,7 @@ const Home = () => {
                     <div className="border-t border-gray-800 mt-12 pt-8">
                         <div className="flex flex-col md:flex-row justify-between items-center">
                             <p className="text-sm text-gray-400">
-                                &copy; {new Date().getFullYear()} MR Fashions. All rights reserved.
+                                &copy; {new Date().getFullYear()} Mahira Fashions. All rights reserved.
                             </p>
                             <div className="flex space-x-6 mt-4 md:mt-0">
                                 <a

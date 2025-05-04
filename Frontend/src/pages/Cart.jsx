@@ -11,7 +11,7 @@ import { API_URL } from "../config/api";
 import ShippingAddressSelector from "../components/ShippingAddressSelector";
 import { toast } from "sonner";
 import { nanoid } from "nanoid";
-import logo from "../assets/logo.jpg";
+import logo from "../assets/logo2.png";
 import { useOrder } from "../Contexts/orderDataContext";
 
 const NonCart = () => {

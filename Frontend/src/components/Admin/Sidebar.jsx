@@ -26,6 +26,7 @@ import {
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../Contexts/AuthContext";
+import logo from "../../assets/logo.png"
 
 
 const AdminSidebar = ({ renderPage, setActivePage, activePage }) => {
@@ -33,15 +34,15 @@ const AdminSidebar = ({ renderPage, setActivePage, activePage }) => {
     const { user, logout } = useAuth();
     return (
         <SidebarProvider>
-            <nav className="fixed md:hidden z-10 bg-background border-border border flex-row-reverse flex items-center justify-between px-4 top-0 left-0 w-full h-16 ">
+            <nav className="fixed md:hidden p-2 z-10 bg-background border-border border flex-row-reverse flex items-center justify-between px-4 top-0 left-0 w-full">
                 <SidebarTrigger className="justify-self-start"/>
                 <div className="flex items-center justify-start gap-2">
                     <img
-                        src="/logo.jpg"
+                        src={logo}
                         alt="logo"
-                        className="w-8 h-8 rounded-full"
+                        className=" w-32 rounded-full"
                     />
-                    <span className="text-lg font-bold">Admin </span>
+                    <span className="text-lg font-semibold">Admin </span>
                 </div>
             </nav>
 
@@ -49,7 +50,7 @@ const AdminSidebar = ({ renderPage, setActivePage, activePage }) => {
                 <SidebarHeader>
                     <div className="flex items-center justify-start gap-2">
                         <img
-                            src="/logo.jpg"
+                            src="/logo.png"
                             alt="logo"
                             className="w-12 h-12 rounded-full"
                         />

@@ -9,12 +9,9 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import MobileSearch from "./MobileSearch";
 import Dropdown from "./ui/Dropdown";
 
-import logo from "../assets/logo.jpg";
-import googleImg from "../assets/google.png";
+import logo from "../assets/logo.png";
 import { ShoppingCart, UserRound, Search } from "lucide-react";
-
 import { useAuth } from "../Contexts/AuthContext";
-import { API_URL } from "../config/api";
 import { useContext } from "react";
 import { CartLength } from "../Contexts/CartContext";
 import { useLocation } from "react-router-dom";
@@ -89,15 +86,15 @@ const Navbar = () => {
     }
 
     return (
-        <header className="bg-background fixed top-0 left-0 w-full z-[999] shadow-sm">
+        <header className="bg-white bg-opacity-70 backdrop-blur-md fixed top-0 left-0 w-full z-[999] shadow-sm">
             <nav
                 className="mx-auto flex max-w-7xl items-center justify-between p-3"
                 aria-label="Global"
             >
                 <div className="flex lg:flex-1">
-                    <Link to="/" className="-m-1.5 p-1.5">
+                    <Link to="/" className="-m-1.5">
                         <img
-                            className="h-10 b9 rounded-full w-auto"
+                            className=" h-16 object-fit rounded-lg w-full"
                             src={logo}
                             alt="Logo"
                         />
@@ -129,7 +126,7 @@ const Navbar = () => {
                             onChange={(e) => setSearch(e.target.value)}
                             onKeyDown={handleKeyDown}
                             placeholder="Search"
-                            className="relative border mx-4 p-1 w-[250px] focus:ring-2 focus:ring-pink-500 focus:border-none outline-none bg-transparent border-border rounded px-2 py-1.5 text-sm"
+                            className="relative border mx-4 p-1 w-[250px] focus:ring-2 focus:ring-pink-500 focus:border-none outline-none bg-transparent border-black/50 placeholder:text-black  rounded px-2 py-1.5 text-sm"
                         />
                         <button type="submit" className="hidden" />
                         <Search
