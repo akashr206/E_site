@@ -81,7 +81,7 @@ const Account = () => {
                     </div>
                 </div>
 
-                <ul className="text-center max-md:w-full md:shadow py-2 flex md:flex-col rounded-sm">
+                <ul className="text-center max-md:w-full  md:shadow flex md:flex-col rounded-sm">
                     <li
                         className={`font-semibold px-4 max-md:justify-center flex-1 flex gap-2 items-center py-3 cursor-pointer ${
                             activeTab === "info"
@@ -129,7 +129,7 @@ const Account = () => {
                 </ul>
             </div>
 
-            <div className="md:flex-1 w-full max-md:mt-16 bg-white p-5">{renderTabContent()}</div>
+            <div className="md:flex-1 w-full max-md:mt-[52px] bg-white p-5">{renderTabContent()}</div>
         </div>
     );
 };

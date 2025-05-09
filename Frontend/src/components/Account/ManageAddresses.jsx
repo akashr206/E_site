@@ -81,9 +81,9 @@ const ManageAddresses = () => {
     }
 
     return (
-        <Card className="rounded-none max-sm:shadow-none max-sm:border-none">
-            <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>My Addresses</CardTitle>
+        <div className="rounded-none max-sm:shadow-none max-sm:border-none">
+            <div className="flex flex-row items-center justify-between">
+                <CardTitle className="text-2xl">My Addresses</CardTitle>
                 <Button
                     onClick={handleAddNew}
                     className="flex items-center max-sm:text-[12px] gap-2 bg-pink-500 hover:bg-pink-600"
@@ -91,9 +91,9 @@ const ManageAddresses = () => {
                     <PlusIcon size={16} />
                     Add New Address
                 </Button>
-            </CardHeader>
+            </div>
 
-            <CardContent>
+            <CardContent className="my-8">
                 {loading ? (
                     <div className="text-center flex gap-4 py-8">
                         <Skeleton className="w-1/2 h-[184px]"></Skeleton>
@@ -159,7 +159,7 @@ const ManageAddresses = () => {
                     </div>
                 )}
             </CardContent>
-        </Card>
+        </div>
     );
 };
 

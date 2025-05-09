@@ -43,7 +43,7 @@ function AppRoutes() {
             <main
                 className={cn(
                     "pb-9",
-                    !pathname.includes("admin") && "pt-[64px]"
+                    !pathname.includes("admin") && "pt-[76px]"
                 )}
             >
                 <Routes>

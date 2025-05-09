@@ -46,7 +46,7 @@ const Home = () => {
     return (
         <div>
             <section className="relative">
-                <div className=" h-[80vh] max-sm:h-[70vh] w-[100vw] relative overflow-hidden">
+                <div className="h-[80vh] max-sm:h-[70vh] w-[100vw] relative overflow-hidden">
                     <img
                         src="/hero.png"
                         alt="Elegant woman in bridal wear"
@@ -54,16 +54,16 @@ const Home = () => {
                     />
                     <div className="absolute lg:ml-32 inset-0 bg-gradient-to-r from-white/60 to-black/30 flex items-center">
                         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                            <div className="max-w-lg max-md:max-w-56">
+                            <div className="max-w-lg max-md:max-w-56 p-6 rounded-md">
                                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-pink-600/80 leading-tight mb-4">
                                     Elegance That Speaks for Itself
                                 </h1>
-                                <p className="text-lg text-gray-700 mb-8">
+                                <p className="text-lg text-zinc-900 mb-8">
                                     Show your shine with a collection full of
                                     beauty, feeling, and a touch of magic.
                                 </p>
-                                <div className="flex  gap-4">
-                                    <Button className="px-6 py-3 font-medium rounded-md transition-colors">
+                                <div className="flex gap-4">
+                                    <Button className="px-6 py-3 font-medium rounded-md transition-colors bg-pink-600 text-white hover:bg-pink-700">
                                         Shop now <ArrowUpRight />
                                     </Button>
                                     <Button className="px-6 py-3 bg-white text-gray-900 font-medium rounded-md border border-gray-300 hover:bg-gray-50 transition-colors">
@@ -651,8 +651,8 @@ const Home = () => {
                                 Mahira Fashions
                             </h3>
                             <p className="text-gray-400 mb-4">
-                                Mahira Fashions is a premium fashion brand specializing
-                                in women's fashion and bridal wear.
+                                Mahira Fashions is a premium fashion brand
+                                specializing in women's fashion and bridal wear.
                             </p>
                             <div className="flex space-x-4">
                                 <a
@@ -853,7 +853,8 @@ const Home = () => {
                     <div className="border-t border-gray-800 mt-12 pt-8">
                         <div className="flex flex-col md:flex-row justify-between items-center">
                             <p className="text-sm text-gray-400">
-                                &copy; {new Date().getFullYear()} Mahira Fashions. All rights reserved.
+                                &copy; {new Date().getFullYear()} Mahira
+                                Fashions. All rights reserved.
                             </p>
                             <div className="flex space-x-6 mt-4 md:mt-0">
                                 <a
