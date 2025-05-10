@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { nanoid } from "nanoid";
 import logo from "../assets/logo2.png";
 import { useOrder } from "../Contexts/orderDataContext";
+import { Skeleton } from "../components/ui/skeleton";
 
 const NonCart = () => {
     return (
@@ -201,7 +202,7 @@ export default function Cart() {
                     razorpay_order_id,
                     razorpay_signature,
                 } = response;
-                
+
                 navigate(
                     `/checkout/success?payment_id=${razorpay_payment_id}&order_id=${razorpay_order_id}&signature=${razorpay_signature}`
                 );
@@ -278,11 +279,6 @@ export default function Cart() {
             console.log(paymentOrder);
 
             await openPaymentGateway(paymentOrder.amount, paymentOrder.id, e);
-
-            // await Promise.all([fetchCart(), fetchTotal()]);
-
-            // Redirect to payment or confirmation page
-            // window.location.href = `/payment/${orderData.orderId}`;
         } catch (error) {
             console.error("Checkout error:", error);
             alert("There was an error processing your checkout");
@@ -306,7 +302,6 @@ export default function Cart() {
         }
         loadData();
     }, []);
-    if (isLoading || loadingUser) return <Loading />;
     if (!user && !loadingUser) return <NonCart />;
     if (isEmpty) return <EmptyCart />;
 
@@ -317,25 +312,47 @@ export default function Cart() {
                     <h1 className="text-2xl font-norm mb-5">Shopping Cart</h1>
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div className="lg:col-span-2 space-y-6">
-                            {products.map((product) => {
-                                return (
-                                    <CartItem
-                                        onUpdate={(id, quantity) =>
-                                            updateQuantity(id, quantity)
-                                        }
-                                        OnRemove={removeItem}
-                                        id={product._id}
-                                        productId={product.productId}
-                                        key={product._id}
-                                        name={product.name}
-                                        image={product.images[0]}
-                                        color={product.color}
-                                        quantity={product.quantity}
-                                        size={product.size}
-                                        price={product.price}
-                                    />
-                                );
-                            })}
+                            {isLoading || loadingUser ? (
+                                <div className="flex h-[120px] items-start bg-white p-3 rounded-lg shadow">
+                                    <Link
+                                        className="w-24 h-24 flex justify-center items-center"
+                                        to={`/products/`}
+                                    >
+                                        <Skeleton className="h-24 w-24 rounded-md object-contain" />
+                                    </Link>
+                                    <div className="ml-4 flex-1 flex justify-around h-full flex-col ">
+                                        <Skeleton className="h-5 w-36"></Skeleton>
+                                        <Skeleton className="h-3 w-24"></Skeleton>
+                                        <Skeleton className="h-4 w-16"></Skeleton>
+                                    </div>
+                                    <div className="flex flex-col h-20 justify-between items-center space-x-2">
+                                        <button className="text-gray-400 flex justify-end w-full hover:text-red-500">
+                                            <span>&#10006;</span>
+                                        </button>
+                                        <Skeleton className="h-8 w-12"></Skeleton>
+                                    </div>
+                                </div>
+                            ) : (
+                                products.map((product) => {
+                                    return (
+                                        <CartItem
+                                            onUpdate={(id, quantity) =>
+                                                updateQuantity(id, quantity)
+                                            }
+                                            OnRemove={removeItem}
+                                            id={product._id}
+                                            productId={product.productId}
+                                            key={product._id}
+                                            name={product.name}
+                                            image={product.images[0]}
+                                            color={product.color}
+                                            quantity={product.quantity}
+                                            size={product.size}
+                                            price={product.price}
+                                        />
+                                    );
+                                })
+                            )}
                         </div>
                         <div className="lg:sticky lg:self-start top-20">
                             <ShippingAddressSelector

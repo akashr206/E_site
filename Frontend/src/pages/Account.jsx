@@ -1,7 +1,4 @@
 import { useEffect, useState } from "react";
-import orderImg from "../assets/order.svg";
-import accountImg from "../assets/accBlue.svg";
-import pinImg from "../assets/pin.svg";
 import Info from "@/components/Account/Info";
 import Loading from "../components/Loading";
 import { useNavigate } from "react-router-dom";
@@ -81,7 +78,7 @@ const Account = () => {
                     </div>
                 </div>
 
-                <ul className="text-center max-md:w-full  md:shadow flex md:flex-col rounded-sm">
+                <ul className="text-center max-md:w-full md:shadow flex md:flex-col rounded-sm">
                     <li
                         className={`font-semibold px-4 max-md:justify-center flex-1 flex gap-2 items-center py-3 cursor-pointer ${
                             activeTab === "info"

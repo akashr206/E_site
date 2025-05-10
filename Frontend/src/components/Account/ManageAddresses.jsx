@@ -95,9 +95,9 @@ const ManageAddresses = () => {
 
             <CardContent className="my-8">
                 {loading ? (
-                    <div className="text-center flex gap-4 py-8">
-                        <Skeleton className="w-1/2 h-[184px]"></Skeleton>
-                        <Skeleton className="w-1/2 h-[184px]"></Skeleton>
+                    <div className="text-center max-md:flex-col flex gap-4 py-8">
+                        <Skeleton className="md:w-1/2 h-44"></Skeleton>
+                        <Skeleton className="md:w-1/2 h-44"></Skeleton>
                     </div>
                 ) : addresses.length === 0 ? (
                     <div className="text-center py-8 text-gray-500">

@@ -88,9 +88,9 @@ const Category = () => {
     }
 
     return (
-        <div className="p-2 flex flex-col justify-center py-4 items-center mx-auto max-w-7xl">
-            <div className="my-2 px-5 w-full flex p-6 flex-col sm:items-center sm:flex-row justify-between ">
-                <div className="flex flex-col">
+        <div className="p-2 flex flex-col justify-center items-center mx-auto max-w-7xl">
+            <div className="my-2 px-5 w-full flex gap-2 p-6 flex-col sm:items-center sm:flex-row justify-between ">
+                <div className="flex  flex-col">
                     <h1 className="text-3xl font-normal">
                         {query.toUpperCase()}
                     </h1>
