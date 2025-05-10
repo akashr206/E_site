@@ -21,7 +21,7 @@ const VariantSchema = new Schema({
 // ProductSchema
 const ProductSchema = new Schema({
     id: { 
-        type: String, 
+        type: String,  
         required: true, 
         unique: true 
     },
@@ -62,6 +62,10 @@ const ProductSchema = new Schema({
         required: true 
     },
     images: { 
+        type: [String], 
+        required: true 
+    }, 
+    imageIds: { 
         type: [String], 
         required: true 
     }, 

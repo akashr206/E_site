@@ -1,12 +1,10 @@
 import { useState } from 'react';
 import { Popover, Transition } from "@headlessui/react";
+import { Button } from '../components/ui/button';
+import { ChevronDown, SlidersHorizontal, Check } from 'lucide-react';
 
 const SortDown = ({ onSortChange }) => {
   const [sortby, setSortby] = useState('Newest');
-
-  const ActiveDot = () => (
-    <div className="w-2.5 h-2.5 absolute top-[50%] translate-y-[-50%] left-0 bg-indigo-600 rounded-full"></div>
-  );
 
   const sortOptions = [
     'Newest',
@@ -23,10 +21,9 @@ const SortDown = ({ onSortChange }) => {
 
   return (
     <Popover className="relative">
-      <Popover.Button
-        className="flex p-2 m-2 outline-none border rounded-md border-gray-300 items-center text-md leading-6 text-gray-900"
-      >
-        Sort by: {sortby}
+      <Popover.Button as={Button} variant="outline" className="flex items-center gap-2">
+        <span>Sort: {sortby}</span>
+        <ChevronDown className="h-4 w-4" />
       </Popover.Button>
 
       <Transition
@@ -37,21 +34,19 @@ const SortDown = ({ onSortChange }) => {
         leaveFrom="opacity-100 translate-y-0"
         leaveTo="opacity-0 translate-y-1"
       >
-        <Popover.Panel className="absolute left-0 z-10 rounded-md mt-2 w-max bg-white shadow-lg ring-1 ring-gray-900/5">
+        <Popover.Panel className="absolute right-0 z-10 rounded-md mt-2 w-56 bg-white shadow-lg ring-1 ring-gray-900/5">
           {({ close }) => (
-            <div className="py-2 px-2">
-              <ul className="flex flex-col py-2 text-lg">
-                {sortOptions.map((option) => (
-                  <li
-                    key={option}
-                    className="px-5 py-2 relative cursor-pointer hover:bg-gray-200 rounded-sm"
-                    onClick={() => handleSortSelection(option, close)}
-                  >
-                    {sortby === option && <ActiveDot />}
-                    {option}
-                  </li>
-                ))}
-              </ul>
+            <div className="py-1">
+              {sortOptions.map((option) => (
+                <div
+                  key={option}
+                  className="relative flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100"
+                  onClick={() => handleSortSelection(option, close)}
+                >
+                  <span className="flex-grow">{option}</span>
+                  {sortby === option && <Check className="h-4 w-4 text-pink-500" />}
+                </div>
+              ))}
             </div>
           )}
         </Popover.Panel>
@@ -72,9 +67,9 @@ const Filter = ({ onFilterChange }) => {
     const { name, value } = e.target;
 
     if (name === 'min') {
-      setMinPrice(value ? Math.min(value, maxPrice || Infinity) : '');
+      setMinPrice(value ? Math.min(parseFloat(value), maxPrice || Infinity) : '');
     } else if (name === 'max') {
-      setMaxPrice(value ? Math.max(value, minPrice || 0) : '');
+      setMaxPrice(value ? Math.max(parseFloat(value), minPrice || 0) : '');
     }
   };
 
@@ -88,10 +83,9 @@ const Filter = ({ onFilterChange }) => {
 
   return (
     <Popover className="relative">
-      <Popover.Button
-        className="p-2 m-2 border outline-none rounded-md border-gray-300 text-md leading-6 text-gray-900"
-      >
-        Filter
+      <Popover.Button as={Button} variant="outline" className="flex items-center gap-2">
+        <SlidersHorizontal className="h-4 w-4" />
+        <span>Filter</span>
       </Popover.Button>
 
       <Transition
@@ -102,41 +96,56 @@ const Filter = ({ onFilterChange }) => {
         leaveFrom="opacity-100 translate-y-0"
         leaveTo="opacity-0 translate-y-1"
       >
-        <Popover.Panel className="absolute left-0 z-10 rounded-md mt-2 w-max bg-white shadow-lg ring-1 ring-gray-900/5">
+        <Popover.Panel className="absolute left-0 z-10 rounded-md mt-2 w-72 bg-white shadow-lg ring-1 ring-gray-900/5">
           {({ close }) => (
             <div className="p-4">
-              <div className="flex flex-col space-y-3">
-                <label className="flex flex-col text-sm">
-                  Min Price:
-                  <input
-                    type="number"
-                    name="min"
-                    value={minPrice}
-                    onChange={(e) => handleInputChange(e)}
-                    onKeyDown={(e) => handleKeyDown(e, close)}
-                    className="p-2 border bg-transparent w-[160px] focus:outline focus:outline-indigo-600 rounded-md border-gray-300"
-                  />
-                </label>
-                <label className="flex flex-col text-sm">
-                  Max Price:
-                  <input
-                    type="number"
-                    name="max"
-                    value={maxPrice}
-                    onChange={(e) => handleInputChange(e)}
-                    onKeyDown={(e) => handleKeyDown(e, close)}
-                    className="p-2 border bg-transparent focus:outline focus:outline-indigo-600 w-[160px] rounded-md border-gray-300"
-                  />
-                </label>
-                <button
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-medium text-sm mb-3">Price Range</h4>
+                  <div className="border-t border-gray-200 pt-3">
+                    <div className="grid gap-3">
+                      <div className="grid gap-1">
+                        <label htmlFor="min-price" className="text-sm font-medium">
+                          Minimum Price
+                        </label>
+                        <input
+                          id="min-price"
+                          name="min"
+                          type="number"
+                          placeholder="0"
+                          value={minPrice}
+                          onChange={handleInputChange}
+                          onKeyDown={(e) => handleKeyDown(e, close)}
+                          className="w-full p-2 bg-transparent border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:outline-none"
+                        />
+                      </div>
+                      <div className="grid gap-1">
+                        <label htmlFor="max-price" className="text-sm font-medium">
+                          Maximum Price
+                        </label>
+                        <input
+                          id="max-price"
+                          name="max"
+                          type="number"
+                          placeholder="100000"
+                          value={maxPrice}
+                          onChange={handleInputChange}
+                          onKeyDown={(e) => handleKeyDown(e, close)}
+                          className="w-full p-2 bg-transparent border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:outline-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <Button 
                   onClick={() => {
                     handleFilterApply();
                     close();
                   }}
-                  className="p-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+                  className="w-full"
                 >
                   Apply Filter
-                </button>
+                </Button>
               </div>
             </div>
           )}
@@ -148,11 +157,11 @@ const Filter = ({ onFilterChange }) => {
 
 const FilterAndSort = ({ onSortChange, onFilterChange }) => {
   return (
-    <div className="flex">
+    <div className="flex items-center gap-2">
       <Filter onFilterChange={onFilterChange} />
       <SortDown onSortChange={onSortChange} />
     </div>
   );
 };
 
-export default FilterAndSort
+export default FilterAndSort;
