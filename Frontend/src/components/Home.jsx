@@ -164,12 +164,12 @@ const Home = () => {
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center mb-12">
                         <h2 className="text-3xl  font-bold">New Arrivals</h2>
-                        <a
-                            href="#"
+                        <Link
+                            to="/new"
                             className="text-sm font-medium text-gray-900 hover:text-pink-500 inline-flex items-center"
                         >
                             View All <ChevronRight size={16} className="ml-1" />
-                        </a>
+                        </Link>
                     </div>
 
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">

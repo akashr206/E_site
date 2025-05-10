@@ -21,6 +21,7 @@ import Login from "./pages/Login";
 import { cn } from "./lib/utils";
 import { AuthProvider } from "./Contexts/AuthContext";
 import { OrderProvider } from "./Contexts/orderDataContext";
+import NewArrivals from "./pages/NewArrivals";
 
 function App() {
     return (
@@ -51,6 +52,7 @@ function AppRoutes() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/products/:id" element={<ProductView />} />
                     <Route path="/search" element={<Search />} />
+                    <Route path="/new" element={<NewArrivals />} />
                     <Route path="/category/:query" element={<Category />} />
 
                     <Route element={<ProtectedRoute />}>
