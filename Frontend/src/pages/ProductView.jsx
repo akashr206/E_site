@@ -94,6 +94,10 @@ const ProductView = () => {
 
     async function handleWishlist() {
         try {
+            if (!user) {
+                setPrompt(true);
+                return;
+            }
             const res = await fetch(`${API_URL}/api/wishlist`, {
                 method: "POST",
                 headers: {
@@ -119,6 +123,10 @@ const ProductView = () => {
     }
 
     async function removeWishlist() {
+        if (!user) {
+            setPrompt(true);
+            return;
+        }
         const res = await fetch(`${API_URL}/api/wishlist`, {
             method: "DELETE",
             headers: {
@@ -138,6 +146,9 @@ const ProductView = () => {
     }
 
     async function checkWishlist() {
+        if (!user) {
+            return;
+        }
         const res = await fetch(`${API_URL}/api/wishlist/${id}`, {
             credentials: "include",
         });

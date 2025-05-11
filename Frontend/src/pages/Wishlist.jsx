@@ -4,11 +4,41 @@ import Loading from "../components/Loading";
 import ProductsGrid from "../components/ProductsGrid";
 import FilterAndSort from "../components/FilterAndSort";
 import { API_URL } from "../config/api";
+import { useAuth } from "../Contexts/AuthContext";
+import { LockClosedIcon } from "@heroicons/react/24/outline";
+import { Button } from "../components/ui/button";
+
+const NonWishlist = () => {
+    return (
+        <div className="flex items-center justify-center absolute w-full -z-10 top-0 h-screen px-4">
+            <div className="text-center bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
+                <LockClosedIcon className="w-12 h-12 text-pink-500 mx-auto mb-4" />
+
+                <h1 className="text-2xl font-bold text-gray-800 mb-4">
+                    Your Wishlist is Locked
+                </h1>
+                <p className="text-gray-500 mb-6">
+                    Login to unlock your wish list and start wish listing your
+                    favorite items!
+                </p>
+
+                <Button
+                    onClick={() =>
+                        (window.location.href = `${API_URL}/auth/google`)
+                    }
+                >
+                    <span>Login Now</span>
+                </Button>
+            </div>
+        </div>
+    );
+};
 
 const Wishlist = () => {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const { user, loadingUser } = useAuth();
 
     useEffect(() => {
         async function fetchProducts() {
@@ -74,6 +104,8 @@ const Wishlist = () => {
     if (isLoading) {
         return <Loading />;
     }
+
+    if (!user && !loadingUser) return <NonWishlist />;
 
     return (
         <div className="p-2 flex flex-col justify-center items-center mx-auto max-w-7xl">

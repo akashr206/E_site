@@ -12,7 +12,6 @@ import {
 const AuthContext = createContext();
 import { Button } from "../components/ui/button";
 import { Loader } from "lucide-react";
-import Cookies from "js-cookie"
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
@@ -20,24 +19,22 @@ export const AuthProvider = ({ children }) => {
     const [open, setOpen] = useState(false);
     const [loggingOut, setLoggingOut] = useState(false);
     const logout = () => setOpen(true);
-
-    const logoutUser = async () => {
+    const logoutUser = async (e) => {
+        e.preventDefault();
         setLoggingOut(true);
-        const response = await fetch(
-            `${import.meta.env.VITE_APIURL}/api/auth/logout`,
-            {
-                method: "POST",
-                credentials: "include",
-            }
-        );
+
+        const response = await fetch(`${API_URL}/api/auth/logout`, {
+            method: "POST",
+            credentials: "include",
+        });
 
         if (response.ok) {
             setUser(null);
-            Cookies.remove("token")
             window.location.href = "/";
         } else {
-            throw new Error("Logout failed");
+            console.error("Logout failed");
         }
+
         setLoggingOut(false);
         setOpen(false);
     };
@@ -70,15 +67,15 @@ export const AuthProvider = ({ children }) => {
                             session.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
-                    <AlertDialogFooter>
+                    <AlertDialogFooter className="flex items-center flex-row justify-end gap-2">
                         <AlertDialogCancel onClick={() => setOpen(false)}>
                             Cancel
                         </AlertDialogCancel>
                         <Button
                             disabled={loggingOut}
                             variant={"destructive"}
-                            className="w-20"
-                            onClick={() => logoutUser()}
+                            className="w-20 max-sm:mt-1.5"
+                            onClick={(e) => logoutUser(e)}
                         >
                             {loggingOut ? (
                                 <Loader className="animate-spin"></Loader>
