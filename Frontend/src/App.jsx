@@ -56,10 +56,10 @@ function AppRoutes() {
                     <Route path="/new" element={<NewArrivals />} />
                     <Route path="/wishlist" element={<Wishlist />} />
                     <Route path="/category/:query" element={<Category />} />
+                    <Route path="/cart" element={<Cart />} />
 
                     <Route element={<ProtectedRoute />}>
                         <Route path="/account" element={<Account />} />
-                        <Route path="/cart" element={<Cart />} />
                         <Route
                             path="/checkout/success"
                             element={<SuccessPage />}

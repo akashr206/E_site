@@ -1,16 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "./ui/button";
 
 import { Dialog } from "@headlessui/react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
 import MobileSearch from "./MobileSearch";
 import Dropdown from "./ui/Dropdown";
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "./ui/accordion";
 
 import logo from "../assets/logo.png";
-import { ShoppingCart, UserRound, Search, Heart } from "lucide-react";
+import { ShoppingCart, UserRound, Search, Heart, Menu, X } from "lucide-react";
 import { useAuth } from "../Contexts/AuthContext";
 import { useContext } from "react";
 import { CartLength } from "../Contexts/CartContext";
@@ -40,7 +45,6 @@ const Navbar = () => {
 
     const handleLogout = () => {
         logout();
-        window.location.href = "/";
     };
 
     const UserActions = () => {
@@ -81,7 +85,13 @@ const Navbar = () => {
                 </Link>
             </div>
         ) : (
-            <Button className="h-8" onClick={() => navigate("/login")}>
+            <Button
+                className="h-8"
+                onClick={() => {
+                    navigate("/login");
+                    setMobileMenuOpen(false);
+                }}
+            >
                 Log in
             </Button>
         );
@@ -185,22 +195,27 @@ const Navbar = () => {
                             <Heart></Heart>
                         </Button>
                     </Link>
-                    <button
+                    <Button
+                        variant={"ghost"}
                         type="button"
-                        className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
+                        className="p-2 px-3"
                         onClick={() => {
-                            setMobileMenuOpen(true);
-                            setMobileSearch(false);
+                            setMobileMenuOpen((prev) => !prev);
+                            setMobileSearch((prev) => !prev);
                         }}
                     >
-                        <Bars3Icon className="h-5 w-5 m-1" aria-hidden="true" />
-                    </button>
+                        {mobileMenuOpen ? (
+                            <X className="h-6 w-6" aria-hidden="true" />
+                        ) : (
+                            <Menu className="h-6 w-6" aria-hidden="true" />
+                        )}
+                    </Button>
                 </div>
             </nav>
             <Dialog as="div" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
                 <div className="w-screen relative h-screen ">
                     <motion.div
-                        className="fixed inset-0 z-10 overflow-y-auto bg-white px-4 py-4 lg:hidden"
+                        className="fixed inset-0 overflow-y-auto bg-white px-4 py-4 lg:hidden"
                         initial={{ x: "100%" }}
                         animate={{ x: 0 }}
                         exit={{ x: "100%" }}
@@ -218,16 +233,13 @@ const Navbar = () => {
                                     alt="Logo"
                                 />
                             </Link>
-                            <button
+                            <Button
                                 type="button"
                                 className="-m-2.5 rounded-md p-2.5 text-gray-700"
                                 onClick={() => setMobileMenuOpen(false)}
                             >
-                                <XMarkIcon
-                                    className="h-6 w-6"
-                                    aria-hidden="true"
-                                />
-                            </button>
+                                <X className="h-6 w-6" aria-hidden="true" />
+                            </Button>
                         </div>
                         <motion.div
                             className="mt-6 ml-6  flex flex-col gap-2 space-y-4"
@@ -236,16 +248,94 @@ const Navbar = () => {
                             exit={{ opacity: 0, x: 20 }}
                             transition={{ duration: 0.2, delay: 0.1 }}
                         >
-                            <Dropdown title="Sarees" items={sareeProducts} />
-                            <Dropdown
-                                title="Salwar Suits"
-                                items={salwarProducts}
-                            />
-                            <Dropdown title="Kurtis" items={kurtiProducts} />
-                            <Dropdown
-                                title="Ready-Made"
-                                items={readyMadeProducts}
-                            />
+                            <Accordion type="single" collapsible>
+                                <AccordionItem value="Sarees">
+                                    <AccordionTrigger className="text-base">
+                                        Sarees
+                                    </AccordionTrigger>
+                                    <AccordionContent>
+                                        {sareeProducts.map((item, index) => (
+                                            <Link
+                                                to={`/category/${item
+                                                    .toLowerCase()
+                                                    .replace(/\s+/g, " ")}`}
+                                                key={index}
+                                                className="block px-3 py-2 text-sm font-medium text-gray-900"
+                                                onClick={() =>
+                                                    setMobileMenuOpen(false)
+                                                }
+                                            >
+                                                {item}
+                                            </Link>
+                                        ))}
+                                    </AccordionContent>
+                                </AccordionItem>
+                                <AccordionItem value="Salwar Suits">
+                                    <AccordionTrigger className="text-base">
+                                        Salwar Suits
+                                    </AccordionTrigger>
+                                    <AccordionContent>
+                                        {salwarProducts.map((item, index) => (
+                                            <Link
+                                                to={`/category/${item
+                                                    .toLowerCase()
+                                                    .replace(/\s+/g, " ")}`}
+                                                key={index}
+                                                className="block px-3 py-2 text-sm font-medium text-gray-900"
+                                                onClick={() =>
+                                                    setMobileMenuOpen(false)
+                                                }
+                                            >
+                                                {item}
+                                            </Link>
+                                        ))}
+                                    </AccordionContent>
+                                </AccordionItem>
+                                <AccordionItem value="Kurtis">
+                                    <AccordionTrigger className="text-base">
+                                        Kurtis
+                                    </AccordionTrigger>
+                                    <AccordionContent>
+                                        {kurtiProducts.map((item, index) => (
+                                            <Link
+                                                to={`/category/${item
+                                                    .toLowerCase()
+                                                    .replace(/\s+/g, " ")}`}
+                                                key={index}
+                                                className="block px-3 py-2 text-sm font-medium text-gray-900"
+                                                onClick={() =>
+                                                    setMobileMenuOpen(false)
+                                                }
+                                            >
+                                                {item}
+                                            </Link>
+                                        ))}
+                                    </AccordionContent>
+                                </AccordionItem>
+                                <AccordionItem value="Ready-Made">
+                                    <AccordionTrigger className="text-base">
+                                        Ready Made
+                                    </AccordionTrigger>
+                                    <AccordionContent>
+                                        {readyMadeProducts.map(
+                                            (item, index) => (
+                                                <Link
+                                                    to={`/category/${item
+                                                        .toLowerCase()
+                                                        .replace(/\s+/g, " ")}`}
+                                                    key={index}
+                                                    className="block px-3 py-2 text-sm font-medium text-gray-900"
+                                                    onClick={() =>
+                                                        setMobileMenuOpen(false)
+                                                    }
+                                                >
+                                                    {item}
+                                                </Link>
+                                            )
+                                        )}
+                                    </AccordionContent>
+                                </AccordionItem>
+                            </Accordion>
                         </motion.div>
                         <motion.div
                             className="mt-6"
@@ -254,18 +344,9 @@ const Navbar = () => {
                             exit={{ opacity: 0, x: 20 }}
                             transition={{ duration: 0.2, delay: 0.2 }}
                         >
-                            <div className="ml-6">
+                            <div className="ml-3">
                                 <UserActions />
-                                {user && (
-                                    <p
-                                        className="text-lg cursor-pointer md:text-sm text-red-500 my-3 font-semibold flex items-center"
-                                        onClick={handleLogout}
-                                    >
-                                        Logout
-                                    </p>
-                                )}
                             </div>
-                            <div></div>
                         </motion.div>
                     </motion.div>
                 </div>
