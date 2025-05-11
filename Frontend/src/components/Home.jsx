@@ -11,15 +11,15 @@ import {
 } from "lucide-react";
 import { ArrowUpRight } from "lucide-react";
 import { Button } from "./ui/button";
+import { API_URL } from "../config/api";
+import { toast } from "sonner";
 
 const Home = () => {
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     async function fetchProducts() {
         try {
-            const response = await fetch(
-                `${import.meta.env.VITE_APIURL}/api/products/all`
-            );
+            const response = await fetch(`${API_URL}/api/products/all`);
             if (!response.ok) {
                 throw new Error("Failed to fetch products");
             }
@@ -31,6 +31,7 @@ const Home = () => {
         }
     }
 
+ 
     useEffect(() => {
         async function loadData() {
             await fetchProducts();
@@ -185,11 +186,6 @@ const Home = () => {
                                             alt="Elegant Dress"
                                             className="w-full h-[350px] hover:scale-105 transition-transform object-cover object-top"
                                         />
-                                        <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button className="p-2 bg-white rounded-full text-gray-900 hover:text-pink-500">
-                                                <Heart size={20} />
-                                            </button>
-                                        </div>
                                     </div>
                                     <h3 className="text-lg font-medium text-gray-900">
                                         {product.name}

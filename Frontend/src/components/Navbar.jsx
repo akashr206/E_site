@@ -10,7 +10,7 @@ import MobileSearch from "./MobileSearch";
 import Dropdown from "./ui/Dropdown";
 
 import logo from "../assets/logo.png";
-import { ShoppingCart, UserRound, Search } from "lucide-react";
+import { ShoppingCart, UserRound, Search, Heart } from "lucide-react";
 import { useAuth } from "../Contexts/AuthContext";
 import { useContext } from "react";
 import { CartLength } from "../Contexts/CartContext";
@@ -62,6 +62,15 @@ const Navbar = () => {
                     </Button>
                 </Link>
                 <Link
+                    to="/wishlist"
+                    className="flex items-center"
+                    onClick={() => setMobileMenuOpen(false)}
+                >
+                    <Button variant={"ghost"} className="p-2 px-3">
+                        <Heart></Heart>
+                    </Button>
+                </Link>
+                <Link
                     to="/account?tab=info"
                     className="flex items-center"
                     onClick={() => setMobileMenuOpen(false)}
@@ -72,17 +81,14 @@ const Navbar = () => {
                 </Link>
             </div>
         ) : (
-            <Button 
-            className="h-8"
-                onClick={() => navigate("/login")}
-            >
+            <Button className="h-8" onClick={() => navigate("/login")}>
                 Log in
             </Button>
         );
     };
 
-    if(pathName.includes("admin")){
-        return
+    if (pathName.includes("admin")) {
+        return;
     }
 
     return (
@@ -168,6 +174,15 @@ const Navbar = () => {
                                     {cartLen}
                                 </span>
                             )}
+                        </Button>
+                    </Link>
+                    <Link
+                        to="/wishlist"
+                        className="flex items-center"
+                        onClick={() => setMobileMenuOpen(false)}
+                    >
+                        <Button variant={"ghost"} className="p-2 px-3">
+                            <Heart></Heart>
                         </Button>
                     </Link>
                     <button

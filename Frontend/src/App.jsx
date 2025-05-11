@@ -22,6 +22,7 @@ import { cn } from "./lib/utils";
 import { AuthProvider } from "./Contexts/AuthContext";
 import { OrderProvider } from "./Contexts/orderDataContext";
 import NewArrivals from "./pages/NewArrivals";
+import Wishlist from "./pages/Wishlist";
 
 function App() {
     return (
@@ -53,6 +54,7 @@ function AppRoutes() {
                     <Route path="/products/:id" element={<ProductView />} />
                     <Route path="/search" element={<Search />} />
                     <Route path="/new" element={<NewArrivals />} />
+                    <Route path="/wishlist" element={<Wishlist />} />
                     <Route path="/category/:query" element={<Category />} />
 
                     <Route element={<ProtectedRoute />}>

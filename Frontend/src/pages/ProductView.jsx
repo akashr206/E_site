@@ -13,6 +13,7 @@ import AddToCartButton from "@/components/Product/AddtoCartButton";
 import ProductDescription from "@/components/Product/ProductDescription";
 import ReviewSection from "@/components/Product/ReviewSection";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "sonner";
 
 const ProductView = () => {
     const { id } = useParams();
@@ -31,6 +32,7 @@ const ProductView = () => {
     const [prompt, setPrompt] = useState(false);
     const { fetchCart } = useContext(CartLength);
     const [ratings, setRatings] = useState(null);
+    const [isWishlist, setISWishlist] = useState(false);
 
     function handleSelectColor(color) {
         setSelectedColor(color);
@@ -90,6 +92,64 @@ const ProductView = () => {
         }
     };
 
+    async function handleWishlist() {
+        try {
+            const res = await fetch(`${API_URL}/api/wishlist`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    productId: id,
+                }),
+                credentials: "include",
+            });
+            if (res.status === 201) {
+                toast.success("Product added to you wishlist");
+                setISWishlist(true);
+            } else if (res.status === 400) {
+                const { message } = await res.json();
+                toast.error(message);
+            } else {
+                toast.error("Unexpected error, try again later");
+            }
+        } catch (error) {
+            toast.error("Unexpected error, try again later");
+        }
+    }
+
+    async function removeWishlist() {
+        const res = await fetch(`${API_URL}/api/wishlist`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                productId: id,
+            }),
+            credentials: "include",
+        });
+        if (res.status === 200) {
+            toast.success("Product removed from your wishlist");
+            setISWishlist(false);
+        } else {
+            toast.error("Unexpected error, try again later");
+        }
+    }
+
+    async function checkWishlist() {
+        const res = await fetch(`${API_URL}/api/wishlist/${id}`, {
+            credentials: "include",
+        });
+        if (res.status === 200) {
+            const data = await res.json();
+
+            setISWishlist(data.isWishlist);
+        } else {
+            setISWishlist(false);
+        }
+    }
+
     useEffect(() => {
         async function fetchProduct() {
             try {
@@ -113,7 +173,7 @@ const ProductView = () => {
                 console.error("Error fetching product:", error);
             }
         }
-        Promise.all([fetchProduct(), fetchRatings()]);
+        Promise.all([fetchProduct(), fetchRatings(), checkWishlist()]);
     }, [id]);
 
     const handleAddToCart = async () => {
@@ -225,10 +285,16 @@ const ProductView = () => {
                             isAdding={isAdding}
                             added={added}
                             isUpdated={isUpdated}
+                            handleWishlist={handleWishlist}
+                            isWishlist={isWishlist}
+                            removeWishlist={removeWishlist}
                         />
 
                         <ProductDescription description={product.description} />
-                        <ReviewSection productId={id} fetchRatings={fetchRatings} />
+                        <ReviewSection
+                            productId={id}
+                            fetchRatings={fetchRatings}
+                        />
                     </div>
                 </div>
             </motion.div>

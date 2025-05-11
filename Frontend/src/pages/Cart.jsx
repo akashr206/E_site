@@ -187,6 +187,25 @@ export default function Cart() {
         setIsLoading(false);
     }
 
+    async function handlePaymentSuccess(response) {
+        const { razorpay_payment_id, razorpay_order_id, razorpay_signature } =
+            response;
+
+        navigate(
+            `/checkout/success?payment_id=${razorpay_payment_id}&order_id=${razorpay_order_id}&signature=${razorpay_signature}`
+        );
+    }
+
+    function handlePaymentFailure(response) {
+        alert(response.error.code);
+        alert(response.error.description);
+        alert(response.error.source);
+        alert(response.error.step);
+        alert(response.error.reason);
+        alert(response.error.metadata.order_id);
+        alert(response.error.metadata.payment_id);
+    }
+
     async function openPaymentGateway(amount, order_id, e) {
         var options = {
             key: "rzp_test_KmfRUU7XEGMhMz",
@@ -196,17 +215,7 @@ export default function Cart() {
             description: "Test Transaction",
             image: logo,
             order_id,
-            handler: async function (response) {
-                const {
-                    razorpay_payment_id,
-                    razorpay_order_id,
-                    razorpay_signature,
-                } = response;
-
-                navigate(
-                    `/checkout/success?payment_id=${razorpay_payment_id}&order_id=${razorpay_order_id}&signature=${razorpay_signature}`
-                );
-            },
+            handler: handlePaymentSuccess,
             prefill: {
                 name: user.name,
                 email: user.email,
@@ -220,15 +229,7 @@ export default function Cart() {
             },
         };
         var rzp1 = new Razorpay(options);
-        rzp1.on("payment.failed", function (response) {
-            alert(response.error.code);
-            alert(response.error.description);
-            alert(response.error.source);
-            alert(response.error.step);
-            alert(response.error.reason);
-            alert(response.error.metadata.order_id);
-            alert(response.error.metadata.payment_id);
-        });
+        rzp1.on("payment.failed", handlePaymentFailure);
         rzp1.open();
         e.preventDefault();
     }
@@ -269,15 +270,13 @@ export default function Cart() {
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         amount: total * 100,
-                        currency: "INR",
                         receipt: nanoid(10),
                     }),
                     credentials: "include",
                 }
             );
             const paymentOrder = await orderResponse.json();
-            console.log(paymentOrder);
-
+            
             await openPaymentGateway(paymentOrder.amount, paymentOrder.id, e);
         } catch (error) {
             console.error("Checkout error:", error);

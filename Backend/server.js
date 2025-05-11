@@ -16,6 +16,7 @@ const paymentRoutes = require("./routes/paymentRoutes");
 const cloudinary = require("cloudinary").v2;
 const userRoutes = require("./routes/userRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
+const wishlistRoutes = require("./routes/wishlistRoutes")
 
 const app = express();
 dotenv.config();
@@ -65,6 +66,7 @@ app.use("/api/address", isAuthenticated, addressRoutes);
 app.use("/api/orders", isAuthenticated, orderRoutes);
 app.use("/api/payments", isAuthenticated, paymentRoutes);
 app.use("/api/users", isAuthenticated, userRoutes);
+app.use("/api/wishlist", isAuthenticated, wishlistRoutes)
 
 // Authentication routes (Login, Logout)
 app.use("/auth/google", googleAuth);
