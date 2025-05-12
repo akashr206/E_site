@@ -207,7 +207,7 @@ const ReviewSection = ({ productId, fetchRatings }) => {
             ) : (
                 <div className="space-y-6">
                     {reviews.map((review) => (
-                        <div key={review.id}>
+                        <div key={review._id}>
                             <CardHeader className="pb-3">
                                 <div className="flex items-start">
                                     <Avatar className="h-10 w-10 mr-3">
