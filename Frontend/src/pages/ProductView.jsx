@@ -210,6 +210,7 @@ const ProductView = () => {
                 quantity: 1,
                 color: selectedColor,
                 size: selectedSize,
+                mrp: product.mrp,
             }),
             credentials: "include",
         });

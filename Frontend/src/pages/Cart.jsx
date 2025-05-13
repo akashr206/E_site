@@ -13,6 +13,8 @@ import { nanoid } from "nanoid";
 import logo from "../assets/logo2.png";
 import { useOrder } from "../Contexts/orderDataContext";
 import { Skeleton } from "../components/ui/skeleton";
+import clsx from "clsx";
+import { Trash2, X } from "lucide-react";
 
 const NonCart = () => {
     return (
@@ -32,7 +34,7 @@ const NonCart = () => {
                     onClick={() =>
                         (window.location.href = `${API_URL}/auth/google`)
                     }
-                   >
+                >
                     <span>Login Now</span>
                 </Button>
             </div>
@@ -42,7 +44,6 @@ const NonCart = () => {
 
 const CartItem = (product) => {
     const [stock, setStock] = useState(3);
-
     useEffect(() => {
         async function fetchStock() {
             let response = await fetch(
@@ -57,7 +58,12 @@ const CartItem = (product) => {
     }, []);
 
     return (
-        <div className="flex items-start bg-white p-3 rounded-lg shadow">
+        <div
+            className={clsx(
+                "flex items-start bg-white p-3 rounded-lg shadow",
+                product.className
+            )}
+        >
             <Link
                 className="w-24 h-24 flex justify-center items-center"
                 to={`/products/${product.productId}`}
@@ -72,14 +78,23 @@ const CartItem = (product) => {
                 <p className="text-gray-500">
                     {product.color} &bull; {product.size}
                 </p>
-                <p className="mt-2 text-gray-700 font-medium">
-                    ₹{product.price}.00
-                </p>
+                <div className="flex gap-2 mt-2 items-end">
+                    <p className=" text-gray-700 font-medium">
+                        ₹{product.price}.00
+                    </p>
+                    <p className="text-sm text-muted-foreground line-through">
+                        ₹{product.mrp}.00
+                    </p>
+                    <p className="text-sm font-medium text-green-600">
+                        {Math.round((1 - product.price / product.mrp) * 100)}%
+                        off
+                    </p>
+                </div>
             </div>
-            <div className="flex flex-col items-center space-x-2">
+            <div className="flex flex-col items-end space-x-2">
                 <button
                     onClick={() => product.OnRemove(product.id)}
-                    className="text-gray-400 flex justify-end w-full hover:text-red-500"
+                    className="text-gray-400 flex p-2 hover:text-red-500"
                 >
                     <span>&#10006;</span>
                 </button>
@@ -96,7 +111,7 @@ const CartItem = (product) => {
 
                     <MenuItems
                         transition
-                        className="absolute right-0 z-10 mt-2 w-max origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                        className="absolute right-0 mt-1 z-10 w-[52px] origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                     >
                         <div className="py-1 ">
                             {Array.from({ length: stock }, (_, index) => (
@@ -108,7 +123,7 @@ const CartItem = (product) => {
                                                 index + 1
                                             )
                                         }
-                                        className="block cursor-pointer px-4 py-2 w-max text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
+                                        className="block z-10 cursor-pointer px-4 py-1  text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
                                     >
                                         {index + 1}
                                     </a>
@@ -124,6 +139,7 @@ const CartItem = (product) => {
 
 export default function Cart() {
     const [products, setProducts] = useState([]);
+    const [outOfStock, setOutOfStock] = useState([]);
     const [total, setTotal] = useState(0);
     const [isEmpty, setIsEmpty] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -141,12 +157,15 @@ export default function Cart() {
             credentials: "include",
         });
         const products = await response.json();
+        console.log(products);
+
         if (products.length === 0) {
             setIsEmpty(true);
         } else {
             setIsEmpty(false);
         }
-        setProducts(products);
+        setProducts(products.filter((product) => product.inStock));
+        setOutOfStock(products.filter((product) => !product.inStock));
     }
 
     async function removeItem(id) {
@@ -180,8 +199,9 @@ export default function Cart() {
             credentials: "include",
         });
         const data = await response.json();
-        setSubTotal(data.totalPrice);
-        setTotal(data.totalPrice + shippingCost + tax - discount);
+        setSubTotal(data.mrp);
+
+        setTotal(data.totalPrice + shippingCost);
         setIsLoading(false);
     }
 
@@ -274,7 +294,7 @@ export default function Cart() {
                 }
             );
             const paymentOrder = await orderResponse.json();
-            
+
             await openPaymentGateway(paymentOrder.amount, paymentOrder.id, e);
         } catch (error) {
             console.error("Checkout error:", error);
@@ -341,16 +361,94 @@ export default function Cart() {
                                             productId={product.productId}
                                             key={product._id}
                                             name={product.name}
-                                            image={product.images[0]}
+                                            image={
+                                                product.images
+                                                    ? product?.images[0]
+                                                    : ""
+                                            }
                                             color={product.color}
                                             quantity={product.quantity}
                                             size={product.size}
                                             price={product.price}
+                                            mrp={product.mrp}
                                         />
                                     );
                                 })
                             )}
+                            {outOfStock.length > 0 && (
+                                <div className="flex flex-col gap-3">
+                                    <div className="flex justify-between items-center">
+                                        <div className=" text-destructive">
+                                            <p className="font-semibold">
+                                                Out of Stock
+                                            </p>
+                                            <p className="text-sm text-red-400">
+                                                Unfortunately{" "}
+                                                {outOfStock.length}{" "}
+                                                {outOfStock.length > 1
+                                                    ? "products are "
+                                                    : "product is "}
+                                                out of stock in your cart.
+                                            </p>
+                                        </div>
+                                        <Button variant={"ghost"} className="p-3">
+                                            <Trash2 className="text-destructive" />
+                                        </Button>
+                                    </div>
+
+                                    <div className="flex flex-col gap-4">
+                                        {outOfStock.map((product) => {
+                                            if (!product.inStock)
+                                                return (
+                                                    <div className="relative">
+                                                        <CartItem
+                                                            className="pointer-events-none"
+                                                            onUpdate={(
+                                                                id,
+                                                                quantity
+                                                            ) =>
+                                                                updateQuantity(
+                                                                    id,
+                                                                    quantity
+                                                                )
+                                                            }
+                                                            OnRemove={
+                                                                removeItem
+                                                            }
+                                                            id={product._id}
+                                                            productId={
+                                                                product.productId
+                                                            }
+                                                            key={product._id}
+                                                            name={product.name}
+                                                            image={
+                                                                product.images
+                                                                    ?.length > 0
+                                                                    ? product
+                                                                          ?.images[0]
+                                                                    : ""
+                                                            }
+                                                            color={
+                                                                product.color
+                                                            }
+                                                            quantity={
+                                                                product.quantity
+                                                            }
+                                                            size={product.size}
+                                                            price={
+                                                                product.price
+                                                            }
+                                                            mrp={product.mrp}
+                                                        />
+                                                        <div className="absolute inset-0  pointer-events-none opacity-60  bg-muted"></div>
+                                                    </div>
+                                                );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
                         </div>
+
                         <div className="lg:sticky lg:self-start top-20">
                             <ShippingAddressSelector
                                 onAddressSelect={handleAddressSelect}
@@ -367,12 +465,6 @@ export default function Cart() {
                                         </span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span>Tax</span>
-                                        <span className="font-medium">
-                                            ₹{tax}.00
-                                        </span>
-                                    </div>
-                                    <div className="flex justify-between">
                                         <span>Shipping</span>
                                         <span className="font-medium">
                                             ₹{shippingCost}.00
@@ -381,9 +473,13 @@ export default function Cart() {
                                     <div className="flex justify-between">
                                         <span>Discount</span>
                                         <span className="font-medium text-green-500">
-                                            -₹{discount}.00
+                                            -₹{subTotal - total + shippingCost}
+                                            .00
                                         </span>
                                     </div>
+                                    <p className="text-sm text-muted-foreground">
+                                        All the prices are inclusive of tax
+                                    </p>
                                 </div>
 
                                 {selectedAddress && (

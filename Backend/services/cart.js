@@ -53,12 +53,11 @@ const isProductInCart = async (productId, userId) => {
 
 // Retrieve the total price of all products in the user's cart
 const getCartTotal = async (userId) => {
-    const cartItems = await CartItem.find({ userId });
-    const total = cartItems.reduce(
-        (sum, item) => sum + item.price * item.quantity,
-        0
-    );
-    return total;
+    let cartItems = await CartItem.find({ userId });
+    cartItems = cartItems.filter((item)=>{
+        return item.inStock;
+    })
+    return { totalPrice : total, mrp };
 };
 
 // Retrieve the total number of items in the user's cart
@@ -87,7 +86,7 @@ const validateStock = async (productId, color, size, quantity) => {
         if (!variant) {
             throw new Error("Variant not found");
         }
-        
+
         // Check if the stock is sufficient
         return variant.stock >= quantity;
     } catch (error) {

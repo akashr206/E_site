@@ -6,7 +6,8 @@ const cartSchema = new Schema(
     productId: { type: String, required: true },
     name: {type: String, required: true},
     images: {type: [String], required: true}, 
-    price: {type: String, required: true},
+    price: {type: Number, required: true},
+    mrp: {type: Number, required: true},
     color: {type: String, required: true},
     size: {type: String, required: true},
     variant: {
