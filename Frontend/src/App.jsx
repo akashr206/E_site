@@ -42,12 +42,7 @@ function AppRoutes() {
     return (
         <>
             {!pathname.includes("admin") && <Navbar className="fixed" />}
-            <main
-                className={cn(
-                    "pb-9",
-                    !pathname.includes("admin") && "pt-[76px]"
-                )}
-            >
+            <main className={cn(!pathname.includes("admin") && "pt-[76px]")}>
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />

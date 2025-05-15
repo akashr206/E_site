@@ -7,7 +7,7 @@ const ProductInfo = ({ product, ratings }) => {
   return (
     <div className="mb-8">
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-        <div className="flex items-center space-x-2">
+        {/* <div className="flex items-center space-x-2">
           <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20">
             New Arrival
           </Badge>
@@ -20,7 +20,7 @@ const ProductInfo = ({ product, ratings }) => {
               Out of Stock
             </Badge>
           )}
-        </div>
+        </div> */}
 
         <h1 className="mt-3 text-3xl font-bold tracking-tight text-foreground">{product.name}</h1>
 

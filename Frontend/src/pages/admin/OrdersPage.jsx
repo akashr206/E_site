@@ -461,6 +461,7 @@ export default function OrdersPage() {
                                     <Table>
                                         <TableHeader>
                                             <TableRow>
+                                                <TableHead>Id</TableHead>
                                                 <TableHead>Product</TableHead>
                                                 <TableHead>Variant</TableHead>
                                                 <TableHead>Quantity</TableHead>
@@ -473,6 +474,9 @@ export default function OrdersPage() {
                                             {selectedOrder.items.map(
                                                 (item, index) => (
                                                     <TableRow key={index}>
+                                                        <TableCell className="font-medium">
+                                                            {item.productId}
+                                                        </TableCell>
                                                         <TableCell className="font-medium">
                                                             {item.productName}
                                                         </TableCell>
