@@ -191,6 +191,8 @@ const Navbar = () => {
                     <Dropdown title="Kurtis" items={kurtiProducts} />
                     <Dropdown title="Ready-Made" items={readyMadeProducts} />
                 </div>
+                <div>
+                </div>
                 <div className="hidden lg:flex">
                     <UserActions />
                 </div>
