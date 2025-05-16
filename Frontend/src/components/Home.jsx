@@ -111,31 +111,6 @@ const Home = () => {
                         <div className="group relative overflow-hidden rounded-lg h-[400px]">
                             <img
                                 src="/placeholder.svg?height=600&width=400"
-                                alt="Bridal Collection"
-                                className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
-                                <div>
-                                    <h3 className="text-xl font-medium text-white mb-2">
-                                        Bridal Collection
-                                    </h3>
-                                    <a
-                                        href="#"
-                                        className="inline-flex items-center text-white text-sm font-medium"
-                                    >
-                                        Shop Now{" "}
-                                        <ChevronRight
-                                            size={16}
-                                            className="ml-1"
-                                        />
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="group relative overflow-hidden rounded-lg h-[400px]">
-                            <img
-                                src="/placeholder.svg?height=600&width=400"
                                 alt="Accessories"
                                 className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
                             />
