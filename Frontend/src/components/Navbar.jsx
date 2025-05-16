@@ -54,8 +54,8 @@ const Navbar = () => {
             const targetElement = document.getElementById("search-nav");
 
             if (!targetElement.contains(e.target) && e.target.id !== "search") {
-                setMobileSearch(false)
-            } 
+                setMobileSearch(false);
+            }
         };
 
         window.addEventListener("resize", handleResize);
@@ -162,7 +162,7 @@ const Navbar = () => {
                                     )}`
                                 )
                             }
-                            className="absolute z-[200] right-4 cursor-pointer w-8"
+                            className="absolute cursor-pointer z-[200] right-4 cursor-pointer w-8"
                         />
                     </form>
                 </nav>
@@ -176,7 +176,7 @@ const Navbar = () => {
                 className="mx-auto flex max-w-7xl items-center justify-between p-3"
                 aria-label="Global"
             >
-                <div className="flex lg:flex-1">
+                <div className="flex lg:flex-1 items-center gap-8">
                     <Link to="/" className="-m-1.5">
                         <img
                             className=" h-16 object-fit rounded-lg w-full"
@@ -184,14 +184,51 @@ const Navbar = () => {
                             alt="Logo"
                         />
                     </Link>
-                </div>
-                <div className="hidden lg:flex lg:gap-x-4">
-                    <Dropdown title="Sarees" items={sareeProducts} />
-                    <Dropdown title="Salwar Suits" items={salwarProducts} />
-                    <Dropdown title="Kurtis" items={kurtiProducts} />
-                    <Dropdown title="Ready-Made" items={readyMadeProducts} />
+                    <div className="hidden lg:flex lg:gap-x-4">
+                        <Dropdown title="Sarees" items={sareeProducts} />
+                        <Dropdown title="Salwar Suits" items={salwarProducts} />
+                        <Dropdown title="Kurtis" items={kurtiProducts} />
+                        <Dropdown
+                            title="Ready-Made"
+                            items={readyMadeProducts}
+                        />
+                    </div>
                 </div>
                 <div>
+                    <form
+                        className="flex items-center w-80 relative"
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            if (search.trim()) {
+                                navigate(
+                                    `/search?query=${encodeURIComponent(
+                                        search.trim()
+                                    )}`
+                                );
+                            }
+                        }}
+                    >
+                        <Input
+                            type="text"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                            placeholder="Search"
+                            className=""
+                        />
+                        <button type="submit" className="hidden" />
+                        <Search
+                            onClick={() =>
+                                search &&
+                                navigate(
+                                    `/search?query=${encodeURIComponent(
+                                        search.trim()
+                                    )}`
+                                )
+                            }
+                            className="absolute cursor-pointer right-2 z-[200] px-1 w-7"
+                        />
+                    </form>
                 </div>
                 <div className="hidden lg:flex">
                     <UserActions />

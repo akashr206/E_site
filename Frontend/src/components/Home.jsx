@@ -12,11 +12,12 @@ import {
 import { ArrowUpRight } from "lucide-react";
 import { Button } from "./ui/button";
 import { API_URL } from "../config/api";
-import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const navigate = useNavigate()
     async function fetchProducts() {
         try {
             const response = await fetch(`${API_URL}/api/products/all`);
@@ -31,7 +32,6 @@ const Home = () => {
         }
     }
 
- 
     useEffect(() => {
         async function loadData() {
             await fetchProducts();
@@ -64,7 +64,7 @@ const Home = () => {
                                     beauty, feeling, and a touch of magic.
                                 </p>
                                 <div className="flex gap-4">
-                                    <Button className="px-6 py-3 font-medium rounded-md transition-colors bg-pink-600 text-white hover:bg-pink-700">
+                                    <Button onClick={()=> navigate("/new")} className="px-6 py-3 font-medium rounded-md transition-colors bg-pink-600 text-white hover:bg-pink-700">
                                         Shop now <ArrowUpRight />
                                     </Button>
                                     <Button className="px-6 py-3 bg-white text-gray-900 font-medium rounded-md border border-gray-300 hover:bg-gray-50 transition-colors">
@@ -82,10 +82,10 @@ const Home = () => {
                     <h2 className="text-3xl  font-bold text-center mb-12">
                         Shop by Category
                     </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="grid max-w-4xl mx-auto grid-cols-1 place-i md:grid-cols-2 gap-8">
                         <div className="group relative overflow-hidden rounded-lg h-[400px]">
                             <img
-                                src="/placeholder.svg?height=600&width=400"
+                                src="/women.jpg"
                                 alt="Women's Fashion"
                                 className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
                             />
@@ -110,7 +110,7 @@ const Home = () => {
 
                         <div className="group relative overflow-hidden rounded-lg h-[400px]">
                             <img
-                                src="/placeholder.svg?height=600&width=400"
+                                src="/accessory.jpg"
                                 alt="Accessories"
                                 className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
                             />
@@ -582,7 +582,7 @@ const Home = () => {
                     </div>
                 </div>
             </section>
-
+            {/* 
             <section className="py-16 bg-white">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <h2 className="text-3xl  font-bold text-center mb-4">
@@ -612,7 +612,7 @@ const Home = () => {
                         ))}
                     </div>
                 </div>
-            </section>
+            </section> */}
 
             <footer className="bg-gray-900 text-white py-12">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -778,44 +778,36 @@ const Home = () => {
                             </h4>
                             <ul className="space-y-2">
                                 <li>
-                                    <a
-                                        href="#"
+                                    <Link
+                                        to="/account"
                                         className="text-gray-400 hover:text-white text-sm"
                                     >
                                         My Account
-                                    </a>
+                                    </Link>
                                 </li>
                                 <li>
-                                    <a
-                                        href="#"
+                                    <Link
+                                        to="/wishlist"
                                         className="text-gray-400 hover:text-white text-sm"
                                     >
                                         Wishlist
-                                    </a>
+                                    </Link>
                                 </li>
                                 <li>
-                                    <a
-                                        href="#"
+                                    <Link
+                                        to="/account?tab=orders"
                                         className="text-gray-400 hover:text-white text-sm"
                                     >
                                         Order History
-                                    </a>
+                                    </Link>
                                 </li>
                                 <li>
-                                    <a
-                                        href="#"
+                                    <Link
+                                        href="/cart"
                                         className="text-gray-400 hover:text-white text-sm"
                                     >
                                         Shopping Cart
-                                    </a>
-                                </li>
-                                <li>
-                                    <a
-                                        href="#"
-                                        className="text-gray-400 hover:text-white text-sm"
-                                    >
-                                        Gift Cards
-                                    </a>
+                                    </Link>
                                 </li>
                             </ul>
                         </div>
