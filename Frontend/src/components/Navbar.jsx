@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "./ui/button";
 
 import { Dialog } from "@headlessui/react";
-
+import { Input } from "./ui/input";
 import MobileSearch from "./MobileSearch";
 import Dropdown from "./ui/Dropdown";
 import {
@@ -43,9 +43,28 @@ const Navbar = () => {
         }
     };
 
-    const handleLogout = () => {
-        logout();
-    };
+    useEffect(() => {
+        const handleResize = (e) => {
+            if (window.innerWidth <= 762) {
+                setMobileSearch(false);
+            }
+        };
+
+        const handleClick = (e) => {
+            const targetElement = document.getElementById("search-nav");
+
+            if (!targetElement.contains(e.target) && e.target.id !== "search") {
+                setMobileSearch(false)
+            } 
+        };
+
+        window.addEventListener("resize", handleResize);
+        window.addEventListener("click", handleClick);
+        return () => {
+            window.removeEventListener("resize", handleResize);
+            window.removeEventListener("click", handleClick);
+        };
+    }, []);
 
     const UserActions = () => {
         return user ? (
@@ -101,6 +120,56 @@ const Navbar = () => {
         return;
     }
 
+    if (mobileSearch) {
+        return (
+            <header
+                id="search-nav"
+                className="bg-white bg-opacity-70 backdrop-blur-md w-full fixed top-0 left-0 z-[999] shadow-sm flex items-center h-[76px]"
+            >
+                <nav className="w-full">
+                    <form
+                        className="flex items-center w-full relative"
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            if (search.trim()) {
+                                navigate(
+                                    `/search?query=${encodeURIComponent(
+                                        search.trim()
+                                    )}`
+                                );
+                            }
+                        }}
+                    >
+                        <X
+                            className="ml-4 mr-2"
+                            onClick={() => setMobileSearch(false)}
+                        ></X>
+                        <Input
+                            type="text"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                            placeholder="Search"
+                            className="w-full py-2 px-2 mr-4 ml-2 border-none shadow-none focus-visible:ring-0 focus-visible:border-b-pink-500"
+                        />
+                        <button type="submit" className="hidden" />
+                        <Search
+                            onClick={() =>
+                                search &&
+                                navigate(
+                                    `/search?query=${encodeURIComponent(
+                                        search.trim()
+                                    )}`
+                                )
+                            }
+                            className="absolute z-[200] right-4 cursor-pointer w-8"
+                        />
+                    </form>
+                </nav>
+            </header>
+        );
+    }
+
     return (
         <header className="bg-white bg-opacity-70 backdrop-blur-md fixed top-0 left-0 w-full z-[999] shadow-sm">
             <nav
@@ -123,40 +192,6 @@ const Navbar = () => {
                     <Dropdown title="Ready-Made" items={readyMadeProducts} />
                 </div>
                 <div className="hidden lg:flex">
-                    <form
-                        className="flex items-center relative"
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            if (search.trim()) {
-                                navigate(
-                                    `/search?query=${encodeURIComponent(
-                                        search.trim()
-                                    )}`
-                                );
-                            }
-                        }}
-                    >
-                        <input
-                            type="text"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                            placeholder="Search"
-                            className="relative border mx-4 p-1 w-[250px] focus:ring-2 focus:ring-pink-500 focus:border-none outline-none bg-transparent border-black/50 placeholder:text-black  rounded px-2 py-1.5 text-sm"
-                        />
-                        <button type="submit" className="hidden" />
-                        <Search
-                            onClick={() =>
-                                search &&
-                                navigate(
-                                    `/search?query=${encodeURIComponent(
-                                        search.trim()
-                                    )}`
-                                )
-                            }
-                            className="absolute z-10 cursor-pointer w-4 mx-1.5 right-5 top-1/2 transform -translate-y-1/2"
-                        />
-                    </form>
                     <UserActions />
                 </div>
                 <div className="flex items-center justify-center gap-1 lg:hidden">
@@ -164,6 +199,7 @@ const Navbar = () => {
                         onClick={() => setMobileSearch(true)}
                         variant={"ghost"}
                         className="py-2 px-3"
+                        id="search"
                     >
                         <Search size={32} />
                     </Button>
@@ -201,7 +237,7 @@ const Navbar = () => {
                         className="p-2 px-3"
                         onClick={() => {
                             setMobileMenuOpen((prev) => !prev);
-                            setMobileSearch((prev) => !prev);
+                            setMobileSearch(false);
                         }}
                     >
                         {mobileMenuOpen ? (
