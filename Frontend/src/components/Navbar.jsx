@@ -196,7 +196,7 @@ const Navbar = () => {
                 </div>
                 <div>
                     <form
-                        className="flex items-center w-80 relative"
+                        className="flex items-center mr-2 w-80 relative"
                         onSubmit={(e) => {
                             e.preventDefault();
                             if (search.trim()) {
@@ -214,7 +214,7 @@ const Navbar = () => {
                             onChange={(e) => setSearch(e.target.value)}
                             onKeyDown={handleKeyDown}
                             placeholder="Search"
-                            className=""
+                            className=" border-gray-500"
                         />
                         <button type="submit" className="hidden" />
                         <Search
