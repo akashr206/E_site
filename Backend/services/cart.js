@@ -46,18 +46,18 @@ const clearUserCart = async (userId) => {
 };
 
 // Check if a product is already in the user's cart
-const isProductInCart = async (productId, userId) => {
-    const product = await CartItem.findOne({ productId, userId });
-    return product?._id;
+const isProductInCart = async (productId, color, size, userId) => {
+    const product = await CartItem.findOne({ productId, color, size, userId });
+    return product?._id || false;
 };
 
 // Retrieve the total price of all products in the user's cart
 const getCartTotal = async (userId) => {
     let cartItems = await CartItem.find({ userId });
-    cartItems = cartItems.filter((item)=>{
+    cartItems = cartItems.filter((item) => {
         return item.inStock;
-    })
-    return { totalPrice : total, mrp };
+    });
+    return { totalPrice: total, mrp };
 };
 
 // Retrieve the total number of items in the user's cart

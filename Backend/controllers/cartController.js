@@ -32,11 +32,15 @@ const addToCart = async (req, res) => {
         }
 
         // Check if product is already in the cart
-        const productExists = await isProductInCart(productId, userId);
+        const productExists = await isProductInCart(
+            productId,
+            color,
+            size,
+            userId
+        );
 
         if (productExists) {
-            updateCartItemVariant(productExists, color, size);
-            return res.status(200).json({ message: "Cart updated" });
+            return res.status(400).json({ message: "Product already exists in your cart." });
         }
         // Add the product to the cart
         const cartItem = await createCartItem({
@@ -52,8 +56,6 @@ const addToCart = async (req, res) => {
         });
         res.status(201).json({ message: "Product added to cart", cartItem });
     } catch (error) {
-        console.log(error);
-
         res.status(500).json({ message: error.message });
     }
 };
@@ -147,8 +149,7 @@ const getCartTotalPrice = async (req, res) => {
             })
         );
         cartItems = cartItems.filter(Boolean);
-        console.log(cartItems);
-        
+
         const mrp =
             cartItems.reduce(
                 (sum, item) => sum + item.mrp * item.quantity,

@@ -221,10 +221,11 @@ const ProductView = () => {
             setAdded(true);
             setTimeout(() => setAdded(false), 1000);
             fetchCart();
-        }
-        if (response.status === 200) {
-            setIsUpdated(true);
-            setTimeout(() => setIsUpdated(false), 1000);
+        }else if (response.status === 400) {
+            const { message } = await response.json();
+            toast.warning(message);
+        } else {
+            toast.error("Unexpected error, try again")
         }
     };
 

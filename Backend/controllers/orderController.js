@@ -4,6 +4,7 @@ const { getAddress } = require("../services/address");
 const { reduceStock } = require("../services/products");
 const { generateId } = require("../utils/generateId");
 const Review = require("../models/Review");
+const { verifyPayment } = require("../services/paymentServices");
 
 const addOrder = async (req, res) => {
     try {
@@ -18,18 +19,39 @@ const addOrder = async (req, res) => {
         const { items, addressId, summary, paymentId, payment } = req.body;
 
         if (!items || !Array.isArray(items) || items.length === 0) {
-            return res.status(400).json({ error: "Order must contain items" });
+            return res
+                .status(400)
+                .json({ message: "Order must contain items" });
         }
 
         if (!addressId) {
             return res
                 .status(400)
-                .json({ error: "Shipping address is required" });
+                .json({ message: "Shipping address is required" });
         }
 
         if (!summary) {
-            return res.status(400).json({ error: "Valid summary is required" });
+            return res
+                .status(400)
+                .json({ message: "Valid summary is required" });
         }
+
+        if (!payment) {
+            return res
+                .status(400)
+                .json({ message: "Payment details are required" });
+        }
+
+        const validatePayment = verifyPayment(
+            payment.paymentOrderId,
+            paymentId,
+            payment.signature
+        );
+
+        if (!validatePayment) {
+            return res.status(400).json({ message: "Payment is not valid" });
+        }
+
         const order = await Order.create({
             userId,
             id: orderId,
@@ -49,6 +71,7 @@ const addOrder = async (req, res) => {
             orderDate: new Date(),
             status: "confirmed",
         });
+
         await Promise.all(
             items.map((item) => {
                 reduceStock(
@@ -59,6 +82,7 @@ const addOrder = async (req, res) => {
                 );
             })
         );
+        
         await clearUserCart(userId);
         return res.status(201).json({
             message: "Order created successfully",

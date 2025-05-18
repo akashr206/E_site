@@ -16,7 +16,7 @@ export default function Login() {
     const navigate = useNavigate();
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="flex items-center justify-center min-h-[calc(100vh-80px)] bg-gray-100">
             <Card className="w-full mb-16 max-w-sm">
                 <CardHeader>
                     <CardTitle>Login</CardTitle>

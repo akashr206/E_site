@@ -45,8 +45,6 @@ const checkBought = async (productId, userId) => {
 };
 const checkExists = async (productId, userId) => {
     const review = await Review.findOne({ product: productId, uId: userId });
-    console.log(review);
-
     return review ? true : false;
 };
 
