@@ -30,7 +30,7 @@ const ProductView = () => {
     const [error, setError] = useState(false);
     const { user } = useAuth();
     const [prompt, setPrompt] = useState(false);
-    const { fetchCart } = useContext(CartLength);
+    const { fetchCartLen, fetchCart } = useContext(CartLength);
     const [ratings, setRatings] = useState(null);
     const [isWishlist, setISWishlist] = useState(false);
 
@@ -220,7 +220,7 @@ const ProductView = () => {
         if (response.status === 201) {
             setAdded(true);
             setTimeout(() => setAdded(false), 1000);
-            fetchCart();
+            Promise.all([fetchCartLen(),fetchCart])
         }else if (response.status === 400) {
             const { message } = await response.json();
             toast.warning(message);

@@ -23,14 +23,17 @@ import { AuthProvider } from "./Contexts/AuthContext";
 import { OrderProvider } from "./Contexts/orderDataContext";
 import NewArrivals from "./pages/NewArrivals";
 import Wishlist from "./pages/Wishlist";
+import CartProvider from "./Contexts/CartContext";
 
 function App() {
     return (
         <AuthProvider>
             <OrderProvider>
-                <Router>
-                    <AppRoutes />
-                </Router>
+                <CartProvider>
+                    <Router>
+                        <AppRoutes />
+                    </Router>
+                </CartProvider>
             </OrderProvider>
         </AuthProvider>
     );

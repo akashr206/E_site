@@ -3,7 +3,7 @@ import { LockClosedIcon } from "@heroicons/react/24/outline";
 import { Button } from "../components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import EmptyCart from "../components/EmptyCart";
 import { useAuth } from "../Contexts/AuthContext";
 import { API_URL } from "../config/api";
@@ -15,6 +15,7 @@ import { useOrder } from "../Contexts/orderDataContext";
 import { Skeleton } from "../components/ui/skeleton";
 import clsx from "clsx";
 import { Trash2, X } from "lucide-react";
+import { CartLength } from "../Contexts/CartContext";
 
 const NonCart = () => {
     return (
@@ -54,6 +55,7 @@ const CartItem = (product) => {
                 setStock(data.stock);
             }
         }
+
         fetchStock();
     }, []);
 
@@ -138,35 +140,23 @@ const CartItem = (product) => {
 };
 
 export default function Cart() {
-    const [products, setProducts] = useState([]);
-    const [outOfStock, setOutOfStock] = useState([]);
-    const [total, setTotal] = useState(0);
+    const {
+        products,
+        outOfStock,
+        total,
+        isLoading,
+        subTotal,
+        fetchCart,
+        fetchTotal,
+    } = useContext(cartLength);
     const [isEmpty, setIsEmpty] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
     const [selectedAddress, setSelectedAddress] = useState(null);
     const { user, loadingUser } = useAuth();
-    const [subTotal, setSubTotal] = useState(0);
     const tax = 10;
     const shippingCost = 100;
     const discount = 50;
     const { setOrderData } = useOrder();
     const navigate = useNavigate();
-
-    async function fetchCart() {
-        const response = await fetch(`${API_URL}/api/cart/user`, {
-            credentials: "include",
-        });
-        const products = await response.json();
-        console.log(products);
-
-        if (products.length === 0) {
-            setIsEmpty(true);
-        } else {
-            setIsEmpty(false);
-        }
-        setProducts(products.filter((product) => product.inStock));
-        setOutOfStock(products.filter((product) => !product.inStock));
-    }
 
     async function removeItem(id) {
         setIsLoading(true);
@@ -174,7 +164,8 @@ export default function Cart() {
             method: "DELETE",
             credentials: "include",
         });
-        await fetchCart();
+
+        Promise.all([fetchCart(), fetchTotal()]);
         setIsLoading(false);
     }
 
@@ -188,21 +179,8 @@ export default function Cart() {
             credentials: "include",
         });
         const data = await response.json();
-        fetchCart();
-        fetchTotal();
+        Promise.all([fetchCart(), fetchTotal()]);
         return data;
-    }
-
-    async function fetchTotal() {
-        setIsLoading(true);
-        const response = await fetch(`${API_URL}/api/cart/total`, {
-            credentials: "include",
-        });
-        const data = await response.json();
-        setSubTotal(data.mrp);
-
-        setTotal(data.totalPrice + shippingCost);
-        setIsLoading(false);
     }
 
     async function handlePaymentSuccess(response) {
@@ -306,19 +284,6 @@ export default function Cart() {
         setSelectedAddress(address);
     };
 
-    useEffect(() => {
-        async function loadData() {
-            try {
-                setIsLoading(true);
-                await Promise.all([fetchCart(), fetchTotal()]);
-            } catch (error) {
-                console.error("Error loading cart data:", error);
-            } finally {
-                setIsLoading(false);
-            }
-        }
-        loadData();
-    }, []);
     if (!user && !loadingUser) return <NonCart />;
     if (isEmpty) return <EmptyCart />;
 
@@ -391,7 +356,10 @@ export default function Cart() {
                                                 out of stock in your cart.
                                             </p>
                                         </div>
-                                        <Button variant={"ghost"} className="p-3">
+                                        <Button
+                                            variant={"ghost"}
+                                            className="p-3"
+                                        >
                                             <Trash2 className="text-destructive" />
                                         </Button>
                                     </div>

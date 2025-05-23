@@ -28,7 +28,7 @@ const SuccessPage = () => {
     const { orderData, setOrderData } = useOrder();
     const [animateCheck, setAnimateCheck] = useState(false);
 
-    const { fetchCart } = useContext(CartLength);
+    const { fetchCartLen, fetchCart } = useContext(CartLength);
 
     const navigate = useNavigate();
 
@@ -88,7 +88,7 @@ const SuccessPage = () => {
 
                     const orderData2 = await orderRes.json();
                     setOrderDetails(orderData2);
-                    fetchCart()
+                    Promise.all([fetchCart(), fetchCartLen()]);
                 }
 
                 setStatus("success");
