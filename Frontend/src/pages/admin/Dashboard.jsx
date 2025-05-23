@@ -7,6 +7,7 @@ import UsersPage from "./UsersPage";
 import AnalyticsPage from "./AnalyticsPage";
 import SettingsPage from "./Settings";
 import { useParams } from "react-router-dom";
+import { DashboardProvider } from "../../Contexts/DashboardDetails";
 
 export default function Dashboard() {
     const { page } = useParams();
@@ -37,11 +38,13 @@ export default function Dashboard() {
 
     return (
         <div className="flex  w-full overflow-hidden bg-background">
-            <AdminSidebar
-                renderPage={renderPage}
-                setActivePage={setActivePage}
-                activePage={activePage}
-            />
+            <DashboardProvider>
+                <AdminSidebar
+                    renderPage={renderPage}
+                    setActivePage={setActivePage}
+                    activePage={activePage}
+                />
+            </DashboardProvider>
         </div>
     );
 }

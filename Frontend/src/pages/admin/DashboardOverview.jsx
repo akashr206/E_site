@@ -22,81 +22,10 @@ import clsx from "clsx";
 import { Skeleton } from "../../components/ui/skeleton";
 import TotalRevenue from "../../components/Admin/TotalRevenue";
 import { formatIndianNumber as FIN } from "../../lib/utils";
+import { useDashDetails } from "../../Contexts/DashboardDetails";
 
 export default function DashboardOverview() {
-    const [totalOrders, setTotalOrders] = useState(null);
-    const [orderPercentage, setOrderPercentage] = useState(null);
-    const [totalProducts, setTotalProducts] = useState(null);
-    const [thisMonthProducts, setThisMonthProducts] = useState(null);
-    const [activeUsers, setActiveUsers] = useState(null);
-    const [ordersData, setOrdersData] = useState([
-        { name: "Jan", revenue: 0, orders: 0 },
-        { name: "Feb", revenue: 0, orders: 0 },
-        { name: "Mar", revenue: 0, orders: 0 },
-        { name: "Apr", revenue: 0, orders: 0 },
-        { name: "May", revenue: 0, orders: 0 },
-        { name: "Jun", revenue: 0, orders: 0 },
-        { name: "Jul", revenue: 0, orders: 0 },
-        { name: "Aug", revenue: 0, orders: 0 },
-        { name: "Sep", revenue: 0, orders: 0 },
-        { name: "Oct", revenue: 0, orders: 0 },
-        { name: "Nov", revenue: 0, orders: 0 },
-        { name: "Dec", revenue: 0, orders: 0 },
-    ]);
-
-    const fetchTotalProducts = async () => {
-        const response = await fetch(`${API_URL}/api/products/total`, {
-            credentials: "include",
-        });
-        const data = await response.json();
-        let total = 0;
-        data.monthlyProducts.forEach((item) => (total += item.count));
-        setTotalProducts(total);
-        setThisMonthProducts(
-            data.monthlyProducts[data.monthlyProducts.length - 1]?.count ?? 0
-        );
-    };
-
-    const fetchTotalOrders = async () => {
-        const response = await fetch(`${API_URL}/api/orders/revenue`, {
-            credentials: "include",
-        });
-        const data = await response.json();
-        const thisMonth =
-            data.monthlyRevenue[data.monthlyRevenue.length - 1]?.orderCount ?? 0;
-        const lastMonth =
-            data.monthlyRevenue[data.monthlyRevenue.length - 2]?.orderCount ?? 0;
-        setOrderPercentage(
-            lastMonth
-                ? ((thisMonth - lastMonth) / lastMonth) * 100
-                : thisMonth * 100
-        );
-        setTotalOrders(thisMonth);
-        data.monthlyRevenue.forEach((item) => {
-            setOrdersData((prev) => {
-                const updated = [...prev];
-                updated[item._id.month - 1].revenue = item.totalRevenue;
-                updated[item._id.month - 1].orders = item.orderCount;
-                return updated;
-            });
-        });
-    };
-
-    const fetchActiveUsers = async () => {
-        const response = await fetch(`${API_URL}/api/users/active`, {
-            credentials: "include",
-        });
-        const data = await response.json();
-        setActiveUsers(data.thisMonth);
-    };
-
-    useEffect(() => {
-        Promise.all([
-            fetchTotalOrders(),
-            fetchTotalProducts(),
-            fetchActiveUsers(),
-        ]);
-    }, []);
+    const {totalOrders, orderPercentage, totalProducts ,thisMonthProducts, activeUsers, ordersData } = useDashDetails();
 
     return (
         <div className="flex flex-col gap-6">

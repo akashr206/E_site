@@ -8,34 +8,11 @@ import {
 } from "@/components/ui/card";
 import { DollarSign, ArrowUpIcon } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
-import { API_URL } from "../../config/api";
 import clsx from "clsx";
 import { formatIndianNumber as FIN } from "../../lib/utils";
+import { useDashDetails } from "../../Contexts/DashboardDetails";
 const TotalRevenue = () => {
-    const [totalRevenue, setTotalRevenue] = useState(null);
-    const [revenuePercentage, setRevenuePercentage] = useState(null);
-    const fetchTotalRevenue = async () => {
-        const response = await fetch(`${API_URL}/api/orders/revenue`, {
-            credentials: "include",
-        });
-        const data = await response.json();
-        const thisMonth =
-            data.monthlyRevenue[data.monthlyRevenue.length - 1]?.totalRevenue ||
-            0;
-        const lastMonth =
-            data.monthlyRevenue[data.monthlyRevenue.length - 2]?.totalRevenue ||
-            0;
-        setRevenuePercentage(
-            lastMonth
-                ? ((thisMonth - lastMonth) / lastMonth) * 100
-                : thisMonth * 100
-        );
-        setTotalRevenue(thisMonth);
-    };
-
-    useEffect(() => {
-        fetchTotalRevenue();
-    }, []);
+    const { totalRevenue, revenuePercentage} = useDashDetails()
 
     return (
         <Card>
