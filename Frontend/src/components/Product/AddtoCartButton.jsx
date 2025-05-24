@@ -12,12 +12,13 @@ const AddToCartButton = ({
     handleWishlist,
     removeWishlist,
     isWishlist,
+    isInStock,
 }) => {
     return (
         <div className="mt-8">
             <div className="flex flex-col sm:flex-row gap-3">
                 <motion.div
-                    className="flex-1"
+                    className={cn("flex-1", !isInStock && "pointer-events-none")}
                     whileHover={
                         !isAdding && !added ? { scale: 1.02 } : undefined
                     }
@@ -25,7 +26,11 @@ const AddToCartButton = ({
                 >
                     <Button
                         onClick={handleAddToCart}
-                        className="w-full"
+                        className={cn(
+                            "w-full",
+                            !isInStock &&
+                                "opacity-90 pointer-events-none bg-red-500/90"
+                        )}
                         size="lg"
                         disabled={isAdding}
                         variant={added || isUpdated ? "success" : "default"}
@@ -73,8 +78,14 @@ const AddToCartButton = ({
                             </>
                         ) : (
                             <>
-                                <ShoppingCart className="w-4 h-4 mr-2" />
-                                Add to Cart
+                                {isInStock ? (
+                                    <>
+                                        <ShoppingCart className="w-4 h-4 mr-2" />
+                                        Add to Cart{" "}
+                                    </>
+                                ) : (
+                                    <>Out of Stock</>
+                                )}
                             </>
                         )}
                     </Button>
@@ -89,7 +100,8 @@ const AddToCartButton = ({
                         size="lg"
                         className={cn(
                             "w-full sm:w-auto",
-                            isWishlist && "text-white bg-pink-500 hover:text-white hover:bg-pink-600"
+                            isWishlist &&
+                                "text-white bg-pink-500 hover:text-white hover:bg-pink-600"
                         )}
                         onClick={isWishlist ? removeWishlist : handleWishlist}
                     >

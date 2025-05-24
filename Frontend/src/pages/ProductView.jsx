@@ -32,7 +32,8 @@ const ProductView = () => {
     const [prompt, setPrompt] = useState(false);
     const { fetchCartLen, fetchCart } = useContext(CartLength);
     const [ratings, setRatings] = useState(null);
-    const [isWishlist, setISWishlist] = useState(false);
+    const [isInStock, setIsInStock] = useState(null);
+    const [isWishlist, setISWishlist] = useState(null);
     function handleSelectColor(color) {
         setSelectedColor(color);
     }
@@ -46,6 +47,13 @@ const ProductView = () => {
             setSelectedSize(selected[selectedColor][0]);
         }
     }, [selectedColor]);
+
+    function checkInStock(product) {
+        const selected = product.variants.filter(
+            (v) => v.stock > 0
+        );
+        setIsInStock(selected.length > 0);
+    }
 
     function fetchSizes(product) {
         const varies = product.variants;
@@ -171,7 +179,10 @@ const ProductView = () => {
                     setProduct(data);
                     if (data.variants?.length > 0) {
                         fetchSizes(data);
+                        checkInStock(data);
                         setSelectedVariant(data.variants[0]);
+                    } else {
+                        setIsInStock(false);
                     }
                     if (data.images?.length > 0) {
                         setSelectedImage(data.images[0]);
@@ -290,6 +301,7 @@ const ProductView = () => {
                             selectedSize={selectedSize}
                             handleSelectColor={handleSelectColor}
                             setSelectedSize={setSelectedSize}
+                            isInStock={isInStock}
                         />
 
                         <AddToCartButton
@@ -300,6 +312,7 @@ const ProductView = () => {
                             handleWishlist={handleWishlist}
                             isWishlist={isWishlist}
                             removeWishlist={removeWishlist}
+                            isInStock={isInStock}
                         />
 
                         <ProductDescription description={product.description} />

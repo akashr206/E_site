@@ -9,7 +9,11 @@ const ProductVariants = ({
     selectedSize,
     handleSelectColor,
     setSelectedSize,
+    isInStock,
 }) => {
+    if (!isInStock) {
+        return <div className="text-center text-sm text-red-500"></div>;
+    }
     return (
         <div className="space-y-6">
             <div>
@@ -26,7 +30,7 @@ const ProductVariants = ({
                         className="flex flex-wrap gap-2"
                         defaultValue={selectedColor}
                     >
-                        {colors.map((color, index) => {
+                        { colors.map((color, index) => {
                             const colorName = Object.keys(color)[0];
                             if (color[colorName].length > 0)
                                 return (
