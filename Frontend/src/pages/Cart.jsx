@@ -148,25 +148,29 @@ export default function Cart() {
         subTotal,
         fetchCart,
         fetchTotal,
-    } = useContext(cartLength);
-    const [isEmpty, setIsEmpty] = useState(false);
+        isEmpty,
+        setIsLoading,
+        shippingCost,
+    } = useContext(CartLength);
     const [selectedAddress, setSelectedAddress] = useState(null);
     const { user, loadingUser } = useAuth();
     const tax = 10;
-    const shippingCost = 100;
     const discount = 50;
     const { setOrderData } = useOrder();
     const navigate = useNavigate();
 
     async function removeItem(id) {
-        setIsLoading(true);
         const response = await fetch(`${API_URL}/api/cart/remove/${id}`, {
             method: "DELETE",
             credentials: "include",
         });
 
-        Promise.all([fetchCart(), fetchTotal()]);
-        setIsLoading(false);
+        if (response.ok) {
+            toast.success("Item removed from cart");
+        } else {
+            toast.error("Failed to remove item from cart");
+        }
+        fetchCart();
     }
 
     async function updateQuantity(id, quantity) {
@@ -179,7 +183,14 @@ export default function Cart() {
             credentials: "include",
         });
         const data = await response.json();
-        Promise.all([fetchCart(), fetchTotal()]);
+
+        if (response.ok) {
+            toast.success("Item updated in cart");
+        } else {
+            toast.error("Failed to update item in cart");
+        }
+
+        fetchCart();
         return data;
     }
 

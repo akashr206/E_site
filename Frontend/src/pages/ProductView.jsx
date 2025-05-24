@@ -33,7 +33,6 @@ const ProductView = () => {
     const { fetchCartLen, fetchCart } = useContext(CartLength);
     const [ratings, setRatings] = useState(null);
     const [isWishlist, setISWishlist] = useState(false);
-
     function handleSelectColor(color) {
         setSelectedColor(color);
     }
@@ -220,12 +219,12 @@ const ProductView = () => {
         if (response.status === 201) {
             setAdded(true);
             setTimeout(() => setAdded(false), 1000);
-            Promise.all([fetchCartLen(),fetchCart])
-        }else if (response.status === 400) {
+            Promise.all([fetchCartLen(), fetchCart()]);
+        } else if (response.status === 400) {
             const { message } = await response.json();
             toast.warning(message);
         } else {
-            toast.error("Unexpected error, try again")
+            toast.error("Unexpected error, try again");
         }
     };
 

@@ -10,13 +10,15 @@ const CartProvider = ({ children }) => {
     const [subTotal, setSubTotal] = useState(0);
     const [total, setTotal] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
+    const [isEmpty, setIsEmpty] = useState(false);
+    const shippingCost = 100;
 
     async function fetchCart() {
         const response = await fetch(`${API_URL}/api/cart/user`, {
             credentials: "include",
         });
         const products = await response.json();
-
+        await fetchTotal();
         if (products.length === 0) {
             setIsEmpty(true);
         } else {
@@ -62,6 +64,8 @@ const CartProvider = ({ children }) => {
                 isLoading,
                 setIsLoading,
                 fetchCart,
+                isEmpty,
+                shippingCost,
             }}
         >
             {children}
