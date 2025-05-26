@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "./ui/button";
@@ -33,6 +33,7 @@ const Navbar = () => {
     const readyMadeProducts = ["Lehengas", "Gowns", "Skirts"];
     const [search, setSearch] = useState("");
     const navigate = useNavigate();
+    const searchRef = useRef(null);
 
     const { cartLen } = useContext(CartLength);
 
@@ -44,15 +45,20 @@ const Navbar = () => {
     };
 
     useEffect(() => {
+        if (searchRef.current) {
+            searchRef.current.focus();
+        }
+    }, [mobileSearch]);
+
+    useEffect(() => {
         const handleResize = (e) => {
-            if (window.innerWidth <= 762) {
+            if (window.innerWidth >= 1024) {
                 setMobileSearch(false);
             }
         };
 
         const handleClick = (e) => {
             const targetElement = document.getElementById("search-nav");
-
             if (!targetElement.contains(e.target) && e.target.id !== "search") {
                 setMobileSearch(false);
             }
@@ -145,6 +151,7 @@ const Navbar = () => {
                             onClick={() => setMobileSearch(false)}
                         ></X>
                         <Input
+                            ref={searchRef}
                             type="text"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
@@ -162,7 +169,7 @@ const Navbar = () => {
                                     )}`
                                 )
                             }
-                            className="absolute cursor-pointer z-[200] right-4 cursor-pointer w-8"
+                            className="absolute cursor-pointer z-[200] right-4  w-8"
                         />
                     </form>
                 </nav>
@@ -196,7 +203,7 @@ const Navbar = () => {
                 </div>
                 <div>
                     <form
-                        className="flex items-center mr-2 w-80 relative"
+                        className="flex max-lg:hidden items-center mr-2 w-80 relative"
                         onSubmit={(e) => {
                             e.preventDefault();
                             if (search.trim()) {
@@ -290,7 +297,7 @@ const Navbar = () => {
             <Dialog as="div" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
                 <div className="w-screen relative h-screen ">
                     <motion.div
-                        className="fixed inset-0 overflow-y-auto bg-white px-4 py-4 lg:hidden"
+                        className="fixed z-[99] inset-0 overflow-y-auto bg-white px-4 py-4 lg:hidden"
                         initial={{ x: "100%" }}
                         animate={{ x: 0 }}
                         exit={{ x: "100%" }}

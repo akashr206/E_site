@@ -24,7 +24,7 @@ import { OrderProvider } from "./Contexts/orderDataContext";
 import NewArrivals from "./pages/NewArrivals";
 import Wishlist from "./pages/Wishlist";
 import CartProvider from "./Contexts/CartContext";
-
+import AllProducts from "./pages/products/AllProducts";
 function App() {
     return (
         <AuthProvider>
@@ -55,6 +55,7 @@ function AppRoutes() {
                     <Route path="/wishlist" element={<Wishlist />} />
                     <Route path="/category/:query" element={<Category />} />
                     <Route path="/cart" element={<Cart />} />
+                    <Route path="/products" element={<AllProducts />} />
 
                     <Route element={<ProtectedRoute />}>
                         <Route path="/account" element={<Account />} />

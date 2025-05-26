@@ -64,7 +64,7 @@ const Home = () => {
                                     beauty, feeling, and a touch of magic.
                                 </p>
                                 <div className="flex gap-4">
-                                    <Button onClick={()=> navigate("/new")} className="px-6 py-3 font-medium rounded-md transition-colors bg-pink-600 text-white hover:bg-pink-700">
+                                    <Button onClick={()=> navigate("/products")} className="px-6 py-3 font-medium rounded-md transition-colors bg-pink-600 text-white hover:bg-pink-700">
                                         Shop now <ArrowUpRight />
                                     </Button>
                                     <Button className="px-6 py-3 bg-white text-gray-900 font-medium rounded-md border border-gray-300 hover:bg-gray-50 transition-colors">
