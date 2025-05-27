@@ -75,7 +75,7 @@ const reduceStock = async (productId, reduceNumber, color, size) => {
         );
         variant.stock = Math.max(parseInt(variant.stock, 10) - reduceNumber, 0);
         product.variants[variant] = variant;
-        
+
         await product.save();
 
         return { success: true, message: "Stock reduced", product };
@@ -101,7 +101,7 @@ const findLowStock = async () => {
                 }
             });
         });
-        newProducts.sort((a,b)=>a.variant.stock - b.variant.stock)
+        newProducts.sort((a, b) => a.variant.stock - b.variant.stock);
         return newProducts;
     } catch (error) {
         console.error("Error reducing stock:", error.message);

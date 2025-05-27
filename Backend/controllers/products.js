@@ -69,6 +69,27 @@ const getAllProducts = async (req, res) => {
     }
 };
 
+const getNewProducts = async (req, res) => {
+    try {
+        const page = req.query.page || 1;
+        const limit = req.query.limit || 45;
+
+        const products = await findAllProducts(page, limit);
+        const totalProducts = await countProducts();
+        res.json({
+            products,
+            pagination: {
+                totalProducts,
+                limit: limit,
+                page: page,
+                totalPages: Math.ceil(totalProducts / limit),
+            },
+        });
+    } catch (error) {
+        res.status(400).json({ message: "Error Fetching Products", error });
+    }
+};
+
 const editProduct = async (req, res) => {
     try {
         const id = req.params.id;
@@ -146,18 +167,18 @@ const getLowStock = async (req, res) => {
 const getTotalProducts = async (req, res) => {
     try {
         const monthlyProducts = await Product.aggregate([
-            { 
+            {
                 $group: {
                     _id: {
                         year: { $year: "$createdAt" },
-                        month: { $month: "$createdAt" }
+                        month: { $month: "$createdAt" },
                     },
-                    count: { $sum: 1 }
-                }
+                    count: { $sum: 1 },
+                },
             },
             {
-                $sort: { "_id.year": -1, "_id.month": -1 }
-            }
+                $sort: { "_id.year": -1, "_id.month": -1 },
+            },
         ]);
 
         const totalProducts = await countProducts();
@@ -177,5 +198,6 @@ module.exports = {
     getCount,
     getStock,
     getLowStock,
-    getTotalProducts
+    getTotalProducts,
+    getNewProducts,
 };

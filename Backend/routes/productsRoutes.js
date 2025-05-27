@@ -8,6 +8,7 @@ const {
     getCount,
     getLowStock,
     getTotalProducts,
+    getNewProducts
 } = require("../controllers/products");
 const router = require("express").Router();
 const isAdmin = require("../middlewares/isAdmin");
@@ -17,6 +18,7 @@ const isAuthenticated = require("../middlewares/auth");
 router.get("/one/:id", getProductById);
 router.get("/all", getAllProducts);
 router.get("/stock/:id", getStock);
+router.get("/new", getNewProducts);
 
 //admin requests
 router.post("/add", isAuthenticated, isAdmin, AddProduct);

@@ -32,7 +32,7 @@ const getWishlists = async (req, res) => {
         const products = await Promise.all(
             wishlists.map((wishlist) => findProductById(wishlist.productId))
         );
-        res.json(products);
+        res.json({products});
     } catch (error) {
         console.log(error);
         res.status(500).json({
