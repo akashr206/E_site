@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Separator } from "../components/ui/separator";
 import Loading from "../components/Loading";
 import ProductsGrid from "../components/ProductsGrid";
-import FilterAndSort from "../components/FilterAndSort";
+import FilterAndSort from "../components/SortProducts";
 import { API_URL } from "../config/api";
 
 const NewArrivals = () => {

@@ -1,37 +1,43 @@
 import { useState, useEffect } from "react";
-import { Separator } from "@/components/ui/separator";
-import Loading from "@/components/Loading";
-import ProductsGrid from "@/components/ProductsGrid";
-import SortProducts from "@/components/SortProducts";
-import { API_URL } from "@/config/api";
-import InfiniteScroll from "react-infinite-scroll-component";
+import { Separator } from "../components/ui/separator";
+import Loading from "../components/Loading";
+import ProductsGrid from "../components/ProductsGrid";
+import SortProducts from "../components/SortProducts";
+import { API_URL } from "../config/api";
+import { useSearchParams } from "react-router-dom";
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination";
 
-const LIMIT = 30;
-
-const AllProducts = () => {
+const ProductList = ({ endpoint, title, limit, noProductMessage }) => {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [page, setPage] = useState(1);
-    const [hasMore, setHasMore] = useState(true);
+    const [searchParams] = useSearchParams();
+    const [page, setPage] = useState(parseInt(searchParams.get("page"), 10) || 1);
+    const [totalPages, setTotalPages] = useState(0);
+    const itemsPerPage = limit || 10;
 
     async function fetchProducts() {
         setIsLoading(true);
         try {
-            const response = await fetch(
-                `${API_URL}/api/products/all?limit=${LIMIT}&page=${page}`
-            );
+            const response = await fetch(`${API_URL}/api/${endpoint}?limit=${itemsPerPage}&page=${page}`, {
+                credentials: "include",
+            });
             if (!response.ok) {
                 throw new Error("Failed to fetch products");
             }
+
             const products = await response.json();
-            if (products.products.length < LIMIT) {
-                console.log("No more products");
-                setHasMore(false);
-            }
-            setPage((prev) => prev + 1);
             setProducts(products.products);
             setFilteredProducts(products.products);
+            setTotalPages(products.pagination.totalPages);
         } catch (error) {
             console.error("Error fetching products:", error);
             setProducts([]);
@@ -40,6 +46,7 @@ const AllProducts = () => {
             setIsLoading(false);
         }
     }
+
     useEffect(() => {
         fetchProducts();
     }, []);
@@ -79,11 +86,11 @@ const AllProducts = () => {
         <div className="p-2 flex flex-col justify-center items-center mx-auto max-w-7xl">
             <div className="my-2 px-5 w-full flex gap-2 p-6 flex-col sm:items-center sm:flex-row justify-between ">
                 <div className="flex  flex-col">
-                    <h1 className="text-3xl font-normal">All Products</h1>
+                    <h1 className="text-3xl font-normal">{title}</h1>
                     <p className="text-accent-foreground/60 text-sm">
                         {" "}
-                        {filteredProducts.length}{" "}
-                        {filteredProducts.length === 1 ? "product" : "products"}
+                        {products?.length || 0}{" "}
+                        {products?.length === 1 ? "product" : "products"}
                     </p>
                 </div>
                 <SortProducts onSortChange={handleSortChange} />
@@ -92,28 +99,33 @@ const AllProducts = () => {
             <div className="py-6">
                 {!products || products.length === 0 ? (
                     <div className="w-full h-full flex items-center justify-center">
-                        There are no newly arrived products.
+                        {noProductMessage}
                     </div>
                 ) : (
-                    <>
-                        <InfiniteScroll
-                            dataLength={filteredProducts.length}
-                            next={fetchProducts}
-                            hasMore={hasMore}
-                            loader={<h4>Loading more...</h4>}
-                            endMessage={
-                                <p style={{ textAlign: "center" }}>
-                                    Yay! You have seen it all
-                                </p>
-                            }
-                        >
-                            <ProductsGrid products={filteredProducts} />
-                        </InfiniteScroll>
-                    </>
+                    <ProductsGrid products={filteredProducts} />
                 )}
             </div>
+            <Pagination>
+                <PaginationContent>
+                    <PaginationItem>
+                        <PaginationPrevious href={`?page=${page - 1}`} />
+                    </PaginationItem>
+                    <PaginationItem>
+
+                        {Array.from({length: totalPages}).map((_, i) => (
+                            <PaginationLink key={i} href={`?page=${i + 1}`}>{i + 1}</PaginationLink>
+                        ))}
+                    </PaginationItem>
+                    <PaginationItem>
+                        <PaginationEllipsis />
+                    </PaginationItem>
+                    <PaginationItem>
+                        <PaginationNext href={`?page=${page + 1}`} />
+                    </PaginationItem>
+                </PaginationContent>
+            </Pagination>
         </div>
     );
 };
 
-export default AllProducts;
+export default ProductList;

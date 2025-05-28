@@ -25,6 +25,7 @@ import NewArrivals from "./pages/NewArrivals";
 import Wishlist from "./pages/Wishlist";
 import CartProvider from "./Contexts/CartContext";
 import AllProducts from "./pages/products/AllProducts";
+import ProductList from "./pages/ProductList";
 function App() {
     return (
         <AuthProvider>
@@ -51,11 +52,11 @@ function AppRoutes() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/products/:id" element={<ProductView />} />
                     <Route path="/search" element={<Search />} />
-                    <Route path="/new" element={<NewArrivals />} />
-                    <Route path="/wishlist" element={<Wishlist />} />
+                    <Route path="/wishlist" element={<ProductList title="Wishlist" endpoint="wishlist" noProductMessage={"There are no products in your wishlist"} />} />
                     <Route path="/category/:query" element={<Category />} />
                     <Route path="/cart" element={<Cart />} />
-                    <Route path="/products" element={<AllProducts />} />
+                    <Route path="/products" element={<ProductList endpoint="products/all" title="All Products" noProductMessage={"There are no products found"} />} />
+                    <Route path="/new" element={<ProductList endpoint="products/new" title="New Products" noProductMessage={"There are no new products found"} />} />
 
                     <Route element={<ProtectedRoute />}>
                         <Route path="/account" element={<Account />} />

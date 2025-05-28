@@ -138,6 +138,8 @@ export default function OrdersPage() {
     const handleViewDetails = (order) => {
         setActiveDropdownId(null);
         setTimeout(() => {
+            console.log(order);
+            
             setSelectedOrder(order);
             setIsDetailsOpen(true);
         }, 0);
@@ -452,6 +454,7 @@ export default function OrdersPage() {
                                     <p className="text-sm">
                                         Status: {selectedOrder.status}
                                     </p>
+                                    
                                 </div>
                             </div>
 
@@ -508,13 +511,10 @@ export default function OrdersPage() {
                                     <p className="text-sm">
                                         Status: {selectedOrder.payment.status}
                                     </p>
-                                    {selectedOrder.payment.transactionId && (
+                                    {selectedOrder.paymentId && (
                                         <p className="text-sm">
-                                            Transaction ID:{" "}
-                                            {
-                                                selectedOrder.payment
-                                                    .transactionId
-                                            }
+                                            Payment ID:{" "}
+                                            {selectedOrder.paymentId}
                                         </p>
                                     )}
                                 </div>

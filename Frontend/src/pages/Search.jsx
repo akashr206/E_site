@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import Loading from "../components/Loading";
-import FilterAndSort from "../components/FilterAndSort";
+import SortProducts from "../components/SortProducts";
 import ProductsGrid from "../components/ProductsGrid";
 import { Search as SearchIcon } from "lucide-react";
 
@@ -60,16 +60,7 @@ const Search = () => {
         }
 
         setFilteredProducts(sorted);
-    };
-
-    const handleFilterChange = ({ minPrice, maxPrice }) => {
-        const filtered = products.filter(
-            (product) =>
-                product.price >= (minPrice || 0) &&
-                product.price <= (maxPrice || Infinity)
-        );
-        setFilteredProducts(filtered);
-    };
+        };
 
     if (isLoading) {
         return (
@@ -114,10 +105,7 @@ const Search = () => {
                             </p>
                         </div>
                         <div className="w-full sm:w-auto">
-                            <FilterAndSort
-                                onSortChange={handleSortChange}
-                                onFilterChange={handleFilterChange}
-                            />
+                            <SortProducts onSortChange={handleSortChange} />
                         </div>
                     </div>
                 </div>

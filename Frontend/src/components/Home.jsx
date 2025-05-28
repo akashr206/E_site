@@ -13,11 +13,12 @@ import { ArrowUpRight } from "lucide-react";
 import { Button } from "./ui/button";
 import { API_URL } from "../config/api";
 import { useNavigate } from "react-router-dom";
+import Marquee from "react-fast-marquee";
 
 const Home = () => {
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     async function fetchProducts() {
         try {
             const response = await fetch(`${API_URL}/api/products/all`);
@@ -64,7 +65,10 @@ const Home = () => {
                                     beauty, feeling, and a touch of magic.
                                 </p>
                                 <div className="flex gap-4">
-                                    <Button onClick={()=> navigate("/products")} className="px-6 py-3 font-medium rounded-md transition-colors bg-pink-600 text-white hover:bg-pink-700">
+                                    <Button
+                                        onClick={() => navigate("/products")}
+                                        className="px-6 py-3 font-medium rounded-md transition-colors bg-pink-600 text-white hover:bg-pink-700"
+                                    >
                                         Shop now <ArrowUpRight />
                                     </Button>
                                     <Button className="px-6 py-3 bg-white text-gray-900 font-medium rounded-md border border-gray-300 hover:bg-gray-50 transition-colors">
@@ -147,34 +151,35 @@ const Home = () => {
                             View All <ChevronRight size={16} className="ml-1" />
                         </Link>
                     </div>
-
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-                        {products.slice(0, 4).map((product) => (
-                            <Link
-                                key={product.id}
-                                to={`/products/${product.id}`}
-                            >
-                                <div className="group">
-                                    <div className="relative overflow-hidden rounded-lg mb-4 bg-gray-100">
-                                        <img
-                                            src={product.images[0]}
-                                            alt="Elegant Dress"
-                                            className="w-full h-[350px] hover:scale-105 transition-transform object-cover object-top"
-                                        />
+                    <Marquee speed={25} pauseOnHover={true} >
+                        <div className="flex gap-8">
+                            {products.slice(0, 10).map((product) => (
+                                <Link
+                                    key={product.id}
+                                    to={`/products/${product.id}`}
+                                >
+                                    <div className="group">
+                                        <div className="relative overflow-hidden rounded-lg mb-4 bg-gray-100">
+                                            <img
+                                                src={product.images[0]}
+                                                alt="Elegant Dress"
+                                                className="w-full h-[350px] hover:scale-105 transition-transform object-cover object-top"
+                                            />
+                                        </div>
+                                        <h3 className="text-lg font-medium text-gray-900">
+                                            {product.name}
+                                        </h3>
+                                        <p className="text-gray-500 mb-2">
+                                            {product.name}
+                                        </p>
+                                        <p className="font-medium text-gray-900">
+                                            {product.price}.00
+                                        </p>
                                     </div>
-                                    <h3 className="text-lg font-medium text-gray-900">
-                                        {product.name}
-                                    </h3>
-                                    <p className="text-gray-500 mb-2">
-                                        {product.name}
-                                    </p>
-                                    <p className="font-medium text-gray-900">
-                                        {product.price}.00
-                                    </p>
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    </Marquee>
                 </div>
             </section>
 

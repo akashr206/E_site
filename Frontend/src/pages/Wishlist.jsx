@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Separator } from "../components/ui/separator";
 import Loading from "../components/Loading";
 import ProductsGrid from "../components/ProductsGrid";
-import FilterAndSort from "../components/FilterAndSort";
+import SortProducts from "../components/SortProducts";
 import { API_URL } from "../config/api";
 import { useAuth } from "../Contexts/AuthContext";
 import { LockClosedIcon } from "@heroicons/react/24/outline";
@@ -44,7 +44,7 @@ const Wishlist = () => {
         async function fetchProducts() {
             setIsLoading(true);
             try {
-                const response = await fetch(`${API_URL}/api/wishlist`, {
+                const response = await fetch(`${API_URL}/api/`, {
                     credentials: "include",
                 });
                 if (!response.ok) {
@@ -118,10 +118,7 @@ const Wishlist = () => {
                         {products.length === 1 ? "product" : "products"}
                     </p>
                 </div>
-                <FilterAndSort
-                    onSortChange={handleSortChange}
-                    onFilterChange={handleFilterChange}
-                />
+                <SortProducts onSortChange={handleSortChange} />
             </div>
             <Separator></Separator>
             <div className="py-6">
