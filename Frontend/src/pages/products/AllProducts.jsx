@@ -30,8 +30,8 @@ const AllProducts = () => {
                 setHasMore(false);
             }
             setPage((prev) => prev + 1);
-            setProducts(products.products);
-            setFilteredProducts(products.products);
+            setProducts(prevProducts => [...prevProducts, ...products.products]);
+            setFilteredProducts(prevProducts => [...prevProducts, ...products.products]);
         } catch (error) {
             console.error("Error fetching products:", error);
             setProducts([]);

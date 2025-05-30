@@ -3,14 +3,30 @@ const Product = require("../models/Product");
 const Products = require("../models/Product");
 const cloudinary = require("cloudinary").v2;
 
+function getSort(sort) {
+    switch (sort) {
+        case "Newest":
+            return { createdAt: -1 };
+        case "Oldest":
+            return { createdAt: 1 };
+        case "Price: low to high":
+            return { price: 1 };
+        case "Price: high to low":
+            return { price: -1 };
+        default:
+            break;
+    }
+}
 const createProduct = async (product) => {
     const newProduct = await Products.create(product);
     return newProduct;
 };
 
-const findAllProducts = async (page, limit) => {
+const findAllProducts = async (page, limit, sort) => {
+    console.log(sort);
+    
     const products = await Products.find({})
-        .sort({ createdAt: -1 })
+        .sort(getSort(sort))
         .skip((page - 1) * limit)
         .limit(limit);
     return products;

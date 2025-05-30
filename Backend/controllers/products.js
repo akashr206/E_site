@@ -52,8 +52,8 @@ const getAllProducts = async (req, res) => {
     try {
         const page = req.query.page || 1;
         const limit = req.query.limit || 10;
-
-        const products = await findAllProducts(page, limit);
+        const sort = req.query.sort || "Newest";
+        const products = await findAllProducts(page, limit, sort);
         const totalProducts = await countProducts();
         res.json({
             products,

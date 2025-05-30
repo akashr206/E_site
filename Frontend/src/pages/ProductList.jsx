@@ -14,22 +14,29 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const ProductList = ({ endpoint, title, limit, noProductMessage }) => {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [searchParams] = useSearchParams();
-    const [page, setPage] = useState(parseInt(searchParams.get("page"), 10) || 1);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [page, setPage] = useState(
+        parseInt(searchParams.get("page"), 10) || 1
+    );
     const [totalPages, setTotalPages] = useState(0);
     const itemsPerPage = limit || 10;
 
-    async function fetchProducts() {
+    async function fetchProducts(sortby = "Newest") {
         setIsLoading(true);
         try {
-            const response = await fetch(`${API_URL}/api/${endpoint}?limit=${itemsPerPage}&page=${page}`, {
-                credentials: "include",
-            });
+            const response = await fetch(
+                `${API_URL}/api/${endpoint}?limit=${itemsPerPage}&page=${page}&sort=${sortby}`,
+                {
+                    credentials: "include",
+                }
+            );
             if (!response.ok) {
                 throw new Error("Failed to fetch products");
             }
@@ -49,38 +56,27 @@ const ProductList = ({ endpoint, title, limit, noProductMessage }) => {
 
     useEffect(() => {
         fetchProducts();
-    }, []);
+    }, [page]);
+
+    function handlePageChange(page) {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set("page", page.toString());
+        setSearchParams(params);
+        setPage(page);
+    }
 
     const handleSortChange = (sortby) => {
-        let sorted = [...filteredProducts];
-
-        switch (sortby) {
-            case "Newest":
-                sorted.sort(
-                    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-                );
-                break;
-            case "Oldest":
-                sorted.sort(
-                    (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
-                );
-                break;
-            case "Price: low to high":
-                sorted.sort((a, b) => a.price - b.price);
-                break;
-            case "Price: high to low":
-                sorted.sort((a, b) => b.price - a.price);
-                break;
-            default:
-                break;
+        if (page == 1) {
+            fetchProducts(sortby);
+        } else {
+            handlePageChange(1);
         }
+        let sorted = [...filteredProducts];
 
         setFilteredProducts(sorted);
     };
 
-    if (isLoading) {
-        return <Loading />;
-    }
+   
 
     return (
         <div className="p-2 flex flex-col justify-center items-center mx-auto max-w-7xl">
@@ -108,19 +104,35 @@ const ProductList = ({ endpoint, title, limit, noProductMessage }) => {
             <Pagination>
                 <PaginationContent>
                     <PaginationItem>
-                        <PaginationPrevious href={`?page=${page - 1}`} />
+                        <Button
+                            onClick={() => handlePageChange(page - 1)}
+                            variant={"ghost"}
+                            disabled={page === 1}
+                        >
+                            <ChevronLeft /> Prev
+                        </Button>
                     </PaginationItem>
                     <PaginationItem>
-
-                        {Array.from({length: totalPages}).map((_, i) => (
-                            <PaginationLink key={i} href={`?page=${i + 1}`}>{i + 1}</PaginationLink>
+                        {Array.from({ length: totalPages }).map((_, i) => (
+                            <PaginationLink key={i} asChild>
+                                <Button
+                                    onClick={() => handlePageChange(i + 1)}
+                                    variant={"ghost"}
+                                >
+                                    {i + 1}
+                                </Button>
+                            </PaginationLink>
                         ))}
                     </PaginationItem>
                     <PaginationItem>
-                        <PaginationEllipsis />
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationNext href={`?page=${page + 1}`} />
+                        <Button
+                            variant={"ghost"}
+                            disabled={page === totalPages}
+                            onClick={() => handlePageChange(page + 1)}
+                            className="cursor-pointer"
+                        >
+                            Next <ChevronRight />
+                        </Button>
                     </PaginationItem>
                 </PaginationContent>
             </Pagination>
