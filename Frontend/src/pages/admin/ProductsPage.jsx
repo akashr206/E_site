@@ -55,7 +55,6 @@ export default function ProductsPage() {
             material: "",
             variants: [
                 { color: "", size: "", stock: 0 },
-                { color: "", size: "", stock: 0 },
             ],
         },
     ]);
@@ -102,8 +101,8 @@ export default function ProductsPage() {
         if (res.ok) {
             setProducts(data.products);
             setMax(data.pagination.totalPages);
-            setGettingProducts(false);
         }
+        setGettingProducts(false);
     }
     const handleNext = () => {
         const page = searchParams.get("page");
@@ -239,7 +238,8 @@ export default function ProductsPage() {
                                               </TableRow>
                                           )
                                       )
-                                    : filteredProducts.map((product) => (
+                                    : filteredProducts
+                                    ? filteredProducts.map((product) => (
                                           <TableRow key={product.id}>
                                               <TableCell className="font-medium">
                                                   {product.id.substring(0, 8)}
@@ -328,7 +328,16 @@ export default function ProductsPage() {
                                                   </DropdownMenu>
                                               </TableCell>
                                           </TableRow>
-                                      ))}
+                                      ))
+                                    : (
+                                          <TableRow>
+                                              {" "}
+                                              <TableCell>
+                                                  {console.log(filteredPro)}
+                                                  No product found
+                                              </TableCell>{" "}
+                                          </TableRow>
+                                      )}
                             </TableBody>
                         </Table>
                     </CardContent>

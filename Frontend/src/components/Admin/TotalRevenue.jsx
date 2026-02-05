@@ -6,13 +6,13 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { DollarSign, ArrowUpIcon } from "lucide-react";
+import { DollarSign, ArrowUpIcon, ArrowDownIcon } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
 import clsx from "clsx";
 import { formatIndianNumber as FIN } from "../../lib/utils";
 import { useDashDetails } from "../../Contexts/DashboardDetails";
 const TotalRevenue = () => {
-    const { totalRevenue, revenuePercentage} = useDashDetails()
+    const { totalRevenue, revenuePercentage } = useDashDetails();
 
     return (
         <Card>
@@ -37,7 +37,7 @@ const TotalRevenue = () => {
                                 "flex items-center text-emerald-500",
                                 {
                                     "text-red-500": revenuePercentage < 0,
-                                }
+                                },
                             )}
                         >
                             {revenuePercentage < 0 ? (
